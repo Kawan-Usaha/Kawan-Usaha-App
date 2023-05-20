@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
-import com.jetpack.kawanusaha.ui.pages.LandingScreen
+import androidx.lifecycle.ViewModelProvider
+import com.jetpack.kawanusaha.main.LoginViewModel
+import com.jetpack.kawanusaha.main.LoginViewModelFactory
+import com.jetpack.kawanusaha.ui.pages.LoginScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +23,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    LandingScreen()
+                    val loginViewModel = ViewModelProvider(this, LoginViewModelFactory(this))[LoginViewModel::class.java]
+                    LoginScreen(viewModel = loginViewModel)
                 }
             }
         }
