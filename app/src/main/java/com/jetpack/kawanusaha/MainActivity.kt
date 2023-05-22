@@ -11,8 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.LoginViewModelFactory
 import com.jetpack.kawanusaha.ui.NavigationScreen
-import com.jetpack.kawanusaha.ui.pages.LandingScreen
-import com.jetpack.kawanusaha.ui.pages.LoginScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,13 +18,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             KawanUsahaTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val loginViewModel = ViewModelProvider(this, LoginViewModelFactory(this))[LoginViewModel::class.java]
-                    NavigationScreen(viewModel = loginViewModel)
+                    val loginViewModel = ViewModelProvider(
+                        this,
+                        LoginViewModelFactory(this)
+                    )[LoginViewModel::class.java]
+                    NavigationScreen(loginViewModel = loginViewModel)
                 }
             }
         }

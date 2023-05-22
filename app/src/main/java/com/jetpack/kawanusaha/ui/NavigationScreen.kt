@@ -4,20 +4,26 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.runtime.*
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.pages.LandingScreen
-import com.jetpack.kawanusaha.ui.pages.LoginScreen
-import com.jetpack.kawanusaha.ui.pages.MainScreen
-import com.jetpack.kawanusaha.ui.pages.RegisterScreen
+import com.jetpack.kawanusaha.ui.pages.*
 
 @Composable
-fun NavigationScreen(viewModel: LoginViewModel) {
+fun NavigationScreen(loginViewModel: LoginViewModel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "landing_screen") {
 
+    // For Development Purpose
+    NavHost(navController = navController, startDestination = "main_screen")
+
+    // TODO: Change this
+    // For Real Case
+//    NavHost(navController = navController, startDestination = "landing_screen")
+
+    {
         // LandingScreen Navigation
         composable(route = "landing_screen") {
             LandingScreen({
@@ -32,7 +38,7 @@ fun NavigationScreen(viewModel: LoginViewModel) {
 
         // LoginScreen Navigation
         composable(route = "login_screen") {
-            LoginScreen(viewModel = viewModel, {
+            LoginScreen(viewModel = loginViewModel, {
                 // LoginScreen to RegisterScreen
                 navController.navigate("register_screen")
             }, {
@@ -46,7 +52,7 @@ fun NavigationScreen(viewModel: LoginViewModel) {
 
         // RegisterScreen Navigation
         composable(route = "register_screen") {
-            RegisterScreen(viewModel = viewModel, {
+            RegisterScreen(viewModel = loginViewModel, {
                 // RegisterScreen to LoginScreen
                 navController.navigate("login_screen")
             }, {
@@ -57,7 +63,28 @@ fun NavigationScreen(viewModel: LoginViewModel) {
 
         // MainScreen Navigation
         composable(route = "main_screen"){
-            MainScreen()
+            MainScreen ({
+                // MainScreen to ChatScreen
+                navController.navigate("chat_screen")
+            }, { title ->
+                // MainScreen to ArticleScreen
+                navController.navigate("article_screen/$title")
+            })
+        }
+
+        composable(route = "chat_screen"){
+            ChatScreen()
+        }
+
+        composable(
+            route = "article_screen/{title}",
+            arguments = listOf(navArgument("title"){type = NavType.StringType})
+        ){
+            it.arguments?.getString("title")?.let { title ->
+                ArticleScreen (articleTitle = title){
+                    navController.navigateUp()
+                }
+            }
         }
     }
 }
