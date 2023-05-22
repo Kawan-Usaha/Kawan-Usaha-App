@@ -1,9 +1,10 @@
 package com.jetpack.kawanusaha.ui.pages
 
-import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -11,25 +12,30 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
-import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.BackPressHandler
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navToRegister: () -> Unit, navToLanding: () -> Unit, navToMain: () -> Unit) {
-    val loginToken by viewModel.loginToken.collectAsState(initial = null)
+fun RegisterScreen(viewModel: LoginViewModel, navToLogin: () -> Unit, navToLanding: () -> Unit) {
+    val authStatus by viewModel.authStatus.collectAsState(initial = null)
+    var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
+    var confirmPassword by remember { mutableStateOf(TextFieldValue("")) }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+        )
         TextField(
             value = email,
             onValueChange = { email = it },
@@ -43,48 +49,33 @@ fun LoginScreen(viewModel: LoginViewModel, navToRegister: () -> Unit, navToLandi
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
+        TextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text("Confirm Password") },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
         Button(
             onClick = {
-                viewModel.login(email = email.toString(), password = password.toString())
+                viewModel.register(name = name.toString(), email = email.toString(), password = password.toString(), passwordConfirm = confirmPassword.toString())
             }
         ) {
-            Text("Log In")
+            Text("Register")
         }
-        OAuthButton()
         Row {
-            Text(text = "Don't have an account? ")
-            Text(text = "Sign Up Now!", modifier = Modifier
-                .clickable { navToRegister() })
+            Text(text = "Already have an account? ")
+            Text(text = "Sign In Now!", modifier = Modifier
+                .clickable { navToLogin() })
         }
     }
-    
+
     BackPressHandler(onBackPressed = navToLanding)
 
     // Authentication Status Changes
-    LaunchedEffect(loginToken) {
-        if (loginToken != null) {
-            navToMain()
+    LaunchedEffect(authStatus) {
+        if (authStatus == true) {
+            navToLogin()
         }
     }
-}
-
-
-@Composable
-fun OAuthButton() {
-    Image(
-        painter = painterResource(R.drawable.google),
-        contentDescription = "Google Logo",
-        modifier = Modifier
-            .padding(top = 20.dp)
-            .size(50.dp)
-            .clickable(
-                enabled = true,
-                onClick = { oauth() },
-                onClickLabel = "Google Authentication"
-            )
-    )
-}
-
-fun oauth() {
-    Log.e("LoginScreen", "OAuth Function")
 }

@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.LoginViewModelFactory
+import com.jetpack.kawanusaha.ui.NavigationScreen
+import com.jetpack.kawanusaha.ui.pages.LandingScreen
 import com.jetpack.kawanusaha.ui.pages.LoginScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
@@ -24,7 +26,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val loginViewModel = ViewModelProvider(this, LoginViewModelFactory(this))[LoginViewModel::class.java]
-                    LoginScreen(viewModel = loginViewModel)
+                    NavigationScreen(viewModel = loginViewModel)
                 }
             }
         }

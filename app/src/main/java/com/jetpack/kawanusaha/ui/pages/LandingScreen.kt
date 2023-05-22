@@ -11,15 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.theme.*
 
 @Composable
-fun LandingScreen() {
+fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -34,14 +34,13 @@ fun LandingScreen() {
             "Kawan Usaha"
         )
 
-        Gradient()
+        Gradient(navToLogin, navToRegister)
     }
 }
 
 @Composable
-fun Gradient() {
+fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
     val boxSize = with(LocalDensity.current) { 300.dp.toPx() }
-
     Box(
         modifier = Modifier
             .size(500.dp)
@@ -54,12 +53,13 @@ fun Gradient() {
                     1.00f to Gradient4,
                     start = Offset((0.3f) * boxSize, boxSize * (1.3f)),
                     end = Offset(boxSize, 0f),
+                    tileMode = TileMode.Clamp
                 )
             )
     ) {
-        Column (Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth()) {
             Button(
-                onClick = { /* Handle login action */ },
+                onClick = { navToLogin() },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(200.dp)
@@ -68,7 +68,7 @@ fun Gradient() {
                 Text("LOGIN")
             }
             Button(
-                onClick = { /* Handle login action */ },
+                onClick = { navToRegister() },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(200.dp)
@@ -79,11 +79,3 @@ fun Gradient() {
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    KawanUsahaTheme {
-        LandingScreen()
-    }
-}
