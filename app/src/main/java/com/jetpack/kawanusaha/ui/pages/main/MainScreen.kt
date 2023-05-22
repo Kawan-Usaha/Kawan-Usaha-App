@@ -26,7 +26,7 @@ import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
-fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit) {
+fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,7 +34,7 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit) {
                     Text(text = stringResource(id = R.string.app_name))
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { navToAbout() }) {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "Account"

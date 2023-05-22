@@ -11,6 +11,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.pages.*
+import com.jetpack.kawanusaha.ui.pages.main.AboutScreen
+import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
 
 @Composable
 fun NavigationScreen(loginViewModel: LoginViewModel) {
@@ -69,6 +71,8 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
             }, { title ->
                 // MainScreen to ArticleScreen
                 navController.navigate("article_screen/$title")
+            }, {
+                navController.navigate("about_screen")
             })
         }
 
@@ -80,11 +84,21 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
             route = "article_screen/{title}",
             arguments = listOf(navArgument("title"){type = NavType.StringType})
         ){
+            // Get Title From Argument
             it.arguments?.getString("title")?.let { title ->
                 ArticleScreen (articleTitle = title){
+                    // Back to Previous Stack
                     navController.navigateUp()
                 }
             }
+        }
+
+        composable(route = "about_screen"){
+            AboutScreen ({
+                navController.navigateUp()
+            }, {
+                navController.navigate("landing_screen")
+            })
         }
     }
 }
