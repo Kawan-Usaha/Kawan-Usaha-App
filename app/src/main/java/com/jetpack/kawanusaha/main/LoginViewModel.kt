@@ -23,6 +23,9 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _isGenerated = MutableStateFlow(false)
+    val isGenerated: StateFlow<Boolean> = _isGenerated
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginCredential.value = dataRepository.login(
@@ -44,9 +47,15 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
                     password_confirm = passwordConfirm
                 )
             )
+            dataRepository.generate()?.message
         }
     }
 
+    fun verify(verification_code: String){
+        viewModelScope.launch {
+            dataRepository.verify(VerificationRequest(verification_code))
+        }
+    }
 }
 
 
