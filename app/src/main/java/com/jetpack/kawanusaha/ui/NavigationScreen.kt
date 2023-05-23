@@ -11,6 +11,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.pages.*
+import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
+import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
 import com.jetpack.kawanusaha.ui.pages.main.AboutScreen
 import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
 
@@ -21,7 +23,7 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
     // For Development Purpose
     NavHost(navController = navController, startDestination = "main_screen")
 
-    // TODO: Change this
+    // TODO: Change to this
     // For Real Case
 //    NavHost(navController = navController, startDestination = "landing_screen")
 
@@ -49,18 +51,40 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
             }, {
                 // LoginScreen to MainScreen
                 navController.navigate("main_screen")
+            }, {
+                // LoginScreen to ForgotPasswordScreen
+                navController.navigate("forgot_password_screen")
             })
         }
 
         // RegisterScreen Navigation
         composable(route = "register_screen") {
             RegisterScreen(viewModel = loginViewModel, {
-                // RegisterScreen to LoginScreen
-                navController.navigate("login_screen")
+                // RegisterScreen to VerificationScreen
+                navController.navigate("verification_screen")
             }, {
                 // RegisterScreen to LandingScreen
                 navController.navigate("landing_screen")
             })
+        }
+
+        // VerificationScreen Navigation
+        composable(route = "verification_screen"){
+            VerificationScreen(viewModel = loginViewModel, {
+                // VerificationScreen to LoadingScreen
+                navController.navigate("login_screen")
+            }, {
+                // VerificationScreen to Previous Stack
+                navController.navigateUp()
+            })
+        }
+
+        // ForgotPassword Navigation
+        composable(route = "forgot_password_screen"){
+            ForgotPasswordScreen(viewModel = loginViewModel) {
+                // ForgotPasswordScreen to LoginScreen
+                navController.navigate("login_screen")
+            }
         }
 
         // MainScreen Navigation
@@ -72,6 +96,7 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
                 // MainScreen to ArticleScreen
                 navController.navigate("article_screen/$title")
             }, {
+                // MainScreen to AboutScreen
                 navController.navigate("about_screen")
             })
         }

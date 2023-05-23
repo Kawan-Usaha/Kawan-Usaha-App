@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiService {
+    // AUTHENTICATION
     @POST ("auth/login")
     fun login (
         @Body loginRequest: LoginRequest
@@ -20,6 +21,16 @@ interface ApiService {
     fun register(
         @Body registerRequest: RegisterRequest
     ): Call<RegisterResponse>
+
+
+    // USER VERIFICATION
+    @POST("auth/generate")
+    fun generate(): Call<GenerateVerificationResponse>
+
+    @POST("auth/verify")
+    fun verify(
+        @Body verificationRequest: VerificationRequest
+    ): Call<VerificationResponse>
 }
 
 class ApiConfig {

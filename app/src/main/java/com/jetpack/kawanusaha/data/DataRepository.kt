@@ -4,31 +4,26 @@ import android.util.Log
 import com.jetpack.kawanusaha.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 class DataRepository(private val apiService: ApiService) {
     suspend fun login(loginRequest: LoginRequest): LoginResponse? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val client = apiService.login(loginRequest)
-                val response = client.execute()
-                if (response.isSuccessful) {
-                    response.body()
-                } else {
-                    Log.e(TAG, "On Failure: ${response.message()}")
-                    null
-                }
-            } catch (t: Throwable) {
-                Log.e(TAG, "On Failure: ${t.message}")
-                null
-            }
-        }
+        return executeRequest { apiService.login(loginRequest).execute() }
     }
 
     suspend fun register(registerRequest: RegisterRequest): RegisterResponse? {
+        return executeRequest { apiService.register(registerRequest).execute() }
+    }
+
+
+    suspend fun generate(): GenerateVerificationResponse? {
+        return executeRequest { apiService.generate().execute() }
+    }
+
+    private suspend fun <T> executeRequest(apiCall: suspend () -> Response<T>): T? {
         return withContext(Dispatchers.IO) {
             try {
-                val client = apiService.register(registerRequest)
-                val response = client.execute()
+                val response = apiCall.invoke()
                 if (response.isSuccessful) {
                     response.body()
                 } else {
@@ -41,7 +36,6 @@ class DataRepository(private val apiService: ApiService) {
             }
         }
     }
-
     companion object {
         private const val TAG = "DataRepository"
     }

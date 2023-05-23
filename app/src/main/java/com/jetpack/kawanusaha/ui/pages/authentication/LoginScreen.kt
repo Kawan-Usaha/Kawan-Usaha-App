@@ -21,7 +21,13 @@ import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.BackPressHandler
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navToRegister: () -> Unit, navToLanding: () -> Unit, navToMain: () -> Unit) {
+fun LoginScreen(
+    viewModel: LoginViewModel,
+    navToRegister: () -> Unit,
+    navToLanding: () -> Unit,
+    navToMain: () -> Unit,
+    navToForgotPassword: () -> Unit
+) {
     val loginToken by viewModel.loginToken.collectAsState(initial = null)
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -43,6 +49,7 @@ fun LoginScreen(viewModel: LoginViewModel, navToRegister: () -> Unit, navToLandi
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
+        Text(text = "Forgot Password?", modifier = Modifier.clickable { navToForgotPassword })
         Button(
             onClick = {
                 viewModel.login(email = email.toString(), password = password.toString())
