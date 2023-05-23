@@ -20,7 +20,7 @@ import com.jetpack.kawanusaha.ui.BackPressHandler
 
 @Composable
 fun RegisterScreen(viewModel: LoginViewModel, navToLogin: () -> Unit, navToLanding: () -> Unit) {
-    val authStatus by viewModel.authStatus.collectAsState(initial = null)
+    val authStatus by viewModel.registerCredential.collectAsState(initial = null)
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -74,7 +74,7 @@ fun RegisterScreen(viewModel: LoginViewModel, navToLogin: () -> Unit, navToLandi
 
     // Authentication Status Changes
     LaunchedEffect(authStatus) {
-        if (authStatus == true) {
+        if (authStatus?.data != null) {
             navToLogin()
         }
     }

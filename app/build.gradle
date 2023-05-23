@@ -59,6 +59,8 @@ android {
 }
 
 dependencies {
+    //**********************  BUILD  ***********************//
+
     // Retrofit
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
@@ -71,15 +73,13 @@ dependencies {
     implementation "com.google.accompanist:accompanist-coil:0.11.1"
     implementation "androidx.compose.runtime:runtime-livedata:1.4.3"
 
-    // Navigation
-    implementation "androidx.navigation:navigation-compose:2.5.3"
-
     // UI
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
     implementation "androidx.compose.material:material:$compose_ui_version"
 
     // Runtime
+    implementation "androidx.navigation:navigation-compose:2.5.3"
     implementation 'androidx.navigation:navigation-runtime-ktx:2.5.3'
     implementation "androidx.compose.runtime:runtime:1.4.3"
     implementation 'androidx.activity:activity-compose:1.7.1'
@@ -90,10 +90,30 @@ dependencies {
     implementation "androidx.compose.animation:animation:1.4.3"
 
 
+    //**********************  TEST  ***********************//
+    // JUnit
     testImplementation 'junit:junit:4.13.2'
+    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
+    // Espresso
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    // Mockito
+    testImplementation 'org.mockito:mockito-core:3.12.4'
+    testImplementation 'org.mockito:mockito-inline:3.12.4'
+
+    // Compose
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+
+    // Core
+    androidTestImplementation "androidx.arch.core:core-testing:2.2.0"
+    testImplementation "androidx.arch.core:core-testing:2.2.0"
+
+    // Coroutine
+
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 }

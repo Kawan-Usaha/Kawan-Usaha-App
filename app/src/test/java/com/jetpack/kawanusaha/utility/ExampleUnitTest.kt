@@ -1,4 +1,4 @@
-package com.jetpack.kawanusaha
+package com.jetpack.kawanusaha.utility
 
 import org.junit.Test
 
