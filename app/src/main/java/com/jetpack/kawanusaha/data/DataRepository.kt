@@ -19,8 +19,16 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.generate().execute() }
     }
 
+    suspend fun forgotGenerate(forgotGenerateRequest: ForgotGenerateRequest): GenerateVerificationResponse? {
+        return executeRequest { apiService.forgotGenerate(forgotGenerateRequest).execute() }
+    }
+
     suspend fun verify(verificationRequest: VerificationRequest): VerificationResponse? {
         return executeRequest { apiService.verify(verificationRequest).execute() }
+    }
+
+    suspend fun forgotVerify(forgotVerifyRequest: ForgotVerifyRequest): GenerateVerificationResponse? {
+        return executeRequest { apiService.forgotVerify(forgotVerifyRequest).execute() }
     }
 
     private suspend fun <T> executeRequest(apiCall: suspend () -> Response<T>): T? {

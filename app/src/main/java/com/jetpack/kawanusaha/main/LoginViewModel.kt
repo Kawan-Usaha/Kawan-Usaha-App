@@ -26,6 +26,9 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     private val _isGenerated = MutableStateFlow(false)
     val isGenerated: StateFlow<Boolean> = _isGenerated
 
+    private val _isVerified = MutableStateFlow(false)
+    val isVerified : StateFlow<Boolean>  = _isVerified
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginCredential.value = dataRepository.login(
@@ -47,13 +50,41 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
                     password_confirm = passwordConfirm
                 )
             )
-            dataRepository.generate()?.message
         }
     }
 
-    fun verify(verification_code: String){
+    fun generate(email: String?){
         viewModelScope.launch {
-            dataRepository.verify(VerificationRequest(verification_code))
+            if (email == null){
+                dataRepository.generate().let {
+                    _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
+                }
+            } else {
+                dataRepository.forgotGenerate(forgotGenerateRequest = ForgotGenerateRequest(email = email)).let{
+                    _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
+                }
+            }
+
+        }
+    }
+
+    fun verify(verification_code: String, password: String?, passwordConfirm: String?){
+        viewModelScope.launch {
+            if (password == null && passwordConfirm == null){
+                dataRepository.verify(VerificationRequest(verification_code)).let {
+                    _isVerified.value = (it?.success ?: false) &&
+                            (it?.message!! == "Email verified" || it.message == "Password changed successfully")
+                }
+            } else {
+                dataRepository.forgotVerify(
+                    forgotVerifyRequest = ForgotVerifyRequest(
+                        verification_code = verification_code,
+                        password = password!!,
+                        password_confirm = passwordConfirm!!
+                    )).let{
+                    _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
+                }
+            }
         }
     }
 }

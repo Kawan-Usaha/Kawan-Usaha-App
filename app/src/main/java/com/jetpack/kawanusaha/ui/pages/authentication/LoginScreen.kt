@@ -49,7 +49,7 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
-        Text(text = "Forgot Password?", modifier = Modifier.clickable { navToForgotPassword })
+        Text(text = "Forgot Password?", modifier = Modifier.clickable { navToForgotPassword() })
         Button(
             onClick = {
                 viewModel.login(email = email.toString(), password = password.toString())

@@ -1,4 +1,4 @@
-package com.jetpack.kawanusaha.ui.pages
+package com.jetpack.kawanusaha.ui.pages.authentication
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +17,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.BackPressHandler
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, navToLanding: () -> Unit) {
     val authStatus by viewModel.registerCredential.collectAsState(initial = null)
+    val coroutineScope = rememberCoroutineScope()
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -66,7 +68,15 @@ fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, nav
         Row {
             Text(text = "Already have an account? ")
             Text(text = "Sign In Now!", modifier = Modifier
-                .clickable { navToVerification() })
+                .clickable {
+                    coroutineScope.launch {
+                        viewModel.generate(null)
+                        if (viewModel.isGenerated.value){
+                            navToVerification()
+                        }
+                        // TODO else loading
+                    }
+                })
         }
     }
 
