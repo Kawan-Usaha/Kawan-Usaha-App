@@ -10,6 +10,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * *Authentication Functions*
+ *
+ * This class every logics to authenticate users to the application
+ *
+ * @property dataRepository the repository of all data
+ */
 class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     private val _loginCredential = MutableStateFlow<LoginResponse?>(null)
     val loginCredential: StateFlow<LoginResponse?> = _loginCredential
@@ -20,8 +27,8 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     private val _registerCredential = MutableStateFlow<RegisterResponse?>(null)
     val registerCredential: StateFlow<RegisterResponse?> = _registerCredential
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
+    private val _message = MutableStateFlow("")
+    val message: StateFlow<String> = _message
 
     private val _isGenerated = MutableStateFlow(false)
     val isGenerated: StateFlow<Boolean> = _isGenerated
@@ -29,6 +36,14 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     private val _isVerified = MutableStateFlow(false)
     val isVerified : StateFlow<Boolean>  = _isVerified
 
+    /**
+     *  Authenticate user and check for its credentials
+     *  User credential will be saved in loginCredential variable
+     *  Session Created
+     *
+     *  @param email user email address
+     *  @param password user password
+     */
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginCredential.value = dataRepository.login(
@@ -40,6 +55,16 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
         }
     }
 
+    /**
+     *  Create a new account for new user.
+     *  User credential will be saved in registerCredential variable
+     *  Session Created
+     *
+     *  @param name user name
+     *  @param email user email address
+     *  @param password user password
+     *  @param passwordConfirm user password to avoid mistype
+     */
     fun register(name: String, email: String, password: String, passwordConfirm: String) {
         viewModelScope.launch {
             _registerCredential.value = dataRepository.register(
@@ -53,27 +78,42 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
         }
     }
 
+    /**
+     *  Generate a token and send it to user email address
+     *
+     *  @param email user email address
+     */
     fun generate(email: String?){
         viewModelScope.launch {
             if (email == null){
                 dataRepository.generate().let {
                     _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
+                    _message.value = it?.message.toString()
                 }
             } else {
                 dataRepository.forgotGenerate(forgotGenerateRequest = ForgotGenerateRequest(email = email)).let{
                     _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
+                    _message.value = it?.message.toString()
                 }
             }
 
         }
     }
 
+    /**
+     *  Verify the token inputted by user
+     *
+     *  @param verification_code the code verification
+     *  @param password user password
+     *  @param passwordConfirm user password to avoid mistype
+     */
     fun verify(verification_code: String, password: String?, passwordConfirm: String?){
         viewModelScope.launch {
             if (password == null && passwordConfirm == null){
                 dataRepository.verify(VerificationRequest(verification_code)).let {
                     _isVerified.value = (it?.success ?: false) &&
-                            (it?.message!! == "Email verified" || it.message == "Password changed successfully")
+                            (it?.message!! == "Email verified")
+                    _message.value = it?.message.toString()
                 }
             } else {
                 dataRepository.forgotVerify(
@@ -82,7 +122,9 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
                         password = password!!,
                         password_confirm = passwordConfirm!!
                     )).let{
-                    _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
+                    _isGenerated.value = (it?.success == true) &&
+                            (it.message == "Password changed successfully")
+                    _message.value = it?.message.toString()
                 }
             }
         }

@@ -84,10 +84,12 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
                 email = it.arguments?.getString("email"),
                 password = it.arguments?.getString("password"),
                 passwordConfirm = it.arguments?.getString("passwordConfirm")
-            ) {
+            , {
                 // VerificationScreen to LoadingScreen
                 navController.navigate("login_screen")
-            }
+            }, {
+                navController.navigate("main_screen")
+            })
         }
 
         // ForgotPassword Navigation

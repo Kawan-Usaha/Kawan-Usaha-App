@@ -21,7 +21,8 @@ fun VerificationScreen(
     email: String?,
     password: String?,
     passwordConfirm: String?,
-    navToLogin: () -> Unit
+    navToLogin: () -> Unit,
+    navToMain: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     var verificationCode = ""
@@ -65,6 +66,11 @@ fun VerificationScreen(
                     }) {
                     Text(text = "Verify")
                 }
+                Text(text = "Verify email later", modifier = Modifier.clickable {
+                    if (password != null || passwordConfirm != null){
+                        navToMain()
+                    }
+                })
             }
         }
     }
