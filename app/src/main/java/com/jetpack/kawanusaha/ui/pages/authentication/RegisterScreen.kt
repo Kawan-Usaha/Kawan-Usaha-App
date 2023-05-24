@@ -20,7 +20,7 @@ import com.jetpack.kawanusaha.ui.BackPressHandler
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, navToLanding: () -> Unit) {
+fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, navToLanding: () -> Unit, navToLogin: () -> Unit) {
     val authStatus by viewModel.registerCredential.collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
     var name by remember { mutableStateOf(TextFieldValue("")) }
@@ -61,6 +61,13 @@ fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, nav
         Button(
             onClick = {
                 viewModel.register(name = name.toString(), email = email.toString(), password = password.toString(), passwordConfirm = confirmPassword.toString())
+                coroutineScope.launch {
+                    viewModel.generate(null)
+                    if (viewModel.isGenerated.value){
+                        navToVerification()
+                    }
+                    // TODO else loading
+                }
             }
         ) {
             Text("Register")
@@ -69,13 +76,7 @@ fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, nav
             Text(text = "Already have an account? ")
             Text(text = "Sign In Now!", modifier = Modifier
                 .clickable {
-                    coroutineScope.launch {
-                        viewModel.generate(null)
-                        if (viewModel.isGenerated.value){
-                            navToVerification()
-                        }
-                        // TODO else loading
-                    }
+                    navToLogin()
                 })
         }
     }

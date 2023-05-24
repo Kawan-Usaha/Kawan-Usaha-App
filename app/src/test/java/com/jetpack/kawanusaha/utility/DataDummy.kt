@@ -1,7 +1,6 @@
 package com.jetpack.kawanusaha.utility
 
 import com.jetpack.kawanusaha.data.Data
-import com.jetpack.kawanusaha.data.GenerateVerificationResponse
 import com.jetpack.kawanusaha.data.LoginResponse
 import com.jetpack.kawanusaha.data.RegisterResponse
 

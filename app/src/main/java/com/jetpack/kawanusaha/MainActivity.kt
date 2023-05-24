@@ -1,5 +1,7 @@
 package com.jetpack.kawanusaha
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +18,8 @@ import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val preferences: SharedPreferences =
+            getSharedPreferences("SESSION", Context.MODE_PRIVATE)
         setContent {
             KawanUsahaTheme {
                 Surface(
@@ -24,7 +28,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val loginViewModel = ViewModelProvider(
                         this,
-                        LoginViewModelFactory(this)
+                        LoginViewModelFactory(this, preferences)
                     )[LoginViewModel::class.java]
                     NavigationScreen(loginViewModel = loginViewModel)
                 }

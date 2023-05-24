@@ -22,13 +22,10 @@ import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
 fun NavigationScreen(loginViewModel: LoginViewModel) {
     val navController = rememberNavController()
 
-    // For Development Purpose
-    NavHost(navController = navController, startDestination = "main_screen")
+    // TODO negate the arguments
+    val startDestination: String = if(!loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
 
-    // TODO: Change to this
-    // For Real Case
-//    NavHost(navController = navController, startDestination = "landing_screen")
-
+    NavHost(navController = navController, startDestination = startDestination)
     {
         // LandingScreen Navigation
         composable(route = "landing_screen") {
@@ -67,6 +64,8 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
             }, {
                 // RegisterScreen to LandingScreen
                 navController.navigate("landing_screen")
+            }, {
+                navController.navigate("login_screen")
             })
         }
 

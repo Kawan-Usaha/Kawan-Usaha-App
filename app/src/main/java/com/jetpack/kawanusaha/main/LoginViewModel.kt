@@ -1,6 +1,7 @@
 package com.jetpack.kawanusaha.main
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -16,13 +17,11 @@ import kotlinx.coroutines.launch
  * This class every logics to authenticate users to the application
  *
  * @property dataRepository the repository of all data
+ * @property preferences the shared preference to keep local data
  */
-class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
+class LoginViewModel(private val dataRepository: DataRepository, private val preferences: SharedPreferences) : ViewModel() {
     private val _loginCredential = MutableStateFlow<LoginResponse?>(null)
     val loginCredential: StateFlow<LoginResponse?> = _loginCredential
-
-    private val _loginToken = MutableStateFlow("")
-    val loginToken: StateFlow<String> = _loginToken
 
     private val _registerCredential = MutableStateFlow<RegisterResponse?>(null)
     val registerCredential: StateFlow<RegisterResponse?> = _registerCredential
@@ -34,7 +33,7 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
     val isGenerated: StateFlow<Boolean> = _isGenerated
 
     private val _isVerified = MutableStateFlow(false)
-    val isVerified : StateFlow<Boolean>  = _isVerified
+    val isVerified : StateFlow<Boolean> = _isVerified
 
     /**
      *  Authenticate user and check for its credentials
@@ -52,6 +51,9 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
                     password = password
                 )
             )
+            if (loginCredential.value != null){
+                createSession(preferences, loginCredential.value?.data?.token.toString())
+            }
         }
     }
 
@@ -75,7 +77,26 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
                     password_confirm = passwordConfirm
                 )
             )
+            if (registerCredential.value != null){
+                createSession(preferences, registerCredential.value?.data?.token.toString())
+            }
         }
+    }
+
+    private fun createSession (preferences: SharedPreferences, token: String){
+        preferences.edit().putString(TOKEN, token).apply()
+    }
+
+    fun logout(){
+        removeSession(preferences)
+    }
+
+    private fun removeSession (preferences: SharedPreferences){
+        preferences.edit().clear().apply()
+    }
+
+    fun isLoggedIn(): Boolean{
+        return preferences.getString(TOKEN, null) != null
     }
 
     /**
@@ -129,14 +150,18 @@ class LoginViewModel(private val dataRepository: DataRepository) : ViewModel() {
             }
         }
     }
+
+    companion object {
+        private const val TOKEN = "TOKEN"
+    }
 }
 
 
-class LoginViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
+class LoginViewModelFactory(private val context: Context, private val preferences: SharedPreferences) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return LoginViewModel(Injection.provideRepository(context)) as T
+            return LoginViewModel(Injection.provideRepository(context), preferences) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

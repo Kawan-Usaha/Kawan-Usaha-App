@@ -28,7 +28,7 @@ fun LoginScreen(
     navToMain: () -> Unit,
     navToForgotPassword: () -> Unit
 ) {
-    val loginToken by viewModel.loginToken.collectAsState(initial = null)
+    val loginToken by viewModel.loginCredential.collectAsState(initial = null)
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     Column(
