@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id("org.jetbrains.dokka") version "1.8.10"
 }
 
 android {
@@ -88,12 +89,13 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:1.4.3"
     implementation "androidx.compose.foundation:foundation-layout:1.4.3"
     implementation "androidx.compose.animation:animation:1.4.3"
+    implementation 'androidx.core:core-ktx:1.10.1'
 
 
     //**********************  TEST  ***********************//
     // JUnit
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
     // Espresso
@@ -113,7 +115,9 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:2.2.0"
 
     // Coroutine
-
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+
+    // Documentation
+    dokkaPlugin("org.jetbrains.dokka:android-documentation-plugin:1.8.10")
 }

@@ -12,10 +12,12 @@ import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.pages.*
 import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
+import com.jetpack.kawanusaha.ui.pages.authentication.RegisterScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
 import com.jetpack.kawanusaha.ui.pages.main.AboutScreen
 import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
 
+// TODO Security Leak in passing password
 @Composable
 fun NavigationScreen(loginViewModel: LoginViewModel) {
     val navController = rememberNavController()
@@ -69,22 +71,36 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
         }
 
         // VerificationScreen Navigation
-        composable(route = "verification_screen"){
-            VerificationScreen(viewModel = loginViewModel, {
+        composable(
+            route = "verification_screen/{email}/{password}/{passwordConfirm}",
+            arguments = listOf(
+                navArgument("email"){type = NavType.StringType},
+                navArgument("password"){type = NavType.StringType},
+                navArgument("passwordConfirm"){type = NavType.StringType},
+            ),
+        ){
+            VerificationScreen(
+                viewModel = loginViewModel,
+                email = it.arguments?.getString("email"),
+                password = it.arguments?.getString("password"),
+                passwordConfirm = it.arguments?.getString("passwordConfirm")
+            , {
                 // VerificationScreen to LoadingScreen
                 navController.navigate("login_screen")
             }, {
-                // VerificationScreen to Previous Stack
-                navController.navigateUp()
+                navController.navigate("main_screen")
             })
         }
 
         // ForgotPassword Navigation
         composable(route = "forgot_password_screen"){
-            ForgotPasswordScreen(viewModel = loginViewModel) {
-                // ForgotPasswordScreen to LoginScreen
-                navController.navigate("login_screen")
-            }
+            ForgotPasswordScreen(viewModel = loginViewModel, {
+                // ForgotPasswordScreen to Previous Stack
+                navController.navigateUp()
+            }, { email, password, passwordConfirm ->
+                // ForgotPasswordScreen to VerificationScreen
+                navController.navigate("verification_screen/$email/$password/$passwordConfirm")
+            })
         }
 
         // MainScreen Navigation

@@ -30,7 +30,18 @@ interface ApiService {
     @POST("auth/verify")
     fun verify(
         @Body verificationRequest: VerificationRequest
-    ): Call<VerificationResponse>
+    ): Call<GenerateVerificationResponse>
+
+    // FORGOT PASSWORD
+    @POST("auth/forgot-password/generate")
+    fun forgotGenerate(
+        @Body forgotGenerateRequest: ForgotGenerateRequest
+    ): Call<GenerateVerificationResponse>
+
+    @POST("auth/forgot-password/verify")
+    fun forgotVerify(
+        @Body forgotVerifyRequest: ForgotVerifyRequest
+    ): Call<GenerateVerificationResponse>
 }
 
 class ApiConfig {
