@@ -88,12 +88,13 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:1.4.3"
     implementation "androidx.compose.foundation:foundation-layout:1.4.3"
     implementation "androidx.compose.animation:animation:1.4.3"
+    implementation 'androidx.core:core-ktx:1.10.1'
 
 
     //**********************  TEST  ***********************//
     // JUnit
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
     // Espresso
