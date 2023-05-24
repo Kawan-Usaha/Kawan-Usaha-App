@@ -2,5 +2,5 @@
 Android App Kawan Usaha
 
 
-Documentation [here](./app/html/index.html)
+Documentation [here](./app/gfm)
 
