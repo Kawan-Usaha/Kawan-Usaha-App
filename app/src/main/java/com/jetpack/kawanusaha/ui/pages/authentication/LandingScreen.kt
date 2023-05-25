@@ -48,9 +48,9 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
             .background(
                 brush = Brush.linearGradient(
                     0.0f to Gradient1,
-                    0.33f to Gradient2,
-                    0.66f to Gradient3,
-                    1.00f to Gradient4,
+                    0.33f to PrimaryDay,
+                    0.66f to PrimaryVariantDay,
+                    1.00f to PrimaryNight,
                     start = Offset((0.3f) * boxSize, boxSize * (1.3f)),
                     end = Offset(boxSize, 0f),
                     tileMode = TileMode.Clamp
