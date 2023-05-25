@@ -52,7 +52,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
                 )
             )
             if (loginCredential.value != null){
-                createSession(preferences, loginCredential.value?.data?.token.toString())
+                createSession(loginCredential.value?.data?.token.toString())
             }
         }
     }
@@ -78,25 +78,34 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
                 )
             )
             if (registerCredential.value != null){
-                createSession(preferences, registerCredential.value?.data?.token.toString())
+                createSession(registerCredential.value?.data?.token.toString())
             }
         }
     }
 
-    private fun createSession (preferences: SharedPreferences, token: String){
+    /**
+     *  Create a new session by saving token into shared preferences
+     *
+     *  @param token Jwt Token
+     */
+    private fun createSession (token: String){
         preferences.edit().putString(TOKEN, token).apply()
     }
 
-    fun logout(){
-        removeSession(preferences)
-    }
-
-    private fun removeSession (preferences: SharedPreferences){
-        preferences.edit().clear().apply()
-    }
-
+    /**
+     * Check the login status
+     *
+     * @return login status
+     */
     fun isLoggedIn(): Boolean{
         return preferences.getString(TOKEN, null) != null
+    }
+
+    /**
+     * Clear session and token from preferences
+     */
+    fun logout (){
+        preferences.edit().clear().apply()
     }
 
     /**
@@ -107,7 +116,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
     fun generate(email: String?){
         viewModelScope.launch {
             if (email == null){
-                dataRepository.generate().let {
+                dataRepository.generate(preferences.getString(TOKEN, "").toString()).let {
                     _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
                     _message.value = it?.message.toString()
                 }
@@ -131,7 +140,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
     fun verify(verification_code: String, password: String?, passwordConfirm: String?){
         viewModelScope.launch {
             if (password == null && passwordConfirm == null){
-                dataRepository.verify(VerificationRequest(verification_code)).let {
+                dataRepository.verify(preferences.getString(TOKEN, "").toString(), VerificationRequest(verification_code)).let {
                     _isVerified.value = (it?.success ?: false) &&
                             (it?.message!! == "Email verified")
                     _message.value = it?.message.toString()
@@ -143,7 +152,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
                         password = password!!,
                         password_confirm = passwordConfirm!!
                     )).let{
-                    _isGenerated.value = (it?.success == true) &&
+                    _isVerified.value = (it?.success == true) &&
                             (it.message == "Password changed successfully")
                     _message.value = it?.message.toString()
                 }

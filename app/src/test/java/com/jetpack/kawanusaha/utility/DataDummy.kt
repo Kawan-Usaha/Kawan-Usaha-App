@@ -1,6 +1,7 @@
 package com.jetpack.kawanusaha.utility
 
 import com.jetpack.kawanusaha.data.Data
+import com.jetpack.kawanusaha.data.GenerateVerificationResponse
 import com.jetpack.kawanusaha.data.LoginResponse
 import com.jetpack.kawanusaha.data.RegisterResponse
 
@@ -24,7 +25,7 @@ object DataDummy {
             message = "Login success")
     }
 
-    fun generateGenerateDummy(): GenerateVerificationResponse{
+    fun generateGenerateDummy(): GenerateVerificationResponse {
         return GenerateVerificationResponse(
             data = null,
             success = true,

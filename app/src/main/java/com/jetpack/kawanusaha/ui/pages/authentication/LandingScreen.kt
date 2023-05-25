@@ -51,7 +51,7 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
     val boxSize = with(LocalDensity.current) { 300.dp.toPx() }
     Box(
         modifier = Modifier
-            .size(500.dp)
+            .fillMaxSize()
             .clip(WavyShape(period = 200.dp, amplitude = 20.dp))
             .background(
                 brush = Brush.linearGradient(

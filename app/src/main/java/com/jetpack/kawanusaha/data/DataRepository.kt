@@ -15,20 +15,24 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.register(registerRequest).execute() }
     }
 
-    suspend fun generate(): GenerateVerificationResponse? {
-        return executeRequest { apiService.generate().execute() }
+    suspend fun generate(jwtToken: String): GenerateVerificationResponse? {
+        return executeRequest { apiService.generate("Bearer $jwtToken").execute() }
     }
 
     suspend fun forgotGenerate(forgotGenerateRequest: ForgotGenerateRequest): GenerateVerificationResponse? {
         return executeRequest { apiService.forgotGenerate(forgotGenerateRequest).execute() }
     }
 
-    suspend fun verify(verificationRequest: VerificationRequest): GenerateVerificationResponse? {
-        return executeRequest { apiService.verify(verificationRequest).execute() }
+    suspend fun verify(jwtToken: String, verificationRequest: VerificationRequest): GenerateVerificationResponse? {
+        return executeRequest { apiService.verify("Bearer $jwtToken", verificationRequest).execute() }
     }
 
     suspend fun forgotVerify(forgotVerifyRequest: ForgotVerifyRequest): GenerateVerificationResponse? {
         return executeRequest { apiService.forgotVerify(forgotVerifyRequest).execute() }
+    }
+
+    suspend fun getUser(jwtToken: String): ProfileResponse?{
+        return executeRequest { apiService.getUser("Bearer $jwtToken").execute() }
     }
 
     private suspend fun <T> executeRequest(apiCall: suspend () -> Response<T>): T? {
@@ -47,6 +51,7 @@ class DataRepository(private val apiService: ApiService) {
             }
         }
     }
+
     companion object {
         private const val TAG = "DataRepository"
     }

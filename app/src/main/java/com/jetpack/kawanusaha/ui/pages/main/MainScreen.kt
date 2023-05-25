@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.jetpack.kawanusaha.ui.pages
+package com.jetpack.kawanusaha.ui.pages.main
 
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke

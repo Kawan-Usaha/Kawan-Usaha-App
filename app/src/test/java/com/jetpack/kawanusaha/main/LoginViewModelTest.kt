@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.main
 
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.jetpack.kawanusaha.data.*
 import com.jetpack.kawanusaha.utility.*
@@ -26,10 +27,13 @@ class LoginViewModelTest {
     @Mock
     private lateinit var dataRepository: DataRepository
     private lateinit var loginViewModel: LoginViewModel
+    @Mock
+    private lateinit var preferences: SharedPreferences
+    private val token: String = "token"
 
     @Before
     fun setUp() {
-        loginViewModel = LoginViewModel(dataRepository)
+        loginViewModel = LoginViewModel(dataRepository, preferences)
     }
 
     @Test
@@ -62,7 +66,7 @@ class LoginViewModelTest {
     fun `when generate validation key from register` () = runTest {
         // This test is using auth/generate route
         val expectedResult = DataDummy.generateGenerateDummy()
-        `when`(dataRepository.generate()).thenReturn(expectedResult)
+        `when`(dataRepository.generate(token)).thenReturn(expectedResult)
         loginViewModel.generate(null)
         val actualResult = loginViewModel.message.value
 
@@ -91,7 +95,7 @@ class LoginViewModelTest {
          // This test is using auth/verify route
          val expectedResult = DataDummy.generateGenerateDummy()
          val verificationRequest = VerificationRequest("ABCDEF")
-         `when`(dataRepository.verify(verificationRequest)).thenReturn(expectedResult)
+         `when`(dataRepository.verify(token, verificationRequest)).thenReturn(expectedResult)
          loginViewModel.verify("ABCDEF", null, null)
          val actualResult = loginViewModel.message.value
 

@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.LoginViewModelFactory
+import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.main.MainViewModelFactory
 import com.jetpack.kawanusaha.ui.NavigationScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
@@ -30,7 +32,14 @@ class MainActivity : ComponentActivity() {
                         this,
                         LoginViewModelFactory(this, preferences)
                     )[LoginViewModel::class.java]
-                    NavigationScreen(loginViewModel = loginViewModel)
+                    val mainViewModel = ViewModelProvider(
+                        this,
+                        MainViewModelFactory(this, preferences)
+                    )[MainViewModel::class.java]
+                    NavigationScreen(
+                        loginViewModel = loginViewModel,
+                        mainViewModel = mainViewModel,
+                    )
                 }
             }
         }

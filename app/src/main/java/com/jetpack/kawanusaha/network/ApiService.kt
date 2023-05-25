@@ -8,6 +8,8 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface ApiService {
@@ -25,10 +27,13 @@ interface ApiService {
 
     // USER VERIFICATION
     @POST("auth/generate")
-    fun generate(): Call<GenerateVerificationResponse>
+    fun generate(
+        @Header("Authorization") token: String,
+    ): Call<GenerateVerificationResponse>
 
     @POST("auth/verify")
     fun verify(
+        @Header("Authorization") token: String,
         @Body verificationRequest: VerificationRequest
     ): Call<GenerateVerificationResponse>
 
@@ -43,6 +48,16 @@ interface ApiService {
     fun forgotVerify(
         @Body forgotVerifyRequest: ForgotVerifyRequest
     ): Call<GenerateVerificationResponse>
+
+
+
+
+
+    // USER PROFILE
+    @GET("user/profile")
+    fun getUser (
+        @Header("Authorization") token: String
+    ): Call<ProfileResponse>
 }
 
 class ApiConfig {
@@ -62,7 +77,6 @@ class ApiConfig {
                 .client(client)
                 .build()
             return retrofit.create(ApiService::class.java)
-            //TODO ganti baseUrl
         }
     }
 }

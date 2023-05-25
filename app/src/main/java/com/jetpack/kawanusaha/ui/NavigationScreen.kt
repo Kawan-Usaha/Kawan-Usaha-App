@@ -10,16 +10,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
+import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.*
 import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.RegisterScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
 import com.jetpack.kawanusaha.ui.pages.main.AboutScreen
 import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
+import com.jetpack.kawanusaha.ui.pages.main.MainScreen
 
 // TODO Security Leak in passing password
 @Composable
-fun NavigationScreen(loginViewModel: LoginViewModel) {
+fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel) {
     val navController = rememberNavController()
 
     val startDestination: String = if(loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
@@ -82,12 +84,21 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
                 email = it.arguments?.getString("email"),
                 password = it.arguments?.getString("password"),
                 passwordConfirm = it.arguments?.getString("passwordConfirm")
-            , {
-                // VerificationScreen to LoadingScreen
-                navController.navigate("login_screen")
-            }, {
+            ) {
                 navController.navigate("main_screen")
-            })
+            }
+        }
+
+        // VerificationScreen Navigation
+        composable(route = "verification_screen"){
+            VerificationScreen(
+                viewModel = loginViewModel,
+                email = null,
+                password = null,
+                passwordConfirm = null
+            ) {
+                navController.navigate("main_screen")
+            }
         }
 
         // ForgotPassword Navigation
@@ -133,10 +144,14 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
         }
 
         composable(route = "about_screen"){
-            AboutScreen (loginViewModel, {
+            AboutScreen (
+                loginViewModel = loginViewModel,
+                mainViewModel = mainViewModel, {
                 navController.navigateUp()
             }, {
                 navController.navigate("landing_screen")
+            }, {
+                navController.navigate("verification_screen")
             })
         }
     }
