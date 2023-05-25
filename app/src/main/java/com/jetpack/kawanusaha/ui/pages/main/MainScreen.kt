@@ -5,6 +5,7 @@ package com.jetpack.kawanusaha.ui.pages.main
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,10 +20,22 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+<<<<<<< HEAD
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.res.colorResource
+=======
 import androidx.compose.ui.platform.LocalContext
+>>>>>>> 5ad04c83371a105a0efdaf8c7ebae356a7743417
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.BackPressHandler
@@ -30,43 +43,72 @@ import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
 fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.app_name))
-                },
-                actions = {
-                    IconButton(onClick = { navToAbout() }) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Account"
+    val orange = colorResource(R.color.secondary_day)
+    val white = colorResource(R.color.white)
+    val chocolateVariant = colorResource(R.color.primary_variant_night)
+    Surface(
+        color = MaterialTheme.colors.background,
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(
+                                    style = SpanStyle(color = chocolateVariant),
+                                ) {
+                                    append("KAWAN")
+                                }
+                                withStyle(
+                                    style = SpanStyle(color = orange)
+                                ) {
+                                    append(" USAHA")
+                                }
+                            },
+                            style = MaterialTheme.typography.h1
                         )
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-        ) {
-            ChatBox(navToChat)
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                backgroundColor = MaterialTheme.colors.onBackground,
+                    },
+                    actions = {
+                        IconButton(onClick = { navToAbout() }) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_account_circle_orange),
+                                contentDescription = "Profile Page",
+                                modifier = Modifier
+                                    .size(40.dp, 40.dp)
+                            )
+                        }
+                    },
+                    backgroundColor = MaterialTheme.colors.background,
+                    elevation = 0.dp
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
             ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    // Category Section
-                    SectionText(text = "Category")
-                    CategorySection()
+                ChatBox(navToChat)
 
-                    // Recommendation Articles Section
-                    SectionText(text = "Recommendation Articles")
-                    ArticleSection(navToArticle)
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    backgroundColor = MaterialTheme.colors.primary,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        // Category Section
+                        SectionText(text = "Category")
+                        CategorySection()
+
+                        Spacer(Modifier.height(4.dp))
+                        // Recommendation Articles Section
+                        SectionText(text = "Recommendation Articles")
+                        ArticleSection(navToArticle)
+                    }
                 }
             }
         }
@@ -81,19 +123,28 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
 @Composable
 fun ChatBox(navToChat: () -> Unit) {
     Card(
-        backgroundColor = MaterialTheme.colors.background,
-        border = BorderStroke(2.dp, MaterialTheme.colors.primary),
-        modifier = Modifier.padding(20.dp)
+        backgroundColor = MaterialTheme.colors.primary,
+        modifier = Modifier
+            .padding(15.dp)
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(10.dp),
+            )
+            .blur(15.dp)
     ) {
         Column(
-            Modifier.padding(20.dp)
+            Modifier.padding(22.dp)
         ) {
-            Text("Chat With Your AI Mentor", Modifier.padding(10.dp))
+            Text("Chat With Your AI Mentor!",
+                color = MaterialTheme.colors.onBackground,
+                style = MaterialTheme.typography.h3
+            )
+            Spacer(Modifier.height(12.dp))
             Card(
                 onClick = navToChat,
                 shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
-                backgroundColor = MaterialTheme.colors.background,
+                border = BorderStroke(2.dp, color = MaterialTheme.colors.secondary),
+                backgroundColor = MaterialTheme.colors.primary,
 
                 ) {
                 Row(
@@ -101,9 +152,15 @@ fun ChatBox(navToChat: () -> Unit) {
                         .padding(20.dp)
                         .height(30.dp), verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "Send a Message", Modifier.weight(1f))
+                    Text(
+                        text = "Send a Message",
+                        Modifier.weight(1f),
+                        style = MaterialTheme.typography.body1,
+                        color = colorResource(R.color.black)
+                    )
                     Icon(
                         imageVector = Icons.Default.Send,
+                        tint = colorResource(R.color.secondary_day),
                         contentDescription = "Send"
                     )
                 }
@@ -115,7 +172,7 @@ fun ChatBox(navToChat: () -> Unit) {
 @Composable
 fun CategorySection() {
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
     ) {
         items(20) {
@@ -135,7 +192,8 @@ fun CategoryItem() {
                 .size(50.dp)
                 .clip(shape = CircleShape),
         )
-        Text(text = "Google", color = MaterialTheme.colors.background)
+        Spacer(modifier = Modifier.height(5.dp))
+        Text(text = "Google", color = MaterialTheme.colors.onBackground)
     }
 }
 
@@ -143,9 +201,9 @@ fun CategoryItem() {
 fun SectionText(text: String) {
     Text(
         text = text,
-        color = MaterialTheme.colors.background,
-        style = Typography.h3,
-        modifier = Modifier.padding(10.dp)
+        color = MaterialTheme.colors.onBackground,
+        style = MaterialTheme.typography.h3,
+        modifier = Modifier.padding(15.dp)
     )
 }
 
