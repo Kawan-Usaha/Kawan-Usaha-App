@@ -13,11 +13,10 @@ import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.*
 import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
+import com.jetpack.kawanusaha.ui.pages.authentication.LandingScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.RegisterScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
-import com.jetpack.kawanusaha.ui.pages.main.AboutScreen
-import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
-import com.jetpack.kawanusaha.ui.pages.main.MainScreen
+import com.jetpack.kawanusaha.ui.pages.main.*
 
 // TODO Security Leak in passing password
 @Composable
@@ -152,7 +151,15 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
                 navController.navigate("landing_screen")
             }, {
                 navController.navigate("verification_screen")
+            }, {
+                navController.navigate("change_about_screen")
             })
+        }
+
+        composable(route = "change+_about_screen"){
+            ChangeAboutScreen(mainViewModel = mainViewModel) {
+                navController.navigateUp()
+            }
         }
     }
 }

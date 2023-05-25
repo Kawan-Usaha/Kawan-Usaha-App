@@ -22,10 +22,16 @@ import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun AboutScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel, navBack: () -> Unit, navToLanding: () -> Unit, navToVerify: () -> Unit) {
+fun AboutScreen(
+    loginViewModel: LoginViewModel,
+    mainViewModel: MainViewModel,
+    navBack: () -> Unit,
+    navToLanding: () -> Unit,
+    navToVerify: () -> Unit,
+    navToChangeAbout: () -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -41,7 +47,9 @@ fun AboutScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel, na
                     Text(text = "Profile")
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navToChangeAbout()
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Edit"

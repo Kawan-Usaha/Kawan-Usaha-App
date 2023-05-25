@@ -6,23 +6,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.jetpack.kawanusaha.data.DataRepository
+import com.jetpack.kawanusaha.data.ProfileRequest
 import com.jetpack.kawanusaha.data.ProfileResponse
 import com.jetpack.kawanusaha.`in`.Injection
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val dataRepository: DataRepository, private val preferences: SharedPreferences) :
+class MainViewModel(
+    private val dataRepository: DataRepository,
+    private val preferences: SharedPreferences
+) :
     ViewModel() {
     private var jwtToken: String = ""
 
     private val _userProfile = MutableStateFlow<ProfileResponse?>(null)
     val userProfile: StateFlow<ProfileResponse?> = _userProfile
 
-    private fun getToken () {
+    private val _status = MutableStateFlow(false)
+    val status : StateFlow<Boolean> = _status
+
+    private fun getToken() {
         jwtToken = preferences.getString(TOKEN, "").toString()
     }
 
+
+    // User Profile
     fun getUser() {
         viewModelScope.launch {
             getToken()
@@ -30,8 +39,11 @@ class MainViewModel(private val dataRepository: DataRepository, private val pref
         }
     }
 
-
-
+//    fun saveProfileChange(name: String, email: String) {
+//        viewModelScope.launch {
+//            _status.value = dataRepository.updateProfile(jwtToken, ProfileRequest(name = name, email = email))
+//        }
+//    }
 
 
     companion object {
