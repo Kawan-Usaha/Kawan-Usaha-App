@@ -5,7 +5,6 @@ package com.jetpack.kawanusaha.ui.pages.main
 import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,24 +14,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-<<<<<<< HEAD
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.res.colorResource
-=======
 import androidx.compose.ui.platform.LocalContext
->>>>>>> 5ad04c83371a105a0efdaf8c7ebae356a7743417
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -135,7 +126,8 @@ fun ChatBox(navToChat: () -> Unit) {
         Column(
             Modifier.padding(22.dp)
         ) {
-            Text("Chat With Your AI Mentor!",
+            Text(
+                "Chat With Your AI Mentor!",
                 color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.h3
             )
