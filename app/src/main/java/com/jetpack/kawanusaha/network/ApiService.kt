@@ -32,6 +32,7 @@ interface ApiService {
         @Body verificationRequest: VerificationRequest
     ): Call<GenerateVerificationResponse>
 
+
     // FORGOT PASSWORD
     @POST("auth/forgot-password/generate")
     fun forgotGenerate(
@@ -56,7 +57,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://localhost:5000/")
+                .baseUrl("http://34.170.84.70:5000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

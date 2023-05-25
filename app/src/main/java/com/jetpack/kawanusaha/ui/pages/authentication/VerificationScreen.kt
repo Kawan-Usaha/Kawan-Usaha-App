@@ -8,9 +8,12 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.main.LoginViewModel
 import kotlinx.coroutines.launch
@@ -25,6 +28,7 @@ fun VerificationScreen(
     navToMain: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
+    //harus jadiin remember
     var verificationCode = ""
     Card(backgroundColor = MaterialTheme.colors.background, elevation = 1.dp) {
         LazyColumn (modifier = Modifier.fillMaxSize()){

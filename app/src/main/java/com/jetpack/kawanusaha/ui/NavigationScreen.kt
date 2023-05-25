@@ -22,8 +22,7 @@ import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
 fun NavigationScreen(loginViewModel: LoginViewModel) {
     val navController = rememberNavController()
 
-    // TODO negate the arguments
-    val startDestination: String = if(!loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
+    val startDestination: String = if(loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
 
     NavHost(navController = navController, startDestination = startDestination)
     {
@@ -60,7 +59,7 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
         composable(route = "register_screen") {
             RegisterScreen(viewModel = loginViewModel, {
                 // RegisterScreen to VerificationScreen
-                navController.navigate("verification_screen")
+                navController.navigate("main_screen")
             }, {
                 // RegisterScreen to LandingScreen
                 navController.navigate("landing_screen")
@@ -134,7 +133,7 @@ fun NavigationScreen(loginViewModel: LoginViewModel) {
         }
 
         composable(route = "about_screen"){
-            AboutScreen ({
+            AboutScreen (loginViewModel, {
                 navController.navigateUp()
             }, {
                 navController.navigate("landing_screen")

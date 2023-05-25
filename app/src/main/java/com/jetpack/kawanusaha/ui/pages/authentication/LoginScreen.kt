@@ -52,7 +52,7 @@ fun LoginScreen(
         Text(text = "Forgot Password?", modifier = Modifier.clickable { navToForgotPassword() })
         Button(
             onClick = {
-                viewModel.login(email = email.toString(), password = password.toString())
+                viewModel.login(email = email.text, password = password.text)
             }
         ) {
             Text("Log In")
@@ -68,8 +68,8 @@ fun LoginScreen(
     BackPressHandler(onBackPressed = navToLanding)
 
     // Authentication Status Changes
-    LaunchedEffect(loginToken) {
-        if (loginToken != null) {
+    LaunchedEffect( loginToken ){
+        if(viewModel.isLoggedIn()){
             navToMain()
         }
     }

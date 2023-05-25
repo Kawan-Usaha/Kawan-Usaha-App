@@ -17,9 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.main.LoginViewModel
 
 @Composable
-fun AboutScreen(navBack: () -> Unit, navToLanding: () -> Unit) {
+fun AboutScreen(loginViewModel: LoginViewModel, navBack: () -> Unit, navToLanding: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,14 +90,11 @@ fun AboutScreen(navBack: () -> Unit, navToLanding: () -> Unit) {
             }
             Button(
                 onClick = {
-                    Logout()
+                    loginViewModel.logout()
                     navToLanding()
                 }) {
                 Text(text = "Sign Out")
             }
         }
     }
-}
-fun Logout(){
-
 }
