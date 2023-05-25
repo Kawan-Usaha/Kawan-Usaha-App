@@ -20,6 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+<<<<<<< HEAD
+=======
+import androidx.compose.ui.platform.LocalContext
+>>>>>>> 898be0ec417a593456fac925d639b402db936c08
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -129,7 +133,8 @@ fun ChatBox(navToChat: () -> Unit) {
         Column(
             Modifier.padding(22.dp)
         ) {
-            Text("Chat With Your AI Mentor!",
+            Text(
+                "Chat With Your AI Mentor!",
                 color = MaterialTheme.colors.onBackground,
                 style = MaterialTheme.typography.h3
             )

@@ -17,11 +17,13 @@ import com.jetpack.kawanusaha.main.MainViewModelFactory
 import com.jetpack.kawanusaha.ui.NavigationScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
+//https://developer.android.com/studio/write/app-link-indexing
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val preferences: SharedPreferences =
             getSharedPreferences("SESSION", Context.MODE_PRIVATE)
+
         setContent {
             KawanUsahaTheme {
                 Surface(

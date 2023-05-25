@@ -7,10 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface ApiService {
     // AUTHENTICATION
@@ -50,7 +47,63 @@ interface ApiService {
     ): Call<GenerateVerificationResponse>
 
 
+    // USAHA
+    @GET("usaha/list")
+    fun getListUsaha (
+        @Header("Authorization") token: String,
+    ) //: Call <Response>
 
+    @GET("usaha/search")
+    fun searchUsaha (
+        @Header("Authorization") token: String,
+        @Query("name") name: String,
+    ) //: Call <Response>
+
+    @GET("usaha/detail")
+    fun getUsahaDetail (
+        @Header("Authorization") token: String,
+        @Query("id") id: Int,
+    ) //: Call <Response>
+
+    @POST("usaha/create")
+    fun createUsaha (
+        @Header("Authorization") token: String,
+        @Body usahaRequest : UsahaRequest,
+    ) //: Call <Response>
+
+
+    // ALL ARTICLES
+    @GET("article")
+    fun getAllArticles (
+        @Query ("page") page: Int,
+        @Query ("page_size") page_size: Int
+    ) //: Call <Response>
+
+    @GET("article/search")
+    fun searchAllArticles (
+        @Query ("page") page: Int,
+        @Query ("page_size") page_size: Int,
+        @Query ("title") title: String
+    ) //: Call <Response>
+
+
+    // USER ARTICLES
+    @GET("article/owned")
+    fun getUserArticles (
+        @Header("Authorization") token: String,
+    ) //: Call <Response>
+
+    @GET("article/search")
+    fun searchUserArticle (
+        @Header("Authorization") token: String,
+        // Mungkin masi diiupdate
+    ) //: Call <Response>
+
+    @POST("article/create")
+    fun createUserArticle (
+        @Header("Authorization") token: String,
+        @Body articleRequest : ArticleRequest,
+    ) //: Call <Response>
 
 
     // USER PROFILE

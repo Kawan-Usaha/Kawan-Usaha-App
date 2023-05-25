@@ -1,4 +1,4 @@
-package com.jetpack.kawanusaha.ui.pages
+package com.jetpack.kawanusaha.ui.pages.authentication
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.BackPressHandler
@@ -34,7 +35,7 @@ fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
             modifier = Modifier.padding(20.dp)
         )
         Text(
-            "Kawan Usaha"
+            stringResource(id = R.string.app_name)
         )
 
         Gradient(navToLogin, navToRegister)
