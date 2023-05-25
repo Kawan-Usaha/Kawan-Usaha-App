@@ -1,11 +1,9 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.jetpack.kawanusaha.ui.pages.main
+package com.jetpack.kawanusaha.ui.pages
 
-import android.app.Activity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,30 +13,23 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-<<<<<<< HEAD
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.colorResource
-=======
-import androidx.compose.ui.platform.LocalContext
->>>>>>> 5ad04c83371a105a0efdaf8c7ebae356a7743417
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.ui.BackPressHandler
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
@@ -101,23 +92,26 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                             .fillMaxWidth()
                     ) {
                         // Category Section
-                        SectionText(text = "Category")
+                        SectionText(
+                            text = "Category",
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier.padding(15.dp)
+                        )
                         CategorySection()
 
                         Spacer(Modifier.height(4.dp))
                         // Recommendation Articles Section
-                        SectionText(text = "Recommendation Articles")
+                        SectionText(
+                            text = "Recommendation Articles",
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier.padding(15.dp)
+                        )
                         ArticleSection(navToArticle)
                     }
                 }
             }
         }
     }
-
-    val activity = (LocalContext.current as? Activity)
-    BackPressHandler(
-        onBackPressed = { activity?.finish() }
-    )
 }
 
 @Composable
@@ -198,12 +192,11 @@ fun CategoryItem() {
 }
 
 @Composable
-fun SectionText(text: String) {
+fun SectionText(text: String, style: TextStyle, modifier: Modifier) {
     Text(
         text = text,
         color = MaterialTheme.colors.onBackground,
-        style = MaterialTheme.typography.h3,
-        modifier = Modifier.padding(15.dp)
+        style = style,
     )
 }
 

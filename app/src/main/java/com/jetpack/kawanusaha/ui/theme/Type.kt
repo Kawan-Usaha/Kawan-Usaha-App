@@ -43,7 +43,18 @@ val Typography = Typography(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
         fontSize = 22.sp
+    ),
+    h4 = TextStyle(
+        fontFamily = OverLock,
+        fontWeight = FontWeight.Bold,
+        fontSize = 57.sp
+    ),
+    h5 = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Bold,
+        fontSize = 45.sp
     )
+
     /* Other default text styles to override
     button = TextStyle(
         fontFamily = FontFamily.Default,
