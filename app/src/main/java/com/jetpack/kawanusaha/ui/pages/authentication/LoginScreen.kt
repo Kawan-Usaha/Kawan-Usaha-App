@@ -30,7 +30,7 @@ fun LoginScreen(
     navToMain: () -> Unit,
     navToForgotPassword: () -> Unit
 ) {
-    val loginToken by viewModel.loginToken.collectAsState(initial = null)
+    val loginToken by viewModel.loginCredential.collectAsState(initial = null)
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     Column(
@@ -54,7 +54,7 @@ fun LoginScreen(
         Text(text = "Forgot Password?", modifier = Modifier.clickable { navToForgotPassword() })
         Button(
             onClick = {
-                viewModel.login(email = email.toString(), password = password.toString())
+                viewModel.login(email = email.text, password = password.text)
             }
         ) {
             Text("Log In")
@@ -70,8 +70,8 @@ fun LoginScreen(
     BackPressHandler(onBackPressed = navToLanding)
 
     // Authentication Status Changes
-    LaunchedEffect(loginToken) {
-        if (loginToken != null) {
+    LaunchedEffect( loginToken ){
+        if(viewModel.isLoggedIn()){
             navToMain()
         }
     }

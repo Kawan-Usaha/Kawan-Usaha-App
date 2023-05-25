@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,9 +20,8 @@ import com.jetpack.kawanusaha.ui.BackPressHandler
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, navToLanding: () -> Unit) {
+fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLanding: () -> Unit, navToLogin: () -> Unit) {
     val authStatus by viewModel.registerCredential.collectAsState(initial = null)
-    val coroutineScope = rememberCoroutineScope()
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
@@ -49,18 +48,26 @@ fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, nav
             onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                if (password.text.length < 8)
+                    Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+            }
         )
         TextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
             label = { Text("Confirm Password") },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            trailingIcon = {
+                if (confirmPassword.text != password.text)
+                    Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+            }
         )
         Button(
             onClick = {
-                viewModel.register(name = name.toString(), email = email.toString(), password = password.toString(), passwordConfirm = confirmPassword.toString())
+                viewModel.register(name = name.text, email = email.text, password = password.text, passwordConfirm = confirmPassword.text)
             }
         ) {
             Text("Register")
@@ -69,23 +76,16 @@ fun RegisterScreen(viewModel: LoginViewModel, navToVerification: () -> Unit, nav
             Text(text = "Already have an account? ")
             Text(text = "Sign In Now!", modifier = Modifier
                 .clickable {
-                    coroutineScope.launch {
-                        viewModel.generate(null)
-                        if (viewModel.isGenerated.value){
-                            navToVerification()
-                        }
-                        // TODO else loading
-                    }
+                    navToLogin()
                 })
         }
     }
 
     BackPressHandler(onBackPressed = navToLanding)
 
-    // Authentication Status Changes
-    LaunchedEffect(authStatus) {
-        if (authStatus?.data != null) {
-            navToVerification()
+    LaunchedEffect( authStatus ){
+        if(viewModel.isLoggedIn()){
+            navToMain()
         }
     }
 }

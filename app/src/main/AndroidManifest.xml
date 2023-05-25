@@ -13,7 +13,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KawanUsaha"
         android:enableOnBackInvokedCallback="true"
-        tools:targetApi="tiramisu">
+        tools:targetApi="tiramisu"
+
+        android:usesCleartextTraffic="true">
+        
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

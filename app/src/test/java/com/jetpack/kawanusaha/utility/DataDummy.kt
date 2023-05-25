@@ -25,7 +25,7 @@ object DataDummy {
             message = "Login success")
     }
 
-    fun generateGenerateDummy(): GenerateVerificationResponse{
+    fun generateGenerateDummy(): GenerateVerificationResponse {
         return GenerateVerificationResponse(
             data = null,
             success = true,
