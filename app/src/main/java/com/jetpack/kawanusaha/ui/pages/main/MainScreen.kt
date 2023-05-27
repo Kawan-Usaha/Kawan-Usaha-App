@@ -20,10 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-<<<<<<< HEAD
-=======
 import androidx.compose.ui.platform.LocalContext
->>>>>>> 898be0ec417a593456fac925d639b402db936c08
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -38,9 +35,6 @@ import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
 fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout: () -> Unit) {
-    val orange = colorResource(R.color.secondary_day)
-    val white = colorResource(R.color.white)
-    val chocolateVariant = colorResource(R.color.primary_variant_night)
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -53,12 +47,12 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                         Text(
                             text = buildAnnotatedString {
                                 withStyle(
-                                    style = SpanStyle(color = chocolateVariant),
+                                    style = SpanStyle(color = MaterialTheme.colors.secondaryVariant),
                                 ) {
                                     append("KAWAN")
                                 }
                                 withStyle(
-                                    style = SpanStyle(color = orange)
+                                    style = SpanStyle(color = colorResource(R.color.secondary_day))
                                 ) {
                                     append(" USAHA")
                                 }
@@ -94,6 +88,7 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(16.dp)
                     ) {
                         // Category Section
                         SectionText(
@@ -101,15 +96,17 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(15.dp)
                         )
+                        Spacer(modifier = Modifier.height(5.dp))
                         CategorySection()
 
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(8.dp))
                         // Recommendation Articles Section
                         SectionText(
                             text = "Recommendation Articles",
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(15.dp)
                         )
+                        Spacer(modifier = Modifier.height(5.dp))
                         ArticleSection(navToArticle)
                     }
                 }
@@ -155,7 +152,7 @@ fun ChatBox(navToChat: () -> Unit) {
                         text = "Send a Message",
                         Modifier.weight(1f),
                         style = MaterialTheme.typography.body1,
-                        color = colorResource(R.color.black)
+                        color = MaterialTheme.colors.onBackground
                     )
                     Icon(
                         imageVector = Icons.Default.Send,

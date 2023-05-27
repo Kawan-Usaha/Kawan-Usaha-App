@@ -11,6 +11,7 @@ private val DarkColorPalette = darkColors(
     primary = Black,
     primaryVariant = PrimaryVariantNight,
     secondary = SecondaryDay,
+    secondaryVariant = White,
     background = PrimaryNight,
     onBackground = White
 )
@@ -19,6 +20,7 @@ private val LightColorPalette = lightColors(
     primary = White,
     primaryVariant = PrimaryVariantDay,
     secondary = SecondaryNight,
+    secondaryVariant = PrimaryVariantNight,
     background = PrimaryDay,
     onBackground = Black
 

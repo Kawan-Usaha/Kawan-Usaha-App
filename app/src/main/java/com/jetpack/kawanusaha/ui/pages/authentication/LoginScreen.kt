@@ -43,9 +43,9 @@ fun LoginScreen(
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    val orange = colorResource(R.color.secondary_day)
-    val white = colorResource(R.color.white)
-    val chocolateVariant = colorResource(R.color.primary_variant_night)
+
+    val orange = MaterialTheme.colors.secondary
+    val chocolateVariant = MaterialTheme.colors.secondaryVariant
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,6 +78,7 @@ fun LoginScreen(
             Text(
                 text = "Sign Up Now!",
                 color = MaterialTheme.colors.onBackground,
+                fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
                     .clickable { navToRegister() }
@@ -97,13 +98,17 @@ fun LoginScreen(
                 modifier = Modifier.padding(25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                SectionText(
-                    text = "LOGIN",
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .align(Alignment.Start)
-                )
+                Box (
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterStart
+                ){
+                    SectionText(
+                        text = "LOGIN",
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier
+                            .padding(5.dp)
+                    )
+                }
                 Spacer(Modifier.height(15.dp))
                 OutlinedTextField(
                     value = email,
@@ -177,7 +182,8 @@ fun LoginScreen(
                     text = "Forgot Password?",
                     textDecoration = TextDecoration.Underline,
                     style = MaterialTheme.typography.body1,
-                    color = colorResource(R.color.black),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.onBackground,
                     modifier = Modifier
                         .clickable { navToForgotPassword() }
                         .padding(start = 5.dp, end = 5.dp)
@@ -194,15 +200,14 @@ fun LoginScreen(
                         contentColor = MaterialTheme.colors.onBackground
                     ),
                     modifier = Modifier
-                        .height(45.dp)
-                        .shadow(2.dp),
+                        .height(45.dp),
                 ) {
                     Text(
                         text = "LOGIN",
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
-                        color = colorResource(R.color.black),
+                        color = MaterialTheme.colors.onBackground,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)
@@ -221,7 +226,7 @@ fun LoginScreen(
 
                     Text(
                         text = "Or Login With",
-                        color = colorResource(R.color.black),
+                        color = MaterialTheme.colors.onBackground,
                         style = MaterialTheme.typography.body1,
                         modifier = Modifier
                             .background(MaterialTheme.colors.primary)

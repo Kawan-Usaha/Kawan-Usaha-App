@@ -16,12 +16,7 @@ import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.LandingScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.RegisterScreen
 import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
-<<<<<<< HEAD
-import com.jetpack.kawanusaha.ui.pages.main.AboutScreen
-import com.jetpack.kawanusaha.ui.pages.main.ArticleScreen
-=======
 import com.jetpack.kawanusaha.ui.pages.main.*
->>>>>>> 898be0ec417a593456fac925d639b402db936c08
 
 // TODO Security Leak in passing password
 @Composable
@@ -30,7 +25,7 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
 
     val startDestination: String = if(loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
 
-    NavHost(navController = navController, startDestination = "login_screen")
+    NavHost(navController = navController, startDestination = "main_screen")
 //    startDestination)
     {
         // LandingScreen Navigation
