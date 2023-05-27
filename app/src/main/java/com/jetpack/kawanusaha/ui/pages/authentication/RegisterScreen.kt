@@ -77,11 +77,11 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
         ){
             Text(
                 text = "Already have an account? ",
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colors.onPrimary
             )
             Text(
                 text = "Sign In Now!",
-                color = MaterialTheme.colors.onBackground,
+                color = MaterialTheme.colors.onPrimary,
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
@@ -92,7 +92,7 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
         Card(
             shape = RoundedCornerShape(10.dp),
             backgroundColor = MaterialTheme.colors.primary,
-            border = BorderStroke(1.dp, colorResource(R.color.secondary_day)),
+            border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
@@ -134,13 +134,13 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                         .fillMaxWidth()
                         .padding(5.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onBackground,
-                        cursorColor = MaterialTheme.colors.onBackground,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
                         errorBorderColor = Color.Red,
                         focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = colorResource(R.color.grey),
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = colorResource(R.color.grey)
+                        unfocusedLabelColor = MaterialTheme.colors.surface
                     )
                 )
                 Spacer(Modifier.height(15.dp))
@@ -164,13 +164,13 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                         .fillMaxWidth()
                         .padding(5.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onBackground,
-                        cursorColor = MaterialTheme.colors.onBackground,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
                         errorBorderColor = Color.Red,
                         focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = colorResource(R.color.grey),
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = colorResource(R.color.grey)
+                        unfocusedLabelColor = MaterialTheme.colors.surface
                     ),
                 )
                 Spacer(Modifier.height(15.dp))
@@ -202,13 +202,13 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                         .fillMaxWidth()
                         .padding(5.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onBackground,
-                        cursorColor = MaterialTheme.colors.onBackground,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
                         errorBorderColor = MaterialTheme.colors.error,
                         focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = colorResource(R.color.grey),
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = colorResource(R.color.grey)
+                        unfocusedLabelColor = MaterialTheme.colors.surface
                     ),
                 )
                 Spacer(Modifier.height(15.dp))
@@ -243,13 +243,13 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                         .fillMaxWidth()
                         .padding(5.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onBackground,
-                        cursorColor = MaterialTheme.colors.onBackground,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
                         errorBorderColor = MaterialTheme.colors.error,
                         focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = colorResource(R.color.grey),
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = colorResource(R.color.grey)
+                        unfocusedLabelColor = MaterialTheme.colors.surface
                     ),
                 )
                 Spacer(modifier = Modifier.height(50.dp))
@@ -263,8 +263,8 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                         )
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.background,
-                        contentColor = MaterialTheme.colors.onBackground
+                        backgroundColor = MaterialTheme.colors.secondary,
+                        contentColor = MaterialTheme.colors.onPrimary
                     ),
                     modifier = Modifier
                         .height(45.dp),
@@ -274,7 +274,7 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colors.onBackground,
+                        color = MaterialTheme.colors.onPrimary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)

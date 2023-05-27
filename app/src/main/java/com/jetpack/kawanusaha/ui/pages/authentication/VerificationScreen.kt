@@ -163,13 +163,13 @@ fun VerificationScreen(
                             fontSize = 30.sp
                         ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onBackground,
-                        cursorColor = MaterialTheme.colors.onBackground,
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
                         errorBorderColor = Color.Red,
                         focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = colorResource(R.color.grey),
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
                         focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = colorResource(R.color.grey)
+                        unfocusedLabelColor = MaterialTheme.colors.surface
                     )
                 )
                 Spacer(modifier = Modifier.height(5.dp))
@@ -185,7 +185,7 @@ fun VerificationScreen(
                     // TODO else show pop up that verification failed
                     onClick = { viewModel.verify(verificationCode.text, password, passwordConfirm)},
                     modifier = Modifier.size(300.dp, 40.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(R.color.primary_day))
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
                 ) {
                     Text(
                         text = stringResource(R.string.verify),

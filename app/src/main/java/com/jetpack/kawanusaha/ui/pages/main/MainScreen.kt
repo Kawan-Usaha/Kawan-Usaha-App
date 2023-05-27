@@ -52,7 +52,7 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                                     append("KAWAN")
                                 }
                                 withStyle(
-                                    style = SpanStyle(color = colorResource(R.color.secondary_day))
+                                    style = SpanStyle(color = MaterialTheme.colors.secondary)
                                 ) {
                                     append(" USAHA")
                                 }
@@ -132,7 +132,7 @@ fun ChatBox(navToChat: () -> Unit) {
         ) {
             Text(
                 "Chat With Your AI Mentor!",
-                color = MaterialTheme.colors.onBackground,
+                color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3
             )
             Spacer(Modifier.height(12.dp))
@@ -152,11 +152,11 @@ fun ChatBox(navToChat: () -> Unit) {
                         text = "Send a Message",
                         Modifier.weight(1f),
                         style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onBackground
+                        color = MaterialTheme.colors.onPrimary
                     )
                     Icon(
                         imageVector = Icons.Default.Send,
-                        tint = colorResource(R.color.secondary_day),
+                        tint = MaterialTheme.colors.secondary,
                         contentDescription = "Send"
                     )
                 }
@@ -189,7 +189,7 @@ fun CategoryItem() {
                 .clip(shape = CircleShape),
         )
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = "Google", color = MaterialTheme.colors.onBackground)
+        Text(text = "Google", color = MaterialTheme.colors.onPrimary)
     }
 }
 
@@ -197,7 +197,7 @@ fun CategoryItem() {
 fun SectionText(text: String, style: TextStyle, modifier: Modifier) {
     Text(
         text = text,
-        color = MaterialTheme.colors.onBackground,
+        color = MaterialTheme.colors.onPrimary,
         style = style,
     )
 }
