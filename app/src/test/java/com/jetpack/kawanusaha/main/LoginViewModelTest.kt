@@ -1,10 +1,9 @@
 package com.jetpack.kawanusaha.main
 
+import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.jetpack.kawanusaha.data.*
 import com.jetpack.kawanusaha.utility.*
-import com.jetpack.kawanusaha.data.DataRepository
-import com.jetpack.kawanusaha.data.LoginRequest
-import com.jetpack.kawanusaha.data.RegisterRequest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -28,10 +27,13 @@ class LoginViewModelTest {
     @Mock
     private lateinit var dataRepository: DataRepository
     private lateinit var loginViewModel: LoginViewModel
+    @Mock
+    private lateinit var preferences: SharedPreferences
+    private val token: String = "token"
 
     @Before
     fun setUp() {
-        loginViewModel = LoginViewModel(dataRepository)
+        loginViewModel = LoginViewModel(dataRepository, preferences)
     }
 
     @Test
@@ -58,5 +60,65 @@ class LoginViewModelTest {
         Assert.assertNotNull(actualResult)
         // Actual data is the same as Expected data
         Assert.assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when generate validation key from register` () = runTest {
+        // This test is using auth/generate route
+        val expectedResult = DataDummy.generateGenerateDummy()
+        `when`(dataRepository.generate(token)).thenReturn(expectedResult)
+        loginViewModel.generate(null)
+        val actualResult = loginViewModel.message.value
+
+        // Data is not null
+        Assert.assertNotNull(actualResult)
+        // Actual data message is the same as Expected data
+        Assert.assertEquals(expectedResult.message, actualResult)
+    }
+
+    @Test
+    fun `when generate validation key from forgot password` () = runTest {
+        // This test is using auth/forgot-password/generate route
+        val expectedResult = DataDummy.generateGenerateDummy()
+        `when`(dataRepository.forgotGenerate(ForgotGenerateRequest("email"))).thenReturn(expectedResult)
+        loginViewModel.generate("email")
+        val actualResult = loginViewModel.message.value
+
+        // Data is not null
+        Assert.assertNotNull(actualResult)
+        // Actual data message is the same as Expected data
+        Assert.assertEquals(expectedResult.message, actualResult)
+    }
+
+     @Test
+     fun `when verify validation key from register` () = runTest{
+         // This test is using auth/verify route
+         val expectedResult = DataDummy.generateGenerateDummy()
+         val verificationRequest = VerificationRequest("ABCDEF")
+         `when`(dataRepository.verify(token, verificationRequest)).thenReturn(expectedResult)
+         loginViewModel.verify("ABCDEF", null, null)
+         val actualResult = loginViewModel.message.value
+
+         // Data is not null
+         Assert.assertNotNull(actualResult)
+
+         // Actual data message is the same as Expected data
+         Assert.assertEquals(expectedResult.message, actualResult)
+     }
+
+    @Test
+    fun `when verify validation key from forgot password` () = runTest{
+        // This test is using auth/forgot-password/verify route
+        val expectedResult = DataDummy.generateGenerateDummy()
+        val verificationRequest = ForgotVerifyRequest(verification_code = "ABCDEF", password = "password", password_confirm =  "password")
+        `when`(dataRepository.forgotVerify(verificationRequest)).thenReturn(expectedResult)
+        loginViewModel.verify("ABCDEF", "password", "password")
+        val actualResult = loginViewModel.message.value
+
+        // Data is not null
+        Assert.assertNotNull(actualResult)
+
+        // Actual data message is the same as Expected data
+        Assert.assertEquals(expectedResult.message, actualResult)
     }
 }

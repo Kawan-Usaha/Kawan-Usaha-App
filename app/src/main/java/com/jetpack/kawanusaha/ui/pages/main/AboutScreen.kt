@@ -9,6 +9,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,9 +20,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.main.LoginViewModel
+import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
-fun AboutScreen(navBack: () -> Unit, navToLanding: () -> Unit) {
+fun AboutScreen(
+    loginViewModel: LoginViewModel,
+    mainViewModel: MainViewModel,
+    navBack: () -> Unit,
+    navToLanding: () -> Unit,
+    navToVerify: () -> Unit,
+    navToChangeAbout: () -> Unit,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -35,7 +47,9 @@ fun AboutScreen(navBack: () -> Unit, navToLanding: () -> Unit) {
                     Text(text = "Profile")
                 },
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navToChangeAbout()
+                    }) {
                         Icon(
                             imageVector = Icons.Default.Settings,
                             contentDescription = "Edit"
@@ -64,32 +78,46 @@ fun AboutScreen(navBack: () -> Unit, navToLanding: () -> Unit) {
                     .clip(CircleShape)
             )
             Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "John Doe")
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                    ) {
-                        item {
-                            Text(text = "Account Id: ")
+                CallData(mainViewModel = mainViewModel)
+                val user by mainViewModel.userProfile.collectAsState(initial = null)
+                if (user != null){
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = user?.data?.name!!.toString())
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            verticalArrangement = Arrangement.spacedBy(5.dp),
+                        ) {
+                            user?.data?.let { userData ->
+                                listOf(
+                                    "Account Id: " to userData.userId,
+                                    "Email: " to userData.email,
+                                    "Member Since: " to userData.createdAt.slice(0..10),
+                                ).forEach { (label, value) ->
+                                    item {
+                                        Text(text = label)
+                                    }
+                                    item {
+                                        Text(text = value)
+                                    }
+                                }
+
+                            }
                         }
-                        item {
-                            Text(text = "123456")
-                        }
-                        item {
-                            Text(text = "Gender: ")
-                        }
-                        item {
-                            Text(text = "Male")
+                        if (!(user?.data?.verified!!)){
+                            Button(onClick = {
+                                navToVerify()
+                            }) {
+                                Text(text = "Verify Account")
+                            }
                         }
                     }
                 }
             }
             Button(
                 onClick = {
-                    Logout()
+                    loginViewModel.logout()
                     navToLanding()
                 }) {
                 Text(text = "Sign Out")
@@ -97,6 +125,10 @@ fun AboutScreen(navBack: () -> Unit, navToLanding: () -> Unit) {
         }
     }
 }
-fun Logout(){
 
+@Composable
+private fun CallData(mainViewModel: MainViewModel){
+    LaunchedEffect(mainViewModel){
+        mainViewModel.getUser()
+    }
 }

@@ -8,20 +8,27 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
-fun ArticleScreen(articleTitle: String, navBack: () -> Unit) {
+fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> Unit) {
+    LaunchedEffect(mainViewModel){
+        mainViewModel.getArticleDetail(id = articleId)
+    }
+    val article by mainViewModel.articleDetail.collectAsState(null)
     val context = LocalContext.current
-    var text = "Share Text"
+    val text = "Share Text"
     Scaffold(
         topBar = {
             TopAppBar(
@@ -34,7 +41,7 @@ fun ArticleScreen(articleTitle: String, navBack: () -> Unit) {
                     }
                 },
                 title = {
-                    Text(text = articleTitle)
+                    Text(text = article?.title ?: "Title")
                 },
                 actions = {
                     // Like Button
@@ -91,7 +98,7 @@ fun ArticleScreen(articleTitle: String, navBack: () -> Unit) {
                 )
             }
             item {
-                Text(text = stringResource(id = R.string.loremipsum))
+                Text(text = article?.content ?: "Content")
             }
         }
     }
