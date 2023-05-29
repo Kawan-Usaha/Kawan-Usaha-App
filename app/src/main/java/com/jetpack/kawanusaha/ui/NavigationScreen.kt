@@ -25,7 +25,7 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
 
     val startDestination: String = if(loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
 
-    NavHost(navController = navController, startDestination = "login_screen")
+    NavHost(navController = navController, startDestination = startDestination)
 //    startDestination)
     {
         // LandingScreen Navigation
@@ -114,12 +114,13 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
 
         // MainScreen Navigation
         composable(route = "main_screen"){
-            MainScreen ({
+            MainScreen (
+                mainViewModel = mainViewModel, {
                 // MainScreen to ChatScreen
                 navController.navigate("chat_screen")
-            }, { title ->
+            }, { id ->
                 // MainScreen to ArticleScreen
-                navController.navigate("article_screen/$title")
+                navController.navigate("article_screen/$id")
             }, {
                 // MainScreen to AboutScreen
                 navController.navigate("about_screen")
@@ -131,12 +132,12 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
         }
 
         composable(
-            route = "article_screen/{title}",
-            arguments = listOf(navArgument("title"){type = NavType.StringType})
+            route = "article_screen/{id}",
+            arguments = listOf(navArgument("id"){type = NavType.IntType})
         ){
-            // Get Title From Argument
-            it.arguments?.getString("title")?.let { title ->
-                ArticleScreen (articleTitle = title){
+            // Get Id From Argument
+            it.arguments?.getInt("id")?.let { id ->
+                ArticleScreen (mainViewModel, articleId = id){
                     // Back to Previous Stack
                     navController.navigateUp()
                 }
@@ -157,10 +158,22 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
             })
         }
 
-        composable(route = "change+_about_screen"){
+        composable(route = "change_about_screen"){
             ChangeAboutScreen(mainViewModel = mainViewModel) {
                 navController.navigateUp()
             }
+        }
+
+        composable(route = "usaha_screen"){
+            UsahaScreen(mainViewModel = mainViewModel)
+        }
+
+        composable(route = "add_usaha_screen"){
+            AddUsahaScreen(mainViewModel = mainViewModel)
+        }
+
+        composable(route = "add_article_screen"){
+            AddArticleScreen(mainViewModel = mainViewModel)
         }
     }
 }

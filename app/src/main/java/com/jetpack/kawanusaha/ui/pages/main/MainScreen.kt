@@ -2,13 +2,16 @@
 
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -20,21 +23,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.data.ArticlesItem
+import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
-fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout: () -> Unit) {
-    val orange = colorResource(R.color.secondary_day)
-    val white = colorResource(R.color.white)
-    val chocolateVariant = colorResource(R.color.primary_variant_night)
+fun MainScreen(
+    mainViewModel: MainViewModel,
+    navToChat: () -> Unit,
+    navToArticle: (Int) -> Unit,
+    navToAbout: () -> Unit
+) {
+    val articles: LazyPagingItems<ArticlesItem> =
+        mainViewModel.getAllArticles().collectAsLazyPagingItems()
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -47,12 +57,12 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                         Text(
                             text = buildAnnotatedString {
                                 withStyle(
-                                    style = SpanStyle(color = chocolateVariant),
+                                    style = SpanStyle(color = MaterialTheme.colors.secondaryVariant),
                                 ) {
                                     append("KAWAN")
                                 }
                                 withStyle(
-                                    style = SpanStyle(color = orange)
+                                    style = SpanStyle(color = MaterialTheme.colors.secondary)
                                 ) {
                                     append(" USAHA")
                                 }
@@ -88,6 +98,7 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(16.dp)
                     ) {
                         // Category Section
                         SectionText(
@@ -95,16 +106,18 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(15.dp)
                         )
+                        Spacer(modifier = Modifier.height(5.dp))
                         CategorySection()
 
-                        Spacer(Modifier.height(4.dp))
+                        Spacer(Modifier.height(8.dp))
                         // Recommendation Articles Section
                         SectionText(
                             text = "Recommendation Articles",
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(15.dp)
                         )
-                        ArticleSection(navToArticle)
+                        Spacer(modifier = Modifier.height(5.dp))
+                        ArticleSection(articles, navToArticle)
                     }
                 }
             }
@@ -129,7 +142,7 @@ fun ChatBox(navToChat: () -> Unit) {
         ) {
             Text(
                 "Chat With Your AI Mentor!",
-                color = MaterialTheme.colors.onBackground,
+                color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3
             )
             Spacer(Modifier.height(12.dp))
@@ -149,11 +162,11 @@ fun ChatBox(navToChat: () -> Unit) {
                         text = "Send a Message",
                         Modifier.weight(1f),
                         style = MaterialTheme.typography.body1,
-                        color = colorResource(R.color.black)
+                        color = MaterialTheme.colors.onPrimary
                     )
                     Icon(
                         imageVector = Icons.Default.Send,
-                        tint = colorResource(R.color.secondary_day),
+                        tint = MaterialTheme.colors.secondary,
                         contentDescription = "Send"
                     )
                 }
@@ -186,7 +199,7 @@ fun CategoryItem() {
                 .clip(shape = CircleShape),
         )
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = "Google", color = MaterialTheme.colors.onBackground)
+        Text(text = "Google", color = MaterialTheme.colors.onPrimary)
     }
 }
 
@@ -194,33 +207,39 @@ fun CategoryItem() {
 fun SectionText(text: String, style: TextStyle, modifier: Modifier) {
     Text(
         text = text,
-        color = MaterialTheme.colors.onBackground,
+        color = MaterialTheme.colors.onPrimary,
         style = style,
     )
 }
 
 @Composable
-fun ArticleSection(navToArticle: (String) -> Unit) {
+fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 300.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-    ) {
-        items(50) {
-            ArticleItem(navToArticle)
+        content = {
+            items(articles.itemCount) { index ->
+                articles[index]?.let {
+                    ArticleItem(it, navToArticle)
+                }
+            }
         }
-    }
+    )
 }
 
 @Composable
-fun ArticleItem(navToArticle: (String) -> Unit) {
-    val title = "Title"
+fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
+    //TODO Ganti jadi articlesItem.title
+    val title = articlesItem.id.toString()
+    val id = articlesItem.id
+    Log.e("LOG", "ID + $id")
     Card {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .clickable { navToArticle(title) }
+                .clickable { navToArticle(id) }
                 .padding(20.dp),
         ) {
             Image(
@@ -231,5 +250,4 @@ fun ArticleItem(navToArticle: (String) -> Unit) {
             Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
         }
     }
-
 }

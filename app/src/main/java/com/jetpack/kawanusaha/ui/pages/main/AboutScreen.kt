@@ -78,7 +78,7 @@ fun AboutScreen(
                     .clip(CircleShape)
             )
             Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-                callData(mainViewModel = mainViewModel)
+                CallData(mainViewModel = mainViewModel)
                 val user by mainViewModel.userProfile.collectAsState(initial = null)
                 if (user != null){
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -127,7 +127,7 @@ fun AboutScreen(
 }
 
 @Composable
-fun callData(mainViewModel: MainViewModel){
+private fun CallData(mainViewModel: MainViewModel){
     LaunchedEffect(mainViewModel){
         mainViewModel.getUser()
     }

@@ -5,30 +5,33 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Black,
+    primary = TextDayNBackgroundNight,
+    onPrimary = TextNightNBackgroundDay,
     primaryVariant = PrimaryVariantNight,
-    secondary = SecondaryDay,
+    secondary = SecondaryNight,
+    secondaryVariant = TextNightNBackgroundDay,
     background = PrimaryNight,
-    onBackground = White
+    surface = Grey
 )
 
 private val LightColorPalette = lightColors(
-    primary = White,
+    primary = TextNightNBackgroundDay,
+    onPrimary = TextDayNBackgroundNight,
     primaryVariant = PrimaryVariantDay,
-    secondary = SecondaryNight,
+    secondary = SecondaryDay,
+    secondaryVariant = PrimaryVariantNight,
     background = PrimaryDay,
-    onBackground = Black
+    surface = Grey
 
     /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
+    background = Color.TextNightNBackgroundDay,
+    surface = Color.TextNightNBackgroundDay,
+    onPrimary = Color.TextNightNBackgroundDay,
+    onSecondary = Color.TextDayNBackgroundNight,
+    onPrimary = Color.TextDayNBackgroundNight,
+    onSurface = Color.TextDayNBackgroundNight,
     */
 )
 
