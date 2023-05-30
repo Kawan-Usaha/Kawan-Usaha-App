@@ -14,7 +14,7 @@ import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.LoginViewModelFactory
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.main.MainViewModelFactory
-import com.jetpack.kawanusaha.ui.NavigationScreen
+import com.jetpack.kawanusaha.ui.pages.NavigationScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
 //https://developer.android.com/studio/write/app-link-indexing

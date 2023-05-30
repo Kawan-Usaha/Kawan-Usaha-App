@@ -7,11 +7,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -24,16 +22,15 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.NavFabButton
+import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
@@ -41,7 +38,8 @@ fun MainScreen(
     mainViewModel: MainViewModel,
     navToChat: () -> Unit,
     navToArticle: (Int) -> Unit,
-    navToAbout: () -> Unit
+    navToAbout: () -> Unit,
+    navToAddArticle: () -> Unit
 ) {
     val articles: LazyPagingItems<ArticlesItem> =
         mainViewModel.getAllArticles().collectAsLazyPagingItems()
@@ -52,38 +50,9 @@ fun MainScreen(
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(color = MaterialTheme.colors.secondaryVariant),
-                                ) {
-                                    append("KAWAN")
-                                }
-                                withStyle(
-                                    style = SpanStyle(color = MaterialTheme.colors.secondary)
-                                ) {
-                                    append(" USAHA")
-                                }
-                            },
-                            style = MaterialTheme.typography.h1
-                        )
-                    },
-                    actions = {
-                        IconButton(onClick = { navToAbout() }) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_account_circle_orange),
-                                contentDescription = "Profile Page",
-                                modifier = Modifier
-                                    .size(40.dp, 40.dp)
-                            )
-                        }
-                    },
-                    backgroundColor = MaterialTheme.colors.background,
-                    elevation = 0.dp
-                )
-            }
+                TopBar({})
+            },
+            floatingActionButton = { NavFabButton(navToAddArticle) }
         ) { innerPadding ->
             Column(
                 modifier = Modifier

@@ -4,9 +4,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -19,30 +19,34 @@ import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.UsahaData
 import com.jetpack.kawanusaha.data.UsahaResponse
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.NavFabButton
+import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
-fun UsahaScreen(mainViewModel: MainViewModel) {
-    Column {
-        SectionText(
-            text = "Types",
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.padding(15.dp)
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        CategorySection()
+fun UsahaScreen(mainViewModel: MainViewModel, navToAddUsaha: () -> Unit) {
+    Scaffold(floatingActionButton = { NavFabButton( navToAddUsaha ) }, topBar = { TopBar {} }) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            SectionText(
+                text = "Types",
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(15.dp)
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            CategorySection()
 
-        Spacer(Modifier.height(8.dp))
-        // Recommendation Articles Section
-        SectionText(
-            text = "Usaha",
-            style = MaterialTheme.typography.h3,
-            modifier = Modifier.padding(15.dp)
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        callUsahaLists(mainViewModel = mainViewModel)
-        val data by mainViewModel.listUsaha.collectAsState(null)
-        UsahaSection(data)
+            Spacer(Modifier.height(8.dp))
+            // Recommendation Articles Section
+            SectionText(
+                text = "Usaha",
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.padding(15.dp)
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            callUsahaLists(mainViewModel = mainViewModel)
+            val data by mainViewModel.listUsaha.collectAsState(null)
+            UsahaSection(data)
+        }
     }
 }
 
