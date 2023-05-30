@@ -12,10 +12,7 @@ import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.*
-import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
-import com.jetpack.kawanusaha.ui.pages.authentication.LandingScreen
-import com.jetpack.kawanusaha.ui.pages.authentication.RegisterScreen
-import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
+import com.jetpack.kawanusaha.ui.pages.authentication.*
 import com.jetpack.kawanusaha.ui.pages.main.*
 
 // TODO Security Leak in passing password
@@ -109,6 +106,16 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
             }, { email, password, passwordConfirm ->
                 // ForgotPasswordScreen to VerificationScreen
                 navController.navigate("verification_screen/$email/$password/$passwordConfirm")
+            })
+        }
+
+        // ConfirmEmailForForgotPassword Navigation
+        composable(route = "confirm_email_forgotpass_screen"){
+            VerificationEmailForgotPassScreen(viewModel = loginViewModel, {
+                // ForgotPasswordScreen to Previous Stack
+                navController.navigateUp()
+            }, {
+
             })
         }
 

@@ -50,7 +50,6 @@ fun ForgotPasswordScreen(
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     val orange = MaterialTheme.colors.secondary
-    val chocolateVariant = MaterialTheme.colors.secondaryVariant
     val white = MaterialTheme.colors.primary
     
     Column(
@@ -76,7 +75,7 @@ fun ForgotPasswordScreen(
             }
             Image(
                 painter = painterResource(R.drawable.baseline_key_day),
-                contentDescription = "email_open",
+                contentDescription = "key",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(120.dp)
@@ -209,7 +208,7 @@ fun ForgotPasswordScreen(
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colors.secondary,
+                        color = MaterialTheme.colors.onPrimary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)
