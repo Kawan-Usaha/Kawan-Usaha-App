@@ -47,6 +47,10 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.getListUsaha("Bearer $jwtToken").execute() }
     }
 
+    suspend fun getUsahaDetail(jwtToken: String, id: Int): UsahaDetailResponse?{
+        return executeRequest { apiService.getUsahaDetail("Bearer $jwtToken", id).execute() }
+    }
+
     suspend fun createUsaha(jwtToken: String, usahaRequest: UsahaRequest): DefaultResponse? {
         return executeRequest { apiService.createUsaha("Bearer $jwtToken", usahaRequest).execute() }
     }

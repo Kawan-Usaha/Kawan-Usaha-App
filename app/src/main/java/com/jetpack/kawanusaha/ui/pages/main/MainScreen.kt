@@ -57,7 +57,7 @@ fun MainScreen(
                 modifier = Modifier
                     .padding(innerPadding)
             ) {
-                ChatBox(navToChat)
+//                ChatBox(navToChat)
 
                 Card(
                     shape = RoundedCornerShape(10.dp),
@@ -103,7 +103,7 @@ fun ChatBox(navToChat: () -> Unit) {
                 elevation = 4.dp,
                 shape = RoundedCornerShape(10.dp),
             )
-            .blur(15.dp)
+//            .blur(15.dp)
     ) {
         Column(
             Modifier.padding(22.dp)

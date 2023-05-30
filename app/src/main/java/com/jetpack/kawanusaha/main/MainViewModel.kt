@@ -29,11 +29,15 @@ class MainViewModel(
     private val _listUsaha = MutableStateFlow<UsahaResponse?>(null)
     val listUsaha: StateFlow<UsahaResponse?> = _listUsaha
 
+    private val _usahaDetail = MutableStateFlow<UsahaDetailResponse?>(null)
+    val usahaDetail: StateFlow<UsahaDetailResponse?> = _usahaDetail
+
     private val _articleDetail = MutableStateFlow<ArticleDetail?>(null)
     val articleDetail : StateFlow<ArticleDetail?> = _articleDetail
 
     init {
         clearStatus()
+        getToken()
     }
 
     private fun getToken() {
@@ -44,7 +48,6 @@ class MainViewModel(
     // User Profile
     fun getUser() {
         viewModelScope.launch {
-            getToken()
             _userProfile.value = dataRepository.getUser(jwtToken)
         }
     }
@@ -59,6 +62,12 @@ class MainViewModel(
     fun getListUsaha() {
         viewModelScope.launch {
             _listUsaha.value = dataRepository.getListUsaha(jwtToken)
+        }
+    }
+
+    fun getUsahaDetail(id: Int){
+        viewModelScope.launch {
+            _usahaDetail.value = dataRepository.getUsahaDetail(jwtToken, id)
         }
     }
 

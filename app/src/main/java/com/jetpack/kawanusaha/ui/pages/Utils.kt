@@ -85,8 +85,8 @@ fun BottomBar(
                         screen = Screen.Feeds
                     ),
                     NavigationItem(
-                        title = "Usaha",
-                        icon = Icons.Default.Create,
+                        title = "Search",
+                        icon = Icons.Default.Search,
                         screen = Screen.Usaha
                     ),
                     NavigationItem(
@@ -119,7 +119,7 @@ fun BottomBar(
                             onClick = {
                                 navController.navigate(item.screen.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                                        saveState = false
                                     }
                                     restoreState = true
                                     launchSingleTop = true

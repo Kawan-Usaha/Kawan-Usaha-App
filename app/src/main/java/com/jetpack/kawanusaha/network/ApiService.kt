@@ -63,7 +63,7 @@ interface ApiService {
     fun getUsahaDetail (
         @Header("Authorization") token: String,
         @Query("id") id: Int,
-    ) //: Call <Response>
+    ) : Call<UsahaDetailResponse>
 
     @POST("usaha/create")
     fun createUsaha (
