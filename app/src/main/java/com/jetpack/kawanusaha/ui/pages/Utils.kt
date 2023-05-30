@@ -124,7 +124,9 @@ fun BottomBar(
                                     restoreState = true
                                     launchSingleTop = true
                                 }
-                            }
+                            },
+                            selectedContentColor = MaterialTheme.colors.secondary,
+                            unselectedContentColor = MaterialTheme.colors.surface
                         )
                     }
                 }

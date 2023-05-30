@@ -3,10 +3,17 @@ package com.jetpack.kawanusaha.ui
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
@@ -21,152 +28,200 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
     val navController = rememberNavController()
 
     val startDestination: String = if(loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
+    val bottomBarState = rememberSaveable { mutableStateOf(true) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    NavHost(navController = navController, startDestination = "main_screen")
+    when (navBackStackEntry?.destination?.route) {
+        "landing_screen" -> {
+            bottomBarState.value = false
+        }
+        "forgot_password_screen" -> {
+            bottomBarState.value = false
+        }
+        "login_screen" -> {
+            bottomBarState.value = false
+        }
+        "register_screen" -> {
+            bottomBarState.value = false
+        }
+        "verification_screen" -> {
+            bottomBarState.value = false
+        }
+        else -> {
+            bottomBarState.value = true
+        }
+    }
+
+    Scaffold(
+        bottomBar = { BottomBar(navController,bottomBarState)},
+        backgroundColor = MaterialTheme.colors.primary,
+    ) { innerPadding ->
+        NavHost(navController = navController, startDestination = "add_article_screen", modifier = Modifier.padding(innerPadding))
 //    startDestination)
-    {
-        // LandingScreen Navigation
-        composable(route = "landing_screen") {
-            LandingScreen({
-                // LandingScreen to LoginScreen
-                navController.navigate("login_screen")
-            }, {
-                // LandingScreen to RegisterScreen
-                navController.navigate("register_screen")
+        {
+            // LandingScreen Navigation
+            composable(route = "landing_screen") {
+                LandingScreen({
+                    // LandingScreen to LoginScreen
+                    navController.navigate("login_screen")
+                }, {
+                    // LandingScreen to RegisterScreen
+                    navController.navigate("register_screen")
+                }
+                )
             }
-            )
-        }
 
-        // LoginScreen Navigation
-        composable(route = "login_screen") {
-            LoginScreen(viewModel = loginViewModel, {
-                // LoginScreen to RegisterScreen
-                navController.navigate("register_screen")
-            }, {
-                // LoginScreen to LandingScreen
-                navController.navigate("landing_screen")
-            }, {
-                // LoginScreen to MainScreen
-                navController.navigate("main_screen")
-            }, {
-                // LoginScreen to ForgotPasswordScreen
-                navController.navigate("forgot_password_screen")
-            })
-        }
+            // LoginScreen Navigation
+            composable(route = "login_screen") {
+                LoginScreen(viewModel = loginViewModel, {
+                    // LoginScreen to RegisterScreen
+                    navController.navigate("register_screen")
+                }, {
+                    // LoginScreen to LandingScreen
+                    navController.navigate("landing_screen")
+                }, {
+                    // LoginScreen to MainScreen
+                    navController.navigate("main_screen")
+                }, {
+                    // LoginScreen to ForgotPasswordScreen
+                    navController.navigate("forgot_password_screen")
+                })
+            }
 
-        // RegisterScreen Navigation
-        composable(route = "register_screen") {
-            RegisterScreen(viewModel = loginViewModel, {
-                // RegisterScreen to VerificationScreen
-                navController.navigate("main_screen")
-            }, {
-                // RegisterScreen to LandingScreen
-                navController.navigate("landing_screen")
-            }, {
-                navController.navigate("login_screen")
-            })
-        }
+            // RegisterScreen Navigation
+            composable(route = "register_screen") {
+                RegisterScreen(viewModel = loginViewModel, {
+                    // RegisterScreen to VerificationScreen
+                    navController.navigate("main_screen")
+                }, {
+                    // RegisterScreen to LandingScreen
+                    navController.navigate("landing_screen")
+                }, {
+                    navController.navigate("login_screen")
+                })
+            }
 
-        // VerificationScreen Navigation
-        composable(
-            route = "verification_screen/{email}/{password}/{passwordConfirm}",
-            arguments = listOf(
-                navArgument("email"){type = NavType.StringType},
-                navArgument("password"){type = NavType.StringType},
-                navArgument("passwordConfirm"){type = NavType.StringType},
-            ),
-        ){
-            VerificationScreen(
-                viewModel = loginViewModel,
-                email = it.arguments?.getString("email"),
-                password = it.arguments?.getString("password"),
-                passwordConfirm = it.arguments?.getString("passwordConfirm")
+            // VerificationScreen Navigation
+            composable(
+                route = "verification_screen/{email}/{password}/{passwordConfirm}",
+                arguments = listOf(
+                    navArgument("email") { type = NavType.StringType },
+                    navArgument("password") { type = NavType.StringType },
+                    navArgument("passwordConfirm") { type = NavType.StringType },
+                ),
             ) {
-                navController.navigate("main_screen")
+                VerificationScreen(
+                    viewModel = loginViewModel,
+                    email = it.arguments?.getString("email"),
+                    password = it.arguments?.getString("password"),
+                    passwordConfirm = it.arguments?.getString("passwordConfirm")
+                ) {
+                    navController.navigate("main_screen")
+                }
             }
-        }
 
-        // VerificationScreen Navigation
-        composable(route = "verification_screen"){
-            VerificationScreen(
-                viewModel = loginViewModel,
-                email = null,
-                password = null,
-                passwordConfirm = null
+            // VerificationScreen Navigation
+            composable(route = "verification_screen") {
+                VerificationScreen(
+                    viewModel = loginViewModel,
+                    email = null,
+                    password = null,
+                    passwordConfirm = null
+                ) {
+                    navController.navigate("main_screen")
+                }
+            }
+
+            // ForgotPassword Navigation
+            composable(route = "forgot_password_screen") {
+                ForgotPasswordScreen({
+                    // ForgotPasswordScreen to Previous Stack
+                    navController.navigateUp()
+                }, { email, password, passwordConfirm ->
+                    // ForgotPasswordScreen to VerificationScreen
+                    navController.navigate("verification_screen/$email/$password/$passwordConfirm")
+                })
+            }
+
+            // ConfirmEmailForForgotPassword Navigation
+            composable(route = "confirm_email_forgotpass_screen") {
+                VerificationEmailForgotPassScreen(viewModel = loginViewModel, {
+                    // ForgotPasswordScreen to Previous Stack
+                    navController.navigateUp()
+                }, {
+
+                })
+            }
+
+            // MainScreen Navigation
+            composable(route = "main_screen") {
+                MainScreen(mainViewModel = mainViewModel, {
+                    // MainScreen to ChatScreen
+                    navController.navigate("chat_screen")
+                }, { id ->
+                    // MainScreen to ArticleScreen
+                    navController.navigate("article_screen/$id")
+                }, {
+                    // MainScreen to AboutScreen
+                    navController.navigate("about_screen")
+                }, {
+                    // MainScreen to AddArticleScreen
+                    navController.navigate("add_article_screen")
+                })
+            }
+
+            composable(route = "chat_screen") {
+                ChatScreen()
+            }
+
+            composable(
+                route = "article_screen/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) {
-                navController.navigate("main_screen")
+                // Get Id From Argument
+                it.arguments?.getInt("id")?.let { id ->
+                    ArticleScreen(mainViewModel, articleId = id) {
+                        // Back to Previous Stack
+                        navController.navigateUp()
+                    }
+                }
             }
-        }
 
-        // ForgotPassword Navigation
-        composable(route = "forgot_password_screen"){
-            ForgotPasswordScreen(viewModel = loginViewModel, {
-                // ForgotPasswordScreen to Previous Stack
-                navController.navigateUp()
-            }, { email, password, passwordConfirm ->
-                // ForgotPasswordScreen to VerificationScreen
-                navController.navigate("verification_screen/$email/$password/$passwordConfirm")
-            })
-        }
+            composable(route = "about_screen") {
+                AboutScreen(
+                    loginViewModel = loginViewModel,
+                    mainViewModel = mainViewModel, {
+                        navController.navigateUp()
+                    }, {
+                        navController.navigate("landing_screen")
+                    }, {
+                        navController.navigate("verification_screen")
+                    }, {
+                        navController.navigate("change_about_screen")
+                    })
+            }
 
-        // ConfirmEmailForForgotPassword Navigation
-        composable(route = "confirm_email_forgotpass_screen"){
-            VerificationEmailForgotPassScreen(viewModel = loginViewModel, {
-                // ForgotPasswordScreen to Previous Stack
-                navController.navigateUp()
-            }, {
-
-            })
-        }
-
-        // MainScreen Navigation
-        composable(route = "main_screen"){
-            MainScreen ({
-                // MainScreen to ChatScreen
-                navController.navigate("chat_screen")
-            }, { title ->
-                // MainScreen to ArticleScreen
-                navController.navigate("article_screen/$title")
-            }, {
-                // MainScreen to AboutScreen
-                navController.navigate("about_screen")
-            })
-        }
-
-        composable(route = "chat_screen"){
-            ChatScreen()
-        }
-
-        composable(
-            route = "article_screen/{title}",
-            arguments = listOf(navArgument("title"){type = NavType.StringType})
-        ){
-            // Get Title From Argument
-            it.arguments?.getString("title")?.let { title ->
-                ArticleScreen (articleTitle = title){
-                    // Back to Previous Stack
+            composable(route = "change_about_screen") {
+                ChangeAboutScreen(mainViewModel = mainViewModel) {
                     navController.navigateUp()
                 }
             }
-        }
+            composable(route = "usaha_screen") {
+                UsahaScreen(mainViewModel = mainViewModel) {
+                    navController.navigate("add_usaha_screen")
+                }
+            }
 
-        composable(route = "about_screen"){
-            AboutScreen (
-                loginViewModel = loginViewModel,
-                mainViewModel = mainViewModel, {
-                navController.navigateUp()
-            }, {
-                navController.navigate("landing_screen")
-            }, {
-                navController.navigate("verification_screen")
-            }, {
-                navController.navigate("change_about_screen")
-            })
-        }
+            composable(route = "add_usaha_screen") {
+                AddUsahaScreen(mainViewModel = mainViewModel)
+            }
 
-        composable(route = "change+_about_screen"){
-            ChangeAboutScreen(mainViewModel = mainViewModel) {
-                navController.navigateUp()
+            composable(route = "add_article_screen") {
+                AddArticleScreen(mainViewModel = mainViewModel)
+            }
+
+            composable(route = "like_screen"){
+                LikeScreen()
             }
         }
     }

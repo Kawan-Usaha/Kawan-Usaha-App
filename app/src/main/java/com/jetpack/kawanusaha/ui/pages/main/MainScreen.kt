@@ -32,14 +32,13 @@ import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
 import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.theme.Typography
-
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
     navToChat: () -> Unit,
     navToArticle: (Int) -> Unit,
+    navToAddArticle: () -> Unit,
     navToAbout: () -> Unit,
-    navToAddArticle: () -> Unit
 ) {
     val articles: LazyPagingItems<ArticlesItem> =
         mainViewModel.getAllArticles().collectAsLazyPagingItems()

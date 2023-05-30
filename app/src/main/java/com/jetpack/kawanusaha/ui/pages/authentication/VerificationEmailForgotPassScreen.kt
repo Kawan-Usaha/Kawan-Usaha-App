@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.pages.SectionText
+import com.jetpack.kawanusaha.ui.pages.main.SectionText
 
 @Composable
 fun VerificationEmailForgotPassScreen(
