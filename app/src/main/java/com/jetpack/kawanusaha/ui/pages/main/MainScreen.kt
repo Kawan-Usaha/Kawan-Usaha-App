@@ -1,7 +1,8 @@
 @file:OptIn(ExperimentalMaterialApi::class)
 
-package com.jetpack.kawanusaha.ui.pages
+package com.jetpack.kawanusaha.ui.pages.main
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -20,21 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.data.ArticlesItem
+import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.NavFabButton
+import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
-fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout: () -> Unit) {
+fun MainScreen(
+    mainViewModel: MainViewModel,
+    navToChat: () -> Unit,
+    navToArticle: (Int) -> Unit,
+    navToAbout: () -> Unit,
+    navToAddArticle: () -> Unit
+) {
+    val articles: LazyPagingItems<ArticlesItem> =
+        mainViewModel.getAllArticles().collectAsLazyPagingItems()
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -42,38 +50,9 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
     ) {
         Scaffold(
             topBar = {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(color = MaterialTheme.colors.secondaryVariant),
-                                ) {
-                                    append("KAWAN")
-                                }
-                                withStyle(
-                                    style = SpanStyle(color = MaterialTheme.colors.secondary)
-                                ) {
-                                    append(" USAHA")
-                                }
-                            },
-                            style = MaterialTheme.typography.h1
-                        )
-                    },
-                    actions = {
-                        IconButton(onClick = { navToAbout() }) {
-                            Image(
-                                painter = painterResource(R.drawable.ic_account_circle_orange),
-                                contentDescription = "Profile Page",
-                                modifier = Modifier
-                                    .size(40.dp, 40.dp)
-                            )
-                        }
-                    },
-                    backgroundColor = MaterialTheme.colors.background,
-                    elevation = 0.dp
-                )
-            }
+                TopBar({})
+            },
+            floatingActionButton = { NavFabButton(navToAddArticle) }
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -107,7 +86,7 @@ fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout
                             modifier = Modifier.padding(15.dp)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
-                        ArticleSection(navToArticle)
+                        ArticleSection(articles, navToArticle)
                     }
                 }
             }
@@ -203,27 +182,33 @@ fun SectionText(text: String, style: TextStyle, modifier: Modifier) {
 }
 
 @Composable
-fun ArticleSection(navToArticle: (String) -> Unit) {
+fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 300.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-    ) {
-        items(50) {
-            ArticleItem(navToArticle)
+        content = {
+            items(articles.itemCount) { index ->
+                articles[index]?.let {
+                    ArticleItem(it, navToArticle)
+                }
+            }
         }
-    }
+    )
 }
 
 @Composable
-fun ArticleItem(navToArticle: (String) -> Unit) {
-    val title = "Title"
+fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
+    //TODO Ganti jadi articlesItem.title
+    val title = articlesItem.id.toString()
+    val id = articlesItem.id
+    Log.e("LOG", "ID + $id")
     Card {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .clickable { navToArticle(title) }
+                .clickable { navToArticle(id) }
                 .padding(20.dp),
         ) {
             Image(
@@ -234,5 +219,4 @@ fun ArticleItem(navToArticle: (String) -> Unit) {
             Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
         }
     }
-
 }

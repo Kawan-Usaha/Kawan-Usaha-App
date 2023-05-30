@@ -29,11 +29,16 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
     private val _message = MutableStateFlow("")
     val message: StateFlow<String> = _message
 
-    private val _isGenerated = MutableStateFlow(false)
-    val isGenerated: StateFlow<Boolean> = _isGenerated
-
     private val _isVerified = MutableStateFlow(false)
     val isVerified : StateFlow<Boolean> = _isVerified
+
+    init {
+        clear()
+    }
+
+    fun clear () {
+        _isVerified.value = false
+    }
 
     /**
      *  Authenticate user and check for its credentials
@@ -117,12 +122,10 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
         viewModelScope.launch {
             if (email == null){
                 dataRepository.generate(preferences.getString(TOKEN, "").toString()).let {
-                    _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
                     _message.value = it?.message.toString()
                 }
             } else {
                 dataRepository.forgotGenerate(forgotGenerateRequest = ForgotGenerateRequest(email = email)).let{
-                    _isGenerated.value = (it?.success == true) && (it.message == "Email verification sent")
                     _message.value = it?.message.toString()
                 }
             }

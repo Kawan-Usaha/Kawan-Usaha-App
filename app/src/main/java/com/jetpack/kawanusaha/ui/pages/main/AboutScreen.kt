@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +21,7 @@ import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.TopBar
 
 @Composable
 fun AboutScreen(
@@ -34,31 +34,16 @@ fun AboutScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { navBack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                title = {
-                    Text(text = "Profile")
-                },
-                actions = {
-                    IconButton(onClick = {
-                        navToChangeAbout()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "Edit"
-                        )
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
-            )
+            TopBar {
+                IconButton(onClick = {
+                    navToChangeAbout()
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "Edit"
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         Column(
@@ -78,7 +63,7 @@ fun AboutScreen(
                     .clip(CircleShape)
             )
             Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-                callData(mainViewModel = mainViewModel)
+                CallData(mainViewModel = mainViewModel)
                 val user by mainViewModel.userProfile.collectAsState(initial = null)
                 if (user != null){
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -127,7 +112,7 @@ fun AboutScreen(
 }
 
 @Composable
-fun callData(mainViewModel: MainViewModel){
+private fun CallData(mainViewModel: MainViewModel){
     LaunchedEffect(mainViewModel){
         mainViewModel.getUser()
     }

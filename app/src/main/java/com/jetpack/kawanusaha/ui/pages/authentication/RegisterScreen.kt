@@ -1,25 +1,22 @@
 package com.jetpack.kawanusaha.ui.pages.authentication
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -34,12 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.BackPressHandler
-import com.jetpack.kawanusaha.ui.pages.SectionText
-import kotlinx.coroutines.launch
+import com.jetpack.kawanusaha.ui.pages.BackPressHandler
+import com.jetpack.kawanusaha.ui.pages.main.SectionText
 
 @Composable
-fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLanding: () -> Unit, navToLogin: () -> Unit) {
+fun RegisterScreen(
+    viewModel: LoginViewModel,
+    navToMain: () -> Unit,
+    navToLanding: () -> Unit,
+    navToLogin: () -> Unit
+) {
     val authStatus by viewModel.registerCredential.collectAsState(initial = null)
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var email by remember { mutableStateOf(TextFieldValue("")) }
@@ -72,9 +73,9 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
             style = MaterialTheme.typography.h4
         )
         Spacer(Modifier.height(10.dp))
-        Row (
+        Row(
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             Text(
                 text = "Already have an account? ",
                 color = MaterialTheme.colors.onPrimary
@@ -85,7 +86,7 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
                 fontWeight = FontWeight.Bold,
                 textDecoration = TextDecoration.Underline,
                 modifier = Modifier
-                .clickable { navToLogin() }
+                    .clickable { navToLogin() }
             )
         }
         Spacer(Modifier.height(16.dp))
@@ -286,8 +287,8 @@ fun RegisterScreen(viewModel: LoginViewModel, navToMain: () -> Unit, navToLandin
 
     BackPressHandler(onBackPressed = navToLanding)
 
-    LaunchedEffect( authStatus ){
-        if(viewModel.isLoggedIn()){
+    LaunchedEffect(authStatus) {
+        if (viewModel.isLoggedIn()) {
             navToMain()
         }
     }

@@ -4,12 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
@@ -18,10 +16,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -32,18 +28,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.pages.SectionText
-import com.jetpack.kawanusaha.ui.theme.Typography
-import kotlinx.coroutines.launch
+import com.jetpack.kawanusaha.ui.pages.main.SectionText
 
 // TODO Security Leak in passing password
 @Composable
 fun ForgotPasswordScreen(
-    viewModel: LoginViewModel,
     navBack: () -> Unit,
     navToVerification: (email: String, password: String, passwordConfirm: String) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var newPass by remember { mutableStateOf(TextFieldValue("")) }
     var confPass by remember { mutableStateOf(TextFieldValue("")) }
@@ -51,7 +43,7 @@ fun ForgotPasswordScreen(
 
     val orange = MaterialTheme.colors.secondary
     val white = MaterialTheme.colors.primary
-    
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -106,6 +98,32 @@ fun ForgotPasswordScreen(
                     )
                 }
                 Spacer(Modifier.height(15.dp))
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Email Icon",
+                            tint = orange
+                        )
+                    },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
+                        errorBorderColor = MaterialTheme.colors.error,
+                        focusedBorderColor = MaterialTheme.colors.secondary,
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
+                        focusedLabelColor = MaterialTheme.colors.secondary,
+                        unfocusedLabelColor = MaterialTheme.colors.surface
+                    ),
+                )
                 OutlinedTextField(
                     value = newPass,
                     onValueChange = { newPass = it },
@@ -239,78 +257,6 @@ fun ForgotPasswordScreen(
                 }
             }
         }
-
-//        Card(backgroundColor = MaterialTheme.colors.background, elevation = 1.dp) {
-//            LazyColumn(modifier = Modifier.fillMaxSize()) {
-//                item {
-//                    Text(text = "RESET PASSWORD", style = Typography.h2)
-//                }
-//                item {
-//                    Text(text = "Create a new bla bla bla ...", style = Typography.h4)
-//                }
-//                item {
-//                    TextField(
-//                        value = email,
-//                        onValueChange = { email = it },
-//                        label = { Text(text = "Email") },
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//                    )
-//                }
-//                item {
-//                    TextField(
-//                        value = newPass,
-//                        onValueChange = { newPass = it },
-//                        label = { Text(text = "New Password") },
-//                        visualTransformation = PasswordVisualTransformation(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//                        trailingIcon = {
-//                            if (newPass.text.length < 8 && newPass.text.length != 0)
-//                                Icon(
-//                                    Icons.Filled.Warning,
-//                                    "error",
-//                                    tint = MaterialTheme.colors.error
-//                                )
-//                        },
-//                    )
-//                }
-//                item {
-//                    TextField(
-//                        value = confPass,
-//                        onValueChange = { confPass = it },
-//                        label = { Text(text = "Confirm Password") },
-//                        visualTransformation = PasswordVisualTransformation(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//                        trailingIcon = {
-//                            if (confPass.text != newPass.text)
-//                                Icon(
-//                                    Icons.Filled.Warning,
-//                                    "error",
-//                                    tint = MaterialTheme.colors.error
-//                                )
-//                        },
-//                    )
-//                }
-//                item {
-//                    Button(
-//                        onClick = {
-//                            // generate verification code
-//                            navToVerification(email.text, newPass.text, confPass.text)
-//                        },
-//                        enabled = (email.text != "" && newPass.text.length >= 8 && confPass.text.length >= 8)
-//                    ) {
-//                        Text(text = "Verify")
-//                    }
-//                }
-//                item {
-//                    Button(
-//                        onClick = {
-//                            navBack()
-//                        }) {
-//                        Text(text = "Cancel")
-//                    }
-//                }
-//            }
-//        }
     }
 }
 

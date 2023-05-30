@@ -50,8 +50,8 @@ interface ApiService {
     // USAHA
     @GET("usaha/list")
     fun getListUsaha (
-        @Header("Authorization") token: String,
-    ) //: Call <Response>
+        @Header("Authorization") token: String
+    ) : Call <UsahaResponse>
 
     @GET("usaha/search")
     fun searchUsaha (
@@ -69,15 +69,15 @@ interface ApiService {
     fun createUsaha (
         @Header("Authorization") token: String,
         @Body usahaRequest : UsahaRequest,
-    ) //: Call <Response>
+    ) : Call <DefaultResponse>
 
 
     // ALL ARTICLES
     @GET("article")
-    fun getAllArticles (
+    suspend fun getAllArticles (
         @Query ("page") page: Int,
         @Query ("page_size") page_size: Int
-    ) //: Call <Response>
+    ) : ArticleResponse
 
     @GET("article/search")
     fun searchAllArticles (
@@ -85,6 +85,11 @@ interface ApiService {
         @Query ("page_size") page_size: Int,
         @Query ("title") title: String
     ) //: Call <Response>
+
+    @GET("article/content")
+    fun getArticleDetails (
+        @Query ("id") id : Int
+    ) : Call<ArticleDetailResponse>
 
 
     // USER ARTICLES
@@ -100,10 +105,10 @@ interface ApiService {
     ) //: Call <Response>
 
     @POST("article/create")
-    fun createUserArticle (
+    fun createArticle (
         @Header("Authorization") token: String,
         @Body articleRequest : ArticleRequest,
-    ) //: Call <Response>
+    ) : Call<DefaultResponse>
 
 
     // USER PROFILE
@@ -111,6 +116,12 @@ interface ApiService {
     fun getUser (
         @Header("Authorization") token: String
     ): Call<ProfileResponse>
+
+    @PATCH("user/profile")
+    fun updateProfile (
+        @Header("Authorization") token: String,
+        @Body profileRequest: ProfileRequest
+    ): Call<DefaultResponse>
 }
 
 class ApiConfig {
@@ -125,7 +136,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://34.170.84.70:5000/")
+                .baseUrl("http://34.170.183.54:5000/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

@@ -26,9 +26,9 @@ import com.jetpack.kawanusaha.ui.pages.authentication.mToast
 @Composable
 fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
     val mContext = LocalContext.current
-    val newName by remember { mutableStateOf(TextFieldValue("")) }
-    val newEmail by remember { mutableStateOf(TextFieldValue("")) }
-    var isChanged : Boolean = remember { false }
+    var newName by remember { mutableStateOf(TextFieldValue("")) }
+    var newEmail by remember { mutableStateOf(TextFieldValue("")) }
+    val status by mainViewModel.status.collectAsState(initial = false)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -86,44 +86,49 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                             horizontalArrangement = Arrangement.spacedBy(5.dp),
                             verticalArrangement = Arrangement.spacedBy(5.dp),
                         ) {
-                            user?.data?.let { userData ->
+                                user?.data?.let { userData ->
+                                newName = TextFieldValue(userData.name)
+                                newEmail = TextFieldValue(userData.email)
                                 item { Text(text = "Account Id: ") }
                                 item { TextField(
                                     value = userData.userId,
-                                    onValueChange = {},
-                                    enabled = false
+                                    onValueChange = {  },
+                                    readOnly = true
                                 ) }
                                 item { Text(text = "Name: ") }
                                 item { TextField(
-                                    value = userData.name,
-                                    onValueChange = { isChanged = true },
+                                    value = newName,
+                                    onValueChange = {
+                                        newName = it},
                                 ) }
                                 item { Text(text = "Email: ")}
                                 item { TextField(
-                                    value = userData.email,
-                                    onValueChange = { isChanged = true },
+                                    value = newEmail,
+                                    onValueChange = {
+                                        newEmail = it },
                                 ) }
                             }
                         }
-                        Button(
-                            onClick = {
-//                                mainViewModel.saveProfileChange(newName.text, newEmail.text)
-                                      },
-                            enabled = isChanged
-                        ) {
-                            Text(text = "Save Change")
+                        user?.data?.let { userData ->
+                            Button(
+                                onClick = {
+                                    mainViewModel.saveProfileChange(newName.text, newEmail.text)
+                                },
+                                //TODO pake regex
+                                enabled = (newName.text != userData.name || newEmail.text != userData.email) && (newName.text != "" || newEmail.text != "")
+                            ) {
+                                Text(text = "Save Change")
+                                LaunchedEffect(status){
+                                    if (status){
+                                        mainViewModel.clearStatus()
+                                        navBack()
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
-    }
-    LaunchedEffect(mainViewModel.status){
-        if (mainViewModel.status.value){
-            mToast(mContext, "Changes Saved")
-            navBack()
-        } else {
-            mToast(mContext, "Failed to Save Changes")
         }
     }
 }
