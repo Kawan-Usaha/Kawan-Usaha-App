@@ -28,11 +28,19 @@ data class UsahaResponse(
 	val message: String
 )
 
+data class UsahaDetailResponse(
+	val data: UsahaData?,
+	val success: Boolean,
+	val message: String
+)
+
 data class UsahaData (
 	val id: Int,
 	val tags: List<Tag>,
 	val type: Int,
-	val usaha_name : String
+	val usaha_name : String,
+	val createdAt: String?,
+	val updatedAt: String?
 )
 
 data class CreateUsahaData(

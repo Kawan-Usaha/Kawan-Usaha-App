@@ -185,6 +185,8 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
                         navController.navigate("verification_screen")
                     }, {
                         navController.navigate("change_about_screen")
+                    }, { id ->
+                        navController.navigate("usaha_detail_screen/$id")
                     })
             }
 
@@ -195,9 +197,11 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
             }
 
             composable(route = "usaha_screen") {
-                UsahaScreen(mainViewModel = mainViewModel) {
+                UsahaScreen(mainViewModel = mainViewModel, {
                     navController.navigate("add_usaha_screen")
-                }
+                }, { id ->
+                    navController.navigate("usaha_detail_screen/$id")
+                })
             }
 
             composable(route = "add_usaha_screen") {
@@ -210,6 +214,19 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
 
             composable(route = "like_screen"){
                 LikeScreen()
+            }
+
+            composable(
+                route = "usaha_detail_screen/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) {
+                // Get Id From Argument
+                it.arguments?.getInt("id")?.let { id ->
+                    UsahaDetailScreen(mainViewModel, usahaId = id) {
+                        // Back to Previous Stack
+                        navController.navigateUp()
+                    }
+                }
             }
         }
     }

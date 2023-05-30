@@ -61,7 +61,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                     placeholder = painterResource(id = R.drawable.profile),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(500.dp)
+                        .size(200.dp)
                         .padding(8.dp)
                         .clip(CircleShape)
                 )
