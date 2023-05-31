@@ -126,6 +126,10 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body profileRequest: ProfileRequest
     ): Call<DefaultResponse>
+
+
+    // CHAT BOT
+
 }
 
 class ApiConfig {
