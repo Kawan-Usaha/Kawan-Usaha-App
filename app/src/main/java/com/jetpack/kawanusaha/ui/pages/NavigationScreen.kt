@@ -146,8 +146,8 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
                         // MainScreen to ArticleScreen
                         navController.navigate("article_screen/$id")
                     }, {
-                        // MainScreen to AboutScreen
-                        navController.navigate("about_screen")
+                        // MainScreen to AddArticleScreen
+                        navController.navigate("add_article_screen")
                     })
             }
 
@@ -181,6 +181,8 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
                         navController.navigate("change_about_screen")
                     }, { id ->
                         navController.navigate("usaha_detail_screen/$id")
+                    }, {
+                        navController.navigate("add_usaha_screen")
                     })
             }
 

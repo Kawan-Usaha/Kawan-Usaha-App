@@ -32,11 +32,11 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val loginViewModel = ViewModelProvider(
                         this,
-                        LoginViewModelFactory(this, preferences)
+                        LoginViewModelFactory(preferences)
                     )[LoginViewModel::class.java]
                     val mainViewModel = ViewModelProvider(
                         this,
-                        MainViewModelFactory(this, preferences)
+                        MainViewModelFactory(preferences, this.application)
                     )[MainViewModel::class.java]
                     NavigationScreen(
                         loginViewModel = loginViewModel,

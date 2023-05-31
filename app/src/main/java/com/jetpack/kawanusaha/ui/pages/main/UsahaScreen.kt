@@ -86,7 +86,7 @@ fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
                 contentDescription = null,
                 modifier = Modifier.height(300.dp)
             )
-            Text(text = id.toString(), modifier = Modifier.height(100.dp), style = Typography.h5)
+            Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
         }
     }
 }

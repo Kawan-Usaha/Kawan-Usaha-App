@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -23,6 +24,7 @@ import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
 fun AboutScreen(
@@ -32,7 +34,8 @@ fun AboutScreen(
     navToLanding: () -> Unit,
     navToVerify: () -> Unit,
     navToChangeAbout: () -> Unit,
-    navToUsahaDetail: (Int) -> Unit
+    navToUsahaDetail: (Int) -> Unit,
+    navToAddUsaha: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -85,7 +88,7 @@ fun AboutScreen(
                                     listOf(
                                         "Account Id: " to userData.userId,
                                         "Email: " to userData.email,
-                                        "Member Since: " to userData.createdAt.slice(0..10),
+                                        "Member Since: " to userData.createdAt.slice(0..9),
                                     ).forEach { (label, value) ->
                                         item {
                                             Text(text = label)
@@ -115,6 +118,12 @@ fun AboutScreen(
                         navToLanding()
                     }) {
                     Text(text = "Sign Out")
+                }
+            }
+            item {
+                Row (Modifier.fillMaxWidth()){
+                    SectionText(text = "Usaha", style = Typography.h3 , modifier = Modifier.weight(1f))
+                    SectionText(text = "+", style = Typography.h3 , modifier = Modifier.clickable { navToAddUsaha() })
                 }
             }
             item {

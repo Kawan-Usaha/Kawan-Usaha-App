@@ -111,7 +111,7 @@ interface ApiService {
     @POST("article/create")
     fun createArticle (
         @Header("Authorization") token: String,
-        @Body articleRequest : ArticleRequest,
+        @Body createArticleRequest: CreateArticleRequest
     ) : Call<DefaultResponse>
 
 

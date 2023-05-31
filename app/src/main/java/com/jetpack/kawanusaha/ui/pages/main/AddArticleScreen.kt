@@ -17,6 +17,7 @@ fun AddArticleScreen(mainViewModel: MainViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         var title by remember { mutableStateOf(TextFieldValue("")) }
         var content by remember { mutableStateOf(TextFieldValue("")) }
+        var category by remember { mutableStateOf(TextFieldValue("")) }
         Text(text = "Write Articles")
         OutlinedTextField(
             value = title,
@@ -29,6 +30,12 @@ fun AddArticleScreen(mainViewModel: MainViewModel) {
             label = { Text(text = "Content") },
             modifier = Modifier.height(200.dp)
         )
+        OutlinedTextField(
+            value = category,
+            onValueChange = { category = it },
+            label = { Text(text = "Category (number)") },
+            modifier = Modifier.height(200.dp)
+        )
         Button(
             onClick = {
                 // Nanti bisa ambil gambar
@@ -39,7 +46,7 @@ fun AddArticleScreen(mainViewModel: MainViewModel) {
 
         Button(
             onClick = {
-                mainViewModel.createArticle(title = title.text, content = content.text)
+                mainViewModel.createArticle(title = title.text, content = content.text, category = category.text.toInt())
             }
         ) {
             Text(text = "Submit")

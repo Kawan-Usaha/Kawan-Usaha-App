@@ -75,7 +75,6 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
             if(tag3.text.isNotBlank()){
                 tagList.add(Tag(tag3.text))
             }
-            Log.e("AddUsaha", usahaName.text + type.text.toInt() + tagList)
             mainViewModel.createUsaha(usahaName.text, type.text.toInt(), tagList)
         }) {
             Text(text = "Create")

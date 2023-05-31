@@ -89,8 +89,8 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.getArticleDetails(id).execute() }
     }
 
-    suspend fun createArticle (jwtToken: String, articleRequest: ArticleRequest): DefaultResponse? {
-        return executeRequest { apiService.createArticle(jwtToken, articleRequest).execute() }
+    suspend fun createArticle (jwtToken: String, createArticleRequest: CreateArticleRequest): DefaultResponse? {
+        return executeRequest { apiService.createArticle("Bearer $jwtToken", createArticleRequest).execute() }
     }
 
     private suspend fun <T> executeRequest(apiCall: suspend () -> Response<T>): T? {
@@ -109,6 +109,7 @@ class DataRepository(private val apiService: ApiService) {
             }
         }
     }
+
 
     companion object {
         private const val TAG = "DataRepository"

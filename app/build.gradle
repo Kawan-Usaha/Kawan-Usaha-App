@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'kotlin-parcelize'
     id("org.jetbrains.dokka") version "1.8.10"
 }
 
@@ -95,9 +96,11 @@ dependencies {
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
     implementation "androidx.paging:paging-compose:1.0.0-alpha20"
 
-    // Pager
-    implementation "com.google.accompanist:accompanist-pager:0.23.1"
-    implementation "com.google.accompanist:accompanist-pager-indicators:0.23.1"
+    // Room
+    implementation 'androidx.room:room-runtime:2.5.1'
+    implementation 'androidx.datastore:datastore-preferences:1.0.0'
+    kapt 'androidx.room:room-compiler:2.5.1'
+
 
 
     //**********************  TEST  ***********************//

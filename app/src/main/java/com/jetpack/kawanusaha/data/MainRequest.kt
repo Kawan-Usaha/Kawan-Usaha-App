@@ -6,13 +6,18 @@ data class ProfileRequest(
 )
 
 data class UsahaRequest(
-    val usahaname: String,
+    val usaha_name: String,
     val type: Int,
     val tags: List<Tag>,
 )
 
 data class Tag (
     val name: String
+)
+
+data class CreateArticleRequest(
+    val article : ArticleRequest,
+    val category: Int
 )
 
 data class ArticleRequest (
