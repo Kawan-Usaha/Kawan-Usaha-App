@@ -1,6 +1,5 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,10 +13,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.UsahaData
 import com.jetpack.kawanusaha.data.UsahaResponse
 import com.jetpack.kawanusaha.main.MainViewModel
@@ -27,7 +24,11 @@ import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
-fun UsahaScreen(mainViewModel: MainViewModel, navToAddUsaha: () -> Unit, navToUsahaDetail: (Int) -> Unit) {
+fun UsahaScreen(
+    mainViewModel: MainViewModel,
+    navToAddUsaha: () -> Unit,
+    navToUsahaDetail: (Int) -> Unit
+) {
     Scaffold(
         floatingActionButton = { NavFabButton(navToAddUsaha) },
         topBar = { TopBar {} }) { innerPadding ->
@@ -75,7 +76,7 @@ fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
 fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
     val title = usaha_name.usaha_name
     val id = usaha_name.id
-    Card (modifier = Modifier.clickable{ navToUsahaDetail(id) }){
+    Card(modifier = Modifier.clickable { navToUsahaDetail(id) }) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -85,8 +86,10 @@ fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
             AsyncImage(
                 model = "URL DISINI",
                 contentDescription = "Foto Usaha",
-                modifier = Modifier.height(300.dp).background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-                    onSuccess = {showShimmer.value = false}
+                modifier = Modifier
+                    .height(300.dp)
+                    .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                onSuccess = { showShimmer.value = false }
             )
             Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
         }
