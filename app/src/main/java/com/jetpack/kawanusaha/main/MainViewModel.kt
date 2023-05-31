@@ -18,8 +18,6 @@ class MainViewModel(
     private val dataRepository: DataRepository,
     private val preferences: SharedPreferences
 ) : ViewModel() {
-    private var jwtToken: String = ""
-
     private val _userProfile = MutableStateFlow<ProfileResponse?>(null)
     val userProfile: StateFlow<ProfileResponse?> = _userProfile
 
@@ -33,47 +31,48 @@ class MainViewModel(
     val usahaDetail: StateFlow<UsahaDetailResponse?> = _usahaDetail
 
     private val _articleDetail = MutableStateFlow<ArticleDetail?>(null)
-    val articleDetail : StateFlow<ArticleDetail?> = _articleDetail
+    val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
 
     init {
         clearStatus()
-        getToken()
     }
 
-    private fun getToken() {
-        jwtToken = preferences.getString(TOKEN, "").toString()
-    }
-
+    private fun getToken(): String = preferences.getString(TOKEN, "").toString()
 
     // User Profile
     fun getUser() {
         viewModelScope.launch {
-            _userProfile.value = dataRepository.getUser(jwtToken)
+            _userProfile.value = dataRepository.getUser(getToken())
         }
     }
 
     fun saveProfileChange(name: String, email: String) {
         viewModelScope.launch {
-            _status.value = dataRepository.updateProfile(jwtToken, ProfileRequest(name = name, email = email))?.success ?: false
+            _status.value = dataRepository.updateProfile(
+                getToken(),
+                ProfileRequest(name = name, email = email)
+            )?.success ?: false
         }
     }
 
     // Usaha
     fun getListUsaha() {
+        getToken()
         viewModelScope.launch {
-            _listUsaha.value = dataRepository.getListUsaha(jwtToken)
+            _listUsaha.value = dataRepository.getListUsaha(getToken())
         }
     }
 
-    fun getUsahaDetail(id: Int){
+    fun getUsahaDetail(id: Int) {
         viewModelScope.launch {
-            _usahaDetail.value = dataRepository.getUsahaDetail(jwtToken, id)
+            _usahaDetail.value = dataRepository.getUsahaDetail(getToken(), id)
         }
     }
 
-    fun createUsaha(usahaName: String, type: Int, tags: List<Tag>){
+    fun createUsaha(usahaName: String, type: Int, tags: List<Tag>) {
         viewModelScope.launch {
-            _status.value = dataRepository.createUsaha(jwtToken,
+            _status.value = dataRepository.createUsaha(
+                getToken(),
                 usahaRequest = UsahaRequest(usahaname = usahaName, type = type, tags = tags)
             )?.success ?: false
         }
@@ -81,18 +80,26 @@ class MainViewModel(
 
 
     // Articles
-    fun getAllArticles() : Flow<PagingData<ArticlesItem>> = dataRepository.getListArticle().cachedIn(viewModelScope)
+    fun getAllArticles(): Flow<PagingData<ArticlesItem>> = dataRepository.getListArticle().cachedIn(viewModelScope)
 
-    fun getArticleDetail(id: Int){
+    fun getUserArticles(): Flow<PagingData<ArticlesItem>> = dataRepository.getUserArticle(getToken()).cachedIn(viewModelScope)
+
+
+    fun searchAllArticle(text: String): Flow<PagingData<ArticlesItem>> = dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
+
+    fun searchUserArticle(text: String): Flow<PagingData<ArticlesItem>> = dataRepository.searchUserArticle(getToken(), text).cachedIn(viewModelScope)
+
+
+    fun getArticleDetail(id: Int) {
         viewModelScope.launch {
             _articleDetail.value = dataRepository.getArticleDetail(id)?.data
         }
     }
 
-    fun createArticle(title: String, content: String){
+    fun createArticle(title: String, content: String) {
         viewModelScope.launch {
             _status.value = dataRepository.createArticle(
-                jwtToken = jwtToken,
+                getToken(),
                 ArticleRequest(
                     title = title,
                     content = content,
@@ -103,10 +110,10 @@ class MainViewModel(
         }
     }
 
-
-    fun clearStatus(){
+    fun clearStatus() {
         _status.value = false
     }
+
     companion object {
         private const val TOKEN = "TOKEN"
     }

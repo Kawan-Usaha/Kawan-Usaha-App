@@ -142,18 +142,12 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
             // MainScreen Navigation
             composable(route = "main_screen") {
                 MainScreen(
-                    mainViewModel = mainViewModel, {
-                        // MainScreen to ChatScreen
-                        navController.navigate("chat_screen")
-                    }, { id ->
+                    mainViewModel = mainViewModel, { id ->
                         // MainScreen to ArticleScreen
                         navController.navigate("article_screen/$id")
                     }, {
                         // MainScreen to AboutScreen
                         navController.navigate("about_screen")
-                    }, {
-                        // MainScreen to AddArticleScreen
-                        navController.navigate("add_article_screen")
                     })
             }
 
@@ -227,6 +221,14 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
                         navController.navigateUp()
                     }
                 }
+            }
+
+            composable(route = "explore_screen"){
+                ExploreScreen(mainViewModel = mainViewModel,
+                    navToAddArticle = { navController.navigate("add_article_screen") },
+                    navToArticle = { id ->
+                        navController.navigate("article_screen/$id")
+                    })
             }
         }
     }

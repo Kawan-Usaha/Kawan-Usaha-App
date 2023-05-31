@@ -81,7 +81,7 @@ data class ArticlesItem(
 	val createdAt: String,
 	val id: Int,
 	val category: List<Category>,
-	val title: String
+	val title: String,
 )
 
 data class ArticleDetailResponse(
@@ -111,4 +111,32 @@ data class Category(
 	val createdAt: String,
 	val updatedAt: String
 )
+
+
+data class LLMResponse(
+	val created: Int,
+	val usage: Usage,
+	val model: String,
+	val id: String,
+	val choices: List<ChoicesItem>,
+	val objects: String
+)
+
+data class ChoicesItem(
+	val finishReason: String,
+	val index: Int,
+	val message: Message
+)
+
+data class Message(
+	val role: String,
+	val content: String
+)
+
+data class Usage(
+	val completionTokens: Int,
+	val promptTokens: Int,
+	val totalTokens: Int
+)
+
 

@@ -16,9 +16,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
@@ -32,25 +33,21 @@ import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
 import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.theme.Typography
+
 @Composable
 fun MainScreen(
     mainViewModel: MainViewModel,
-    navToChat: () -> Unit,
     navToArticle: (Int) -> Unit,
     navToAddArticle: () -> Unit,
-    navToAbout: () -> Unit,
 ) {
-    val articles: LazyPagingItems<ArticlesItem> =
-        mainViewModel.getAllArticles().collectAsLazyPagingItems()
+    val articles: LazyPagingItems<ArticlesItem> = mainViewModel.getUserArticles().collectAsLazyPagingItems()
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
             .fillMaxSize()
     ) {
         Scaffold(
-            topBar = {
-                TopBar({})
-            },
+            topBar = { TopBar {} },
             floatingActionButton = { NavFabButton(navToAddArticle) }
         ) { innerPadding ->
             Column(
@@ -76,8 +73,8 @@ fun MainScreen(
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         CategorySection()
-
                         Spacer(Modifier.height(8.dp))
+
                         // Recommendation Articles Section
                         SectionText(
                             text = "Recommendation Articles",
@@ -199,23 +196,19 @@ fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) 
 
 @Composable
 fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
-    //TODO Ganti jadi articlesItem.title
-    val title = articlesItem.id.toString()
+    val title = articlesItem.title
     val id = articlesItem.id
-    Log.e("LOG", "ID + $id")
-    Card {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable { navToArticle(id) }
-                .padding(20.dp),
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.height(300.dp)
-            )
-            Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
-        }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable { navToArticle(id) }
+            .padding(20.dp),
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = null,
+            modifier = Modifier.height(300.dp)
+        )
+        Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
     }
 }

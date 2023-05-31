@@ -19,7 +19,10 @@ import kotlinx.coroutines.launch
  * @property dataRepository the repository of all data
  * @property preferences the shared preference to keep local data
  */
-class LoginViewModel(private val dataRepository: DataRepository, private val preferences: SharedPreferences) : ViewModel() {
+class LoginViewModel(
+    private val dataRepository: DataRepository,
+    private val preferences: SharedPreferences
+) : ViewModel() {
     private val _loginCredential = MutableStateFlow<LoginResponse?>(null)
     val loginCredential: StateFlow<LoginResponse?> = _loginCredential
 
@@ -30,13 +33,13 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
     val message: StateFlow<String> = _message
 
     private val _isVerified = MutableStateFlow(false)
-    val isVerified : StateFlow<Boolean> = _isVerified
+    val isVerified: StateFlow<Boolean> = _isVerified
 
     init {
         clear()
     }
 
-    fun clear () {
+    fun clear() {
         _isVerified.value = false
     }
 
@@ -56,7 +59,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
                     password = password
                 )
             )
-            if (loginCredential.value != null){
+            if (loginCredential.value != null) {
                 createSession(loginCredential.value?.data?.token.toString())
             }
         }
@@ -82,7 +85,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
                     password_confirm = passwordConfirm
                 )
             )
-            if (registerCredential.value != null){
+            if (registerCredential.value != null) {
                 createSession(registerCredential.value?.data?.token.toString())
             }
         }
@@ -93,7 +96,7 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
      *
      *  @param token Jwt Token
      */
-    private fun createSession (token: String){
+    private fun createSession(token: String) {
         preferences.edit().putString(TOKEN, token).apply()
     }
 
@@ -102,14 +105,14 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
      *
      * @return login status
      */
-    fun isLoggedIn(): Boolean{
+    fun isLoggedIn(): Boolean {
         return preferences.getString(TOKEN, null) != null
     }
 
     /**
      * Clear session and token from preferences
      */
-    fun logout (){
+    fun logout() {
         preferences.edit().clear().apply()
     }
 
@@ -118,16 +121,17 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
      *
      *  @param email user email address
      */
-    fun generate(email: String?){
+    fun generate(email: String?) {
         viewModelScope.launch {
-            if (email == null){
+            if (email == null) {
                 dataRepository.generate(preferences.getString(TOKEN, "").toString()).let {
                     _message.value = it?.message.toString()
                 }
             } else {
-                dataRepository.forgotGenerate(forgotGenerateRequest = ForgotGenerateRequest(email = email)).let{
-                    _message.value = it?.message.toString()
-                }
+                dataRepository.forgotGenerate(forgotGenerateRequest = ForgotGenerateRequest(email = email))
+                    .let {
+                        _message.value = it?.message.toString()
+                    }
             }
 
         }
@@ -140,10 +144,13 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
      *  @param password user password
      *  @param passwordConfirm user password to avoid mistype
      */
-    fun verify(verification_code: String, password: String?, passwordConfirm: String?){
+    fun verify(verification_code: String, password: String?, passwordConfirm: String?) {
         viewModelScope.launch {
-            if (password == null && passwordConfirm == null){
-                dataRepository.verify(preferences.getString(TOKEN, "").toString(), VerificationRequest(verification_code)).let {
+            if (password == null && passwordConfirm == null) {
+                dataRepository.verify(
+                    preferences.getString(TOKEN, "").toString(),
+                    VerificationRequest(verification_code)
+                ).let {
                     _isVerified.value = (it?.success ?: false) &&
                             (it?.message!! == "Email verified")
                     _message.value = it?.message.toString()
@@ -154,7 +161,8 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
                         verification_code = verification_code,
                         password = password!!,
                         password_confirm = passwordConfirm!!
-                    )).let{
+                    )
+                ).let {
                     _isVerified.value = (it?.success == true) &&
                             (it.message == "Password changed successfully")
                     _message.value = it?.message.toString()
@@ -169,7 +177,10 @@ class LoginViewModel(private val dataRepository: DataRepository, private val pre
 }
 
 
-class LoginViewModelFactory(private val context: Context, private val preferences: SharedPreferences) : ViewModelProvider.Factory {
+class LoginViewModelFactory(
+    private val context: Context,
+    private val preferences: SharedPreferences
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

@@ -80,14 +80,14 @@ fun BottomBar(
                 val currentRoute = navBackStackEntry?.destination?.route
                 val navigationItems = listOf(
                     NavigationItem(
-                        title = "Feeds", //ubah jadi string resource
+                        title = "Feeds", //change into string resource
                         icon = Icons.Default.List,
                         screen = Screen.Feeds
                     ),
                     NavigationItem(
-                        title = "Search",
+                        title = "Explore",
                         icon = Icons.Default.Search,
-                        screen = Screen.Usaha
+                        screen = Screen.Explore
                     ),
                     NavigationItem(
                         title = "Chat",
@@ -144,7 +144,7 @@ data class NavigationItem(
 
 sealed class Screen(val route: String) {
     object Feeds : Screen("main_screen")
-    object Usaha : Screen("usaha_screen")
+    object Explore : Screen("explore_screen")
     object Chat : Screen("chat_screen")
     object Like : Screen("like_screen")
     object Profile : Screen("about_screen")

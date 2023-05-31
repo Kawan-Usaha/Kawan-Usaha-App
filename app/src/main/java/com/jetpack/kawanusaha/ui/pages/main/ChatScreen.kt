@@ -18,14 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Device
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.data.message_dummy
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 
 @Preview(showBackground = true, device = Devices.PIXEL_4)
 @Composable
@@ -36,9 +35,11 @@ fun ChatScreen() {
         color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
     ) {
-        Scaffold(topBar = {TopBarSection()}) { innerPadding ->
+        Scaffold(topBar = { TopBarSection() }) { innerPadding ->
             Column(
-                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
                 verticalArrangement = Arrangement.Top
             ) {
                 ChatSection(Modifier.weight(1f))
@@ -71,9 +72,9 @@ fun TopBarSection() {
                     .size(42.dp)
                     .clip(CircleShape)
             )
-            
+
             Spacer(modifier = Modifier.width(8.dp))
-            
+
             Column {
                 Text(text = "Bot", fontWeight = FontWeight.SemiBold)
                 Text(
@@ -89,17 +90,17 @@ fun TopBarSection() {
 fun ChatSection(
     modifier: Modifier = Modifier
 ) {
-    val simpleDateFormat = SimpleDateFormat("h:mm a", Locale.US)
+    val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.US)
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
         reverseLayout = true
-    ){
-        items(message_dummy){chat ->
+    ) {
+        items(message_dummy) { chat ->
             MessageItem(
-                messageText = chat.text, 
-                time = simpleDateFormat.format(chat.time), 
+                messageText = chat.text,
+                time = simpleDateFormat.format(chat.time),
                 isOut = chat.isOut
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -113,14 +114,14 @@ fun MessageItem(
     time: String,
     isOut: Boolean
 ) {
-    val botChatBubbleShape = RoundedCornerShape(0.dp,8.dp,8.dp,8.dp)
-    val authorChatBubbleShape = RoundedCornerShape(8.dp,0.dp,8.dp,8.dp)
+    val botChatBubbleShape = RoundedCornerShape(0.dp, 8.dp, 8.dp, 8.dp)
+    val authorChatBubbleShape = RoundedCornerShape(8.dp, 0.dp, 8.dp, 8.dp)
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = if(isOut) Alignment.End else Alignment.Start
+        horizontalAlignment = if (isOut) Alignment.End else Alignment.Start
     ) {
-        if(messageText != null){
-            if(messageText.isNotEmpty()){
+        if (messageText != null) {
+            if (messageText.isNotEmpty()) {
                 Box(
                     modifier = Modifier
                         .background(
@@ -134,7 +135,8 @@ fun MessageItem(
                 ) {
                     Text(
                         text = messageText,
-                        style = MaterialTheme.typography.body1)
+                        style = MaterialTheme.typography.body1
+                    )
                 }
             }
         }
@@ -160,10 +162,10 @@ fun MessageSection() {
                 Text(text = "Text Message")
             },
             value = text,
-            onValueChange = {text = it},
+            onValueChange = { text = it },
             shape = RoundedCornerShape(15.dp),
             trailingIcon = {
-                if(text.text.isNotEmpty()) {
+                if (text.text.isNotEmpty()) {
                     Icon(
                         imageVector = Icons.Default.Send,
                         contentDescription = "Send",

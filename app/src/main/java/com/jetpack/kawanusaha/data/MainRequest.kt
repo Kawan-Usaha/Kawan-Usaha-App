@@ -21,3 +21,9 @@ data class ArticleRequest (
     val image: String,
     val is_published: Boolean
 )
+
+data class LLMRequest(
+    val stream: Boolean,
+    val messages: List<Message>,
+    val model: String
+)
