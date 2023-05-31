@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.ui.BackPressHandler
+import com.jetpack.kawanusaha.ui.pages.BackPressHandler
 import com.jetpack.kawanusaha.ui.theme.*
 
 @Composable

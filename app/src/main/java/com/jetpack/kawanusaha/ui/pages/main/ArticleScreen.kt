@@ -1,8 +1,8 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import android.content.Intent
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -58,6 +58,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
                         }) {
                         Icon(
                             imageVector = likeButton,
+                            tint = MaterialTheme.colors.secondary,
                             contentDescription = "Like"
                         )
                     }
@@ -72,20 +73,39 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
                         }) {
                         Icon(
                             imageVector = Icons.Default.Share,
+                            tint = MaterialTheme.colors.secondary,
                             contentDescription = "Share"
                         )
                     }
                 },
                 backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
+                elevation = 0.dp,
+                modifier = Modifier.padding(8.dp),
             )
         }
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
+                .padding(8.dp),
+            horizontalAlignment = Alignment.Start
         ) {
+            item {
+                Row {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = "Account",
+                            modifier = Modifier.size(30.dp)
+                        )
+                    }
+                    Column {
+                        Text(text = "Made by %s", style = MaterialTheme.typography.body1)
+                        Text("Published at %1%s - %2%s", style = MaterialTheme.typography.body1)
+                    }
+
+                }
+            }
             item {
                 AsyncImage(
                     model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
@@ -93,12 +113,15 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
                     placeholder = painterResource(id = R.drawable.profile),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(500.dp)
+                        .size(width = 500.dp, height = 300.dp)
                         .padding(8.dp)
                 )
             }
             item {
-                Text(text = article?.content ?: "Content")
+                Text(text = article?.content ?: "Content", style = MaterialTheme.typography.h3, modifier = Modifier.padding(8.dp))
+            }
+            item {
+                Text(text = article?.content ?: "Content", style = MaterialTheme.typography.body1 ,modifier = Modifier.padding(8.dp))
             }
         }
     }

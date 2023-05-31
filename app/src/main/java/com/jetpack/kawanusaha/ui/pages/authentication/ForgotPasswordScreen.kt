@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
@@ -32,18 +33,15 @@ import com.jetpack.kawanusaha.ui.pages.main.SectionText
 // TODO Security Leak in passing password
 @Composable
 fun ForgotPasswordScreen(
-    viewModel: LoginViewModel,
     navBack: () -> Unit,
     navToVerification: (email: String, password: String, passwordConfirm: String) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var newPass by remember { mutableStateOf(TextFieldValue("")) }
     var confPass by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
     val orange = MaterialTheme.colors.secondary
-    val chocolateVariant = MaterialTheme.colors.secondaryVariant
     val white = MaterialTheme.colors.primary
 
     Column(
@@ -69,7 +67,7 @@ fun ForgotPasswordScreen(
             }
             Image(
                 painter = painterResource(R.drawable.baseline_key_day),
-                contentDescription = "email_open",
+                contentDescription = "key",
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(120.dp)
@@ -100,6 +98,32 @@ fun ForgotPasswordScreen(
                     )
                 }
                 Spacer(Modifier.height(15.dp))
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Email,
+                            contentDescription = "Email Icon",
+                            tint = orange
+                        )
+                    },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .fillMaxWidth()
+                        .padding(5.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = MaterialTheme.colors.onPrimary,
+                        cursorColor = MaterialTheme.colors.onPrimary,
+                        errorBorderColor = MaterialTheme.colors.error,
+                        focusedBorderColor = MaterialTheme.colors.secondary,
+                        unfocusedBorderColor = MaterialTheme.colors.surface,
+                        focusedLabelColor = MaterialTheme.colors.secondary,
+                        unfocusedLabelColor = MaterialTheme.colors.surface
+                    ),
+                )
                 OutlinedTextField(
                     value = newPass,
                     onValueChange = { newPass = it },
@@ -202,7 +226,7 @@ fun ForgotPasswordScreen(
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
-                        color = MaterialTheme.colors.secondary,
+                        color = MaterialTheme.colors.onPrimary,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentSize(Alignment.Center)
@@ -233,78 +257,6 @@ fun ForgotPasswordScreen(
                 }
             }
         }
-
-//        Card(backgroundColor = MaterialTheme.colors.background, elevation = 1.dp) {
-//            LazyColumn(modifier = Modifier.fillMaxSize()) {
-//                item {
-//                    Text(text = "RESET PASSWORD", style = Typography.h2)
-//                }
-//                item {
-//                    Text(text = "Create a new bla bla bla ...", style = Typography.h4)
-//                }
-//                item {
-//                    TextField(
-//                        value = email,
-//                        onValueChange = { email = it },
-//                        label = { Text(text = "Email") },
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//                    )
-//                }
-//                item {
-//                    TextField(
-//                        value = newPass,
-//                        onValueChange = { newPass = it },
-//                        label = { Text(text = "New Password") },
-//                        visualTransformation = PasswordVisualTransformation(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//                        trailingIcon = {
-//                            if (newPass.text.length < 8 && newPass.text.length != 0)
-//                                Icon(
-//                                    Icons.Filled.Warning,
-//                                    "error",
-//                                    tint = MaterialTheme.colors.error
-//                                )
-//                        },
-//                    )
-//                }
-//                item {
-//                    TextField(
-//                        value = confPass,
-//                        onValueChange = { confPass = it },
-//                        label = { Text(text = "Confirm Password") },
-//                        visualTransformation = PasswordVisualTransformation(),
-//                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//                        trailingIcon = {
-//                            if (confPass.text != newPass.text)
-//                                Icon(
-//                                    Icons.Filled.Warning,
-//                                    "error",
-//                                    tint = MaterialTheme.colors.error
-//                                )
-//                        },
-//                    )
-//                }
-//                item {
-//                    Button(
-//                        onClick = {
-//                            // generate verification code
-//                            navToVerification(email.text, newPass.text, confPass.text)
-//                        },
-//                        enabled = (email.text != "" && newPass.text.length >= 8 && confPass.text.length >= 8)
-//                    ) {
-//                        Text(text = "Verify")
-//                    }
-//                }
-//                item {
-//                    Button(
-//                        onClick = {
-//                            navBack()
-//                        }) {
-//                        Text(text = "Cancel")
-//                    }
-//                }
-//            }
-//        }
     }
 }
 

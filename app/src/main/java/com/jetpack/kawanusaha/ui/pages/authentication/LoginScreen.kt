@@ -1,7 +1,10 @@
 package com.jetpack.kawanusaha.ui.pages
 
 import android.util.Log
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,21 +17,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.BackPressHandler
 import com.jetpack.kawanusaha.ui.pages.main.SectionText
 
 @Composable
@@ -68,9 +71,9 @@ fun LoginScreen(
             style = MaterialTheme.typography.h4
         )
         Spacer(Modifier.height(10.dp))
-        Row (
+        Row(
             horizontalArrangement = Arrangement.Center
-        ){
+        ) {
             Text(
                 text = "Don't have an account? ",
                 color = MaterialTheme.colors.onPrimary
@@ -98,10 +101,10 @@ fun LoginScreen(
                 modifier = Modifier.padding(25.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box (
+                Box(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     SectionText(
                         text = "LOGIN",
                         style = MaterialTheme.typography.h5,
@@ -238,12 +241,12 @@ fun LoginScreen(
             }
         }
     }
-    
+
     BackPressHandler(onBackPressed = navToLanding)
 
     // Authentication Status Changes
-    LaunchedEffect( loginToken ){
-        if(viewModel.isLoggedIn()){
+    LaunchedEffect(loginToken) {
+        if (viewModel.isLoggedIn()) {
             navToMain()
         }
     }

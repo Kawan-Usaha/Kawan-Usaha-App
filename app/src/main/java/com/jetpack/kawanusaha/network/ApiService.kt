@@ -63,7 +63,7 @@ interface ApiService {
     fun getUsahaDetail (
         @Header("Authorization") token: String,
         @Query("id") id: Int,
-    ) //: Call <Response>
+    ) : Call<UsahaDetailResponse>
 
     @POST("usaha/create")
     fun createUsaha (
@@ -80,11 +80,11 @@ interface ApiService {
     ) : ArticleResponse
 
     @GET("article/search")
-    fun searchAllArticles (
+    suspend fun searchAllArticles (
         @Query ("page") page: Int,
         @Query ("page_size") page_size: Int,
         @Query ("title") title: String
-    ) //: Call <Response>
+    ) : ArticleResponse
 
     @GET("article/content")
     fun getArticleDetails (
@@ -94,15 +94,19 @@ interface ApiService {
 
     // USER ARTICLES
     @GET("article/owned")
-    fun getUserArticles (
+    suspend fun getUserArticles (
         @Header("Authorization") token: String,
-    ) //: Call <Response>
+        @Query ("page") page: Int,
+        @Query ("page_size") page_size: Int,
+    ) : ArticleResponse
 
-    @GET("article/search")
-    fun searchUserArticle (
+    @GET("article/owned/search")
+    suspend fun searchUserArticle (
         @Header("Authorization") token: String,
-        // Mungkin masi diiupdate
-    ) //: Call <Response>
+        @Query ("page") page: Int,
+        @Query ("page_size") page_size: Int,
+        @Query ("title") title: String
+    ): ArticleResponse
 
     @POST("article/create")
     fun createArticle (

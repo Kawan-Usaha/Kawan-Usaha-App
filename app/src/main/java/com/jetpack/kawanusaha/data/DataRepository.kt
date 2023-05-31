@@ -47,6 +47,10 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.getListUsaha("Bearer $jwtToken").execute() }
     }
 
+    suspend fun getUsahaDetail(jwtToken: String, id: Int): UsahaDetailResponse?{
+        return executeRequest { apiService.getUsahaDetail("Bearer $jwtToken", id).execute() }
+    }
+
     suspend fun createUsaha(jwtToken: String, usahaRequest: UsahaRequest): DefaultResponse? {
         return executeRequest { apiService.createUsaha("Bearer $jwtToken", usahaRequest).execute() }
     }
@@ -56,7 +60,28 @@ class DataRepository(private val apiService: ApiService) {
     fun getListArticle (): Flow<PagingData<ArticlesItem>> {
         return Pager(
             config = PagingConfig(pageSize = 6, initialLoadSize = 6),
-            pagingSourceFactory = { ArticlePagingSource(apiService) }
+            pagingSourceFactory = { ArticlePagingSource(apiService, null, null) }
+        ).flow
+    }
+
+    fun getUserArticle (jwtToken: String): Flow<PagingData<ArticlesItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = 6, initialLoadSize = 6),
+            pagingSourceFactory = { ArticlePagingSource(apiService, "Bearer $jwtToken", null) }
+        ).flow
+    }
+
+    fun searchAllArticle (text: String): Flow<PagingData<ArticlesItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = 6, initialLoadSize = 6),
+            pagingSourceFactory = { ArticlePagingSource(apiService, null, text) }
+        ).flow
+    }
+
+    fun searchUserArticle (jwtToken: String, text: String): Flow<PagingData<ArticlesItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = 6, initialLoadSize = 6),
+            pagingSourceFactory = { ArticlePagingSource(apiService, "Bearer $jwtToken", text) }
         ).flow
     }
 

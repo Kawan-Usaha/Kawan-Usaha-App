@@ -6,14 +6,9 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,14 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -39,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun VerificationScreen(
@@ -148,7 +140,7 @@ fun VerificationScreen(
                                 textAlign = TextAlign.Center
                             )
                         }
-                            },
+                    },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         capitalization = KeyboardCapitalization.Characters
                     ),
@@ -159,9 +151,9 @@ fun VerificationScreen(
                         .height(120.dp)
                         .padding(start = 50.dp, end = 50.dp),
                     textStyle = LocalTextStyle.current.copy(
-                            textAlign = TextAlign.Center,
-                            fontSize = 30.sp
-                        ),
+                        textAlign = TextAlign.Center,
+                        fontSize = 30.sp
+                    ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = MaterialTheme.colors.onPrimary,
                         cursorColor = MaterialTheme.colors.onPrimary,
@@ -177,13 +169,19 @@ fun VerificationScreen(
                     text = "Resend Code",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
-                    // re-generate code
-                    viewModel.generate(email)
-                })
+                        // re-generate code
+                        viewModel.generate(email)
+                    })
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     // TODO else show pop up that verification failed
-                    onClick = { viewModel.verify(verificationCode.text, password, passwordConfirm)},
+                    onClick = {
+                        viewModel.verify(
+                            verificationCode.text,
+                            password,
+                            passwordConfirm
+                        )
+                    },
                     modifier = Modifier.size(300.dp, 40.dp),
                     colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
                 ) {
@@ -205,41 +203,12 @@ fun VerificationScreen(
 
             }
         }
-
-//        Text(text = "Verification Code")
-//
-//        item {
-//            TextField(
-//                value = verificationCode,
-//                onValueChange = { verificationCode = it },
-//                label = { Text(text = "Verify") },
-//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//            )
-//        }
-//        item {
-//            Text(text = "Resend Code", modifier = Modifier.clickable {
-//                // re-generate code
-//                viewModel.generate(email)
-//            })
-//        }
-//        item {
-//            Button(
-//                onClick = {
-//                    viewModel.verify(verificationCode.text, password, passwordConfirm)
-//                    // TODO else show pop up that verification failed
-//                }) {
-//                Text(text = "Verify")
-//            }
-//            Text(text = "Verify email later", modifier = Modifier.clickable {
-//                if (password != null || passwordConfirm != null) {
-//                    navToMain()
-//                }
-//            })
-//        }
     }
-    LaunchedEffect(isVerified){
-        if(isVerified){
+    LaunchedEffect(isVerified) {
+        if (isVerified) {
+            viewModel.login(email.toString(), password.toString())
             navToMain()
+            viewModel.clear()
         } else {
             mToast(mContext, viewModel.message.value)
         }
@@ -247,14 +216,14 @@ fun VerificationScreen(
 }
 
 @Composable
-fun Generate(viewModel: LoginViewModel, email: String?){
-    LaunchedEffect(viewModel){
+fun Generate(viewModel: LoginViewModel, email: String?) {
+    LaunchedEffect(viewModel) {
         viewModel.generate(email)
     }
 }
 
-fun mToast (context: Context, text: String){
-    if (text.isNotEmpty()){
+fun mToast(context: Context, text: String) {
+    if (text.isNotEmpty()) {
         Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
     }
 
