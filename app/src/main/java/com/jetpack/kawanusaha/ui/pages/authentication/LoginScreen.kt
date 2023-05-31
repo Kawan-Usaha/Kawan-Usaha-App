@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -49,195 +50,198 @@ fun LoginScreen(
 
     val secondaryColor = MaterialTheme.colors.secondary
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
-    Column(
-        modifier = Modifier.fillMaxSize(),
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
-        Text(
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(color = chocolateVariant),
-                ) {
-                    append("KAWAN")
-                }
-                withStyle(
-                    style = SpanStyle(color = secondaryColor)
-                ) {
-                    append(" USAHA")
-                }
-            },
-            style = MaterialTheme.typography.h4
-        )
-        Spacer(Modifier.height(10.dp))
-        Row(
-            horizontalArrangement = Arrangement.Center
-        ) {
+        item{
             Text(
-                text = "Don't have an account? ",
-                color = MaterialTheme.colors.onPrimary
-            )
-            Text(
-                text = "Sign Up Now!",
-                color = MaterialTheme.colors.onPrimary,
-                fontWeight = FontWeight.Bold,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier
-                    .clickable { navToRegister() }
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(color = chocolateVariant),
+                    ) {
+                        append("KAWAN")
+                    }
+                    withStyle(
+                        style = SpanStyle(color = secondaryColor)
+                    ) {
+                        append(" USAHA")
+                    }
+                },
+                style = MaterialTheme.typography.h4
             )
         }
-        Spacer(Modifier.height(16.dp))
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            backgroundColor = MaterialTheme.colors.primary,
-            border = BorderStroke(1.dp, secondaryColor),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
-                .offset(4.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(25.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+        item{
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                backgroundColor = MaterialTheme.colors.primary,
+                border = BorderStroke(1.dp, secondaryColor),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
+                    .offset(4.dp)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
+                Column(
+                    modifier = Modifier.padding(25.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    SectionText(
-                        text = "LOGIN",
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier
-                            .padding(5.dp)
-                    )
-                }
-                Spacer(Modifier.height(15.dp))
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Email,
-                    ),
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = "Email Icon",
-                            tint = secondaryColor
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        SectionText(
+                            text = "LOGIN",
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier
+                                .padding(5.dp)
                         )
-                    },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onPrimary,
-                        cursorColor = MaterialTheme.colors.onPrimary,
-                        errorBorderColor = Color.Red,
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = MaterialTheme.colors.surface
-                    )
-                )
-                Spacer(Modifier.height(15.dp))
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Password") },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Password Icon",
-                            tint = secondaryColor
-                        )
-                    },
-                    trailingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(R.drawable.baseline_visibility_24) else
-                            painterResource(R.drawable.baseline_visibility_off_24)
-
-                        val description = if (passwordVisible) "Hide Password" else "Show Password"
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(painter = image, contentDescription = description)
-                        }
-                    },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onPrimary,
-                        cursorColor = MaterialTheme.colors.onPrimary,
-                        errorBorderColor = Color.Red,
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = MaterialTheme.colors.surface
-                    )
-                )
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = "Forgot Password?",
-                    textDecoration = TextDecoration.Underline,
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onPrimary,
-                    modifier = Modifier
-                        .clickable { navToForgotPassword() }
-                        .padding(start = 5.dp, end = 5.dp)
-                        .align(Alignment.End)
-                )
-
-                Spacer(modifier = Modifier.height(50.dp))
-                Button(
-                    onClick = {
-                        viewModel.login(email = email.text, password = password.text)
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.secondary,
-                        contentColor = MaterialTheme.colors.onPrimary
-                    ),
-                    modifier = Modifier
-                        .height(45.dp),
-                ) {
-                    Text(
-                        text = "LOGIN",
-                        style = MaterialTheme.typography.h3,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colors.onPrimary,
+                    }
+                    Spacer(Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Email") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Email,
+                        ),
+                        singleLine = true,
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Email,
+                                contentDescription = "Email Icon",
+                                tint = secondaryColor
+                            )
+                        },
                         modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center)
+                            .padding(5.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = Color.Red,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        )
                     )
-                }
-                Spacer(modifier = Modifier.height(50.dp))
-                Box(
-                    contentAlignment = Alignment.Center
-                ) {
-                    Divider(
+                    Spacer(Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Password") },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = "Password Icon",
+                                tint = secondaryColor
+                            )
+                        },
+                        trailingIcon = {
+                            val image = if (passwordVisible)
+                                painterResource(R.drawable.baseline_visibility_24) else
+                                painterResource(R.drawable.baseline_visibility_off_24)
+
+                            val description = if (passwordVisible) "Hide Password" else "Show Password"
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(painter = image, contentDescription = description)
+                            }
+                        },
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .clip(RoundedCornerShape(10.dp))
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = Color.Red,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        )
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Text(
+                        text = "Forgot Password?",
+                        textDecoration = TextDecoration.Underline,
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colors.onPrimary,
-                        thickness = 1.dp
+                        modifier = Modifier
+                            .clickable { navToForgotPassword() }
+                            .padding(start = 5.dp, end = 5.dp)
+                            .align(Alignment.End)
                     )
 
-                    Text(
-                        text = "Or Login With",
-                        color = MaterialTheme.colors.onPrimary,
-                        style = MaterialTheme.typography.body1,
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Button(
+                        onClick = {
+                            viewModel.login(email = email.text, password = password.text)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colors.secondary,
+                            contentColor = MaterialTheme.colors.onPrimary
+                        ),
                         modifier = Modifier
-                            .background(MaterialTheme.colors.primary)
-                            .padding(start = 6.dp, end = 6.dp)
-                    )
+                            .height(45.dp),
+                    ) {
+                        Text(
+                            text = "LOGIN",
+                            style = MaterialTheme.typography.h3,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colors.onPrimary,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            color = MaterialTheme.colors.onPrimary,
+                            thickness = 1.dp
+                        )
+
+                        Text(
+                            text = "Or Login With",
+                            color = MaterialTheme.colors.onPrimary,
+                            style = MaterialTheme.typography.body1,
+                            modifier = Modifier
+                                .background(MaterialTheme.colors.primary)
+                                .padding(start = 6.dp, end = 6.dp)
+                        )
+                    }
+                    Spacer(Modifier.height(15.dp))
+                    OAuthButton()
                 }
-                Spacer(Modifier.height(15.dp))
-                OAuthButton()
+            }
+        }
+        item{
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Don't have an account? ",
+                    color = MaterialTheme.colors.onPrimary
+                )
+                Text(
+                    text = "Sign Up Now!",
+                    color = MaterialTheme.colors.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier
+                        .clickable { navToRegister() }
+                )
             }
         }
     }
@@ -258,7 +262,7 @@ fun OAuthButton() {
         painter = painterResource(R.drawable.google),
         contentDescription = "Google Logo",
         modifier = Modifier
-            .padding(top = 20.dp)
+            .padding(top = 10.dp)
             .size(50.dp)
             .clickable(
                 enabled = true,
