@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,10 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +22,7 @@ import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
@@ -59,8 +58,9 @@ fun AboutScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
+                val showShimmer = remember { mutableStateOf(true) }
                 AsyncImage(
-                    model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
+                    model = "URL DISINI",
                     contentDescription = "Profile Picture",
                     placeholder = painterResource(id = R.drawable.profile),
                     contentScale = ContentScale.Crop,
@@ -68,6 +68,8 @@ fun AboutScreen(
                         .size(200.dp)
                         .padding(8.dp)
                         .clip(CircleShape)
+                        .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                    onSuccess = {showShimmer.value = false}
                 )
             }
             item {

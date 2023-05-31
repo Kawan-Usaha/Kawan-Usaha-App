@@ -1,6 +1,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -9,21 +10,20 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.UsahaData
 import com.jetpack.kawanusaha.data.UsahaResponse
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
 import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
@@ -81,10 +81,12 @@ fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
             modifier = Modifier
                 .padding(20.dp),
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.height(300.dp)
+            val showShimmer = remember { mutableStateOf(true) }
+            AsyncImage(
+                model = "URL DISINI",
+                contentDescription = "Foto Usaha",
+                modifier = Modifier.height(300.dp).background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                    onSuccess = {showShimmer.value = false}
             )
             Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
         }
