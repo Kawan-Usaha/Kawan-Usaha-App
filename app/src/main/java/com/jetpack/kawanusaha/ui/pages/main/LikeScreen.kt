@@ -2,38 +2,56 @@
 
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.db.fav.DbFav
+import com.jetpack.kawanusaha.main.LikeViewModel
+import com.jetpack.kawanusaha.main.ListArticle
+import com.jetpack.kawanusaha.main.ListArticleViewState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LikeScreen(
+    navToDetailList: (String, String?) -> Unit,
+    viewModel: LikeViewModel
 ){
     val coroutineScope = rememberCoroutineScope()
-    var inputValue by rememberSaveable { mutableStateOf("") }
+    var title by remember { mutableStateOf(TextFieldValue("")) }
+    var description by remember { mutableStateOf(TextFieldValue("")) }
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
     )
+
+    val data = listOf<ListArticle>()
+    val viewState = viewModel.consumableState().collectAsState()
+    val viewEvent = ListArticleViewState()
+
+    val context = LocalContext.current
+    val list by viewModel.allData.observeAsState(listOf())
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
@@ -41,19 +59,17 @@ fun LikeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(16.dp),
+                    .height(400.dp)
+                    .padding(32.dp),
                 contentAlignment = Alignment.TopStart
             ) {
                 Column {
                     Row(
-                        horizontalArrangement = Arrangement.Start,
-                        modifier = Modifier.padding(8.dp)
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         IconButton(onClick = { coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.collapse()}}) {
-                            Icon(imageVector =
-                            Icons.Default.Close, contentDescription = "close"
-                            )
+                            Icon(imageVector = Icons.Default.Close, contentDescription = "close")
                         }
                         Text(
                             "Create List",
@@ -61,19 +77,53 @@ fun LikeScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Name List",
-                        style = MaterialTheme.typography.body1
+                    OutlinedTextField(
+                        value = title,
+                        onValueChange = {title = it},
+                        label = {Text("List name")},
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = Color.Red,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        ),
                     )
-                    TextField(
-                        value = inputValue,
-                        onValueChange = {inputValue = it}
+                    Spacer(modifier = Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = {description = it},
+                        modifier = Modifier.fillMaxWidth(),
+                        label = {Text("Description")},
+                        singleLine = true,
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = Color.Red,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        ),
                     )
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Button(
+                        onClick = {viewModel.add(title.text, description.text)},
+                        shape = RoundedCornerShape(20.dp),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Add article list")
+                    }
                 }
             }
         },
-        modifier = Modifier.fillMaxWidth()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth(),
+        sheetElevation = 10.dp,
         sheetPeekHeight = 0.dp,
         sheetBackgroundColor = MaterialTheme.colors.primary
     ){
@@ -89,24 +139,21 @@ fun LikeScreen(
                         .padding(15.dp)
                         .fillMaxSize(),
                 ){
-                    item{
-                        ItemList{
-
-                        }
+                    items(list, key = {item -> item.id}){
+                        ItemList(viewModel, { navToDetailList(it.listName,it.description) }, dbFav = it)
                     }
                 }
             }
         }
     }
 }
-
 @Composable
 fun TopBarFavorite(
-    bottomSheetScaffoldState: BottomSheetScaffoldState
+    bottomSheetScaffoldState: BottomSheetScaffoldState,
 ) {
     val coroutineScope = rememberCoroutineScope()
     Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.Start,
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp),
@@ -137,11 +184,17 @@ fun TopBarFavorite(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ItemList(
-    navToDetail: () -> Unit,
+    viewModel: LikeViewModel,
+    navToDetailList: () -> Unit,
+    dbFav: DbFav,
 ) {
-        Card(
+    var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val count = listOf(dbFav)
+
+    Card(
             modifier = Modifier
-                .clickable { navToDetail() }
+                .clickable { navToDetailList() }
                 .fillMaxWidth(),
             backgroundColor = MaterialTheme.colors.primary,
             elevation = 10.dp,
@@ -167,19 +220,42 @@ fun ItemList(
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = "Create Text",
+                        text = dbFav.listName,
                         style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.Bold,
                     )
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit List")
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ){
+                        IconButton(onClick = {expanded = !expanded}) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "More")
 
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+                                .background(MaterialTheme.colors.primary)
+                        ) {
+                            DropdownMenuItem(
+                                onClick = { Toast.makeText(context, "Edit List", Toast.LENGTH_SHORT).show() }
+                            ) {
+                                Text("Edit")
+                            }
+                            DropdownMenuItem(
+                                onClick = {
+                                    viewModel.deleteById(dbFav.listName)
+                                    Toast.makeText(context, "Delete List", Toast.LENGTH_SHORT).show() }
+                            ){
+                                Text("Delete List")
+                            }
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(3.dp))
-                Text(text = "%s Article")
+                Text(text = "${count.count()} Article")
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth()
@@ -204,4 +280,9 @@ fun ItemList(
                 }
             }
         }
+}
+
+@Composable
+fun DropDownMenu() {
+
 }

@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
@@ -24,7 +25,9 @@ import com.jetpack.kawanusaha.ui.pages.main.*
 
 // TODO Security Leak in passing password
 @Composable
-fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel) {
+fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel,
+likeViewModel: LikeViewModel // sementara, ke composable line 217
+) {
     val navController = rememberNavController()
     val startDestination: String =
         if (loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
@@ -209,7 +212,29 @@ fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewMode
             }
 
             composable(route = "like_screen"){
-                LikeScreen()
+                LikeScreen({ param1, param2 ->
+                    navController.navigate("list_like_screen/$param1/$param2")
+                }, viewModel = likeViewModel)
+            }
+
+            composable(
+                route = "list_like_screen/{name}/{description}",
+                arguments = listOf(
+                    navArgument("name"){
+                        type = NavType.StringType
+                    },
+                    navArgument("description"){
+                        type = NavType.StringType
+                    }
+                )
+            ){
+                val name = it.arguments?.getString("name") ?: ""
+                val description = it.arguments?.getString("description")?:""
+                ListLikeScreen({
+                    navController.navigateUp()
+                }, viewModel = likeViewModel,
+                    name = name,
+                    description = description)
             }
 
             composable(
