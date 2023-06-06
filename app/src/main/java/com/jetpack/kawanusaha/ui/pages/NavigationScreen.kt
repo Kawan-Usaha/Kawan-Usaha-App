@@ -50,6 +50,9 @@ likeViewModel: LikeViewModel // sementara, ke composable line 217
         "verification_screen" -> {
             bottomBarState.value = false
         }
+        "add_article_screen" -> {
+            bottomBarState.value = false
+        }
         else -> {
             bottomBarState.value = true
         }
@@ -208,7 +211,10 @@ likeViewModel: LikeViewModel // sementara, ke composable line 217
             }
 
             composable(route = "add_article_screen") {
-                AddArticleScreen(mainViewModel = mainViewModel)
+                AddArticleScreen(
+                    mainViewModel = mainViewModel,
+                    navigateToMain = {navController.navigateUp()}
+                )
             }
 
             composable(route = "like_screen"){
