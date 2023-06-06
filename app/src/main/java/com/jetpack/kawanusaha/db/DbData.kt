@@ -11,7 +11,6 @@ import kotlinx.parcelize.Parcelize
 data class DbData (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") val id: Int = 0,
-
     @ColumnInfo(name = "title") var title: String? = null,
     @ColumnInfo(name = "content") var content: String? = null,
     @ColumnInfo(name = "image") var image: String? = null,

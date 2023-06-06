@@ -10,10 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
-import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.main.LoginViewModelFactory
-import com.jetpack.kawanusaha.main.MainViewModel
-import com.jetpack.kawanusaha.main.MainViewModelFactory
+import com.jetpack.kawanusaha.main.*
 import com.jetpack.kawanusaha.ui.pages.NavigationScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
@@ -38,9 +35,14 @@ class MainActivity : ComponentActivity() {
                         this,
                         MainViewModelFactory(preferences, this.application)
                     )[MainViewModel::class.java]
+                    val likeViewModel = ViewModelProvider(
+                        this,
+                        LikeViewModelFactory(this.application)
+                    )[LikeViewModel::class.java] // sementara
                     NavigationScreen(
                         loginViewModel = loginViewModel,
                         mainViewModel = mainViewModel,
+                        likeViewModel = likeViewModel // sementara, ke navigation screen
                     )
                 }
             }
