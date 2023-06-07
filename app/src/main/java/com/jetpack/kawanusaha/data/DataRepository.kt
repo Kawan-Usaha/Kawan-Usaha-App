@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.jetpack.kawanusaha.network.ApiConfig
 import com.jetpack.kawanusaha.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
@@ -92,6 +94,11 @@ class DataRepository(private val apiService: ApiService) {
     suspend fun createArticle (jwtToken: String, createArticleRequest: CreateArticleRequest): DefaultResponse? {
         return executeRequest { apiService.createArticle("Bearer $jwtToken", createArticleRequest).execute() }
     }
+
+    suspend fun chatResult (llmRequest: LLMRequest): LLMResponse? {
+        return executeRequest { apiService.chatResponse(llmRequest).execute() }
+    }
+
 
     private suspend fun <T> executeRequest(apiCall: suspend () -> Response<T>): T? {
         return withContext(Dispatchers.IO) {

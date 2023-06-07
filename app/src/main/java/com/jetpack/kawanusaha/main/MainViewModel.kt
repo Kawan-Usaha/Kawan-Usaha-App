@@ -2,25 +2,22 @@ package com.jetpack.kawanusaha.main
 
 import android.app.Application
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.jetpack.kawanusaha.data.*
 import com.jetpack.kawanusaha.db.DbData
 import com.jetpack.kawanusaha.db.DbRepository
 import com.jetpack.kawanusaha.`in`.Injection
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.jetpack.kawanusaha.network.ApiConfig
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val dataRepository: DataRepository,
     private val preferences: SharedPreferences,
-    private val localRepository: DbRepository
+    private val localRepository: DbRepository,
+    private val llmRepository: DataRepository
 ) : ViewModel() {
     private val _userProfile = MutableStateFlow<ProfileResponse?>(null)
     val userProfile: StateFlow<ProfileResponse?> = _userProfile
@@ -36,6 +33,15 @@ class MainViewModel(
 
     private val _articleDetail = MutableStateFlow<ArticleDetail?>(null)
     val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
+
+    private val _llmResponse = MutableStateFlow(arrayListOf(Message("assistant", "Hallo, apa yang bisa saya bantu?")))
+    val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
+
+    private val _chatCounter = MutableStateFlow(0)
+    val chatCounter: StateFlow<Int> = _chatCounter
+
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     init {
         clearStatus()
@@ -117,7 +123,6 @@ class MainViewModel(
                     ),
                     category
                 )
-
             )?.success ?: false
         }
     }
@@ -126,6 +131,34 @@ class MainViewModel(
         _status.value = false
     }
 
+
+    private fun sendChat(message: List<Message>) {
+        viewModelScope.launch {
+
+            _isLoading.value = true
+
+            _llmResponse.value.add ( llmRepository.chatResult(LLMRequest(
+                model = "Kawan-Usaha",
+                stream = false,
+                messages = message,
+                max_tokens = 512,
+                temperature = 0.5,
+                top_p = 0.5
+            ))?.choices?.get(0)?.message ?: Message("Server","Failed to Connect to Server"))
+            addCounter()
+            _isLoading.value = false
+        }
+    }
+
+    private fun addCounter() {
+        _chatCounter.value += 1
+    }
+
+    fun sendMsg(message: String) {
+        _llmResponse.value.add(Message("user", message))
+        addCounter()
+        sendChat(llmResponse.value)
+    }
 
     fun getAllData(): LiveData<List<DbData>> = localRepository.getAllData()
 
@@ -144,7 +177,8 @@ class MainViewModelFactory(
             return MainViewModel(
                 Injection.provideRepository(),
                 preferences,
-                Injection.provideRepository(application)
+                Injection.provideRepository(application),
+                Injection.provideLLMRepository()
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

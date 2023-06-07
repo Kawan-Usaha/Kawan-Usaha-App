@@ -12,6 +12,11 @@ object Injection {
         return DataRepository(apiService)
     }
 
+    fun provideLLMRepository(): DataRepository {
+        val apiService = ApiConfig.getLLMApiService()
+        return DataRepository(apiService)
+    }
+
     fun provideRepository(application: Application): DbRepository {
         return DbRepository(application)
     }
