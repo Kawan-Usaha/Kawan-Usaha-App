@@ -30,6 +30,7 @@ import java.util.*
 @Composable
 fun ChatScreen(mainViewModel: MainViewModel) {
     val msg = mainViewModel.llmResponse.collectAsState(initial = emptyList())
+    val newMsg by mainViewModel.stringResponse.collectAsState("")
     val msgCounter by mainViewModel.chatCounter.collectAsState(0)
     var text by remember { mutableStateOf(TextFieldValue("")) }
     val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.US)
@@ -51,11 +52,6 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.Top
             ) {
-                MessageItem(
-                    messageText = mainViewModel.stringResponse.collectAsState().value,
-                    time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),
-                    isOut = false,
-                )
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -63,18 +59,18 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                         .weight(1f),
                     state = lazyListState
                 ) {
-                    itemsIndexed(msg.value) { _, chat ->
+                    items(msgCounter) { id ->
                         MessageItem(
-                            messageText = chat.content,
+                            messageText = msg.value[id+1].content,
                             time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),
-                            isOut = chat.role == "user",
+                            isOut = msg.value[id+1].role == "user",
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     if (isLoading.value) {
                         item {
                             MessageItem(
-                                messageText = "Waiting for Connection",
+                                messageText = if(newMsg == "") "Connecting" else newMsg,
                                 time = "",
                                 isOut = false,
                             )

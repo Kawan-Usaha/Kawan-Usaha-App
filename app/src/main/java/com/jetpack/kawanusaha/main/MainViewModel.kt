@@ -28,8 +28,7 @@ import java.util.concurrent.TimeUnit
 class MainViewModel(
     private val dataRepository: DataRepository,
     private val preferences: SharedPreferences,
-    private val localRepository: DbRepository,
-//    private val llmRepository: DataRepository
+    private val localRepository: DbRepository
 ) : ViewModel() {
     private val _userProfile = MutableStateFlow<ProfileResponse?>(null)
     val userProfile: StateFlow<ProfileResponse?> = _userProfile
@@ -47,7 +46,7 @@ class MainViewModel(
     val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
 
     private val _llmResponse =
-        MutableStateFlow(arrayListOf(Message("assistant", "Hallo, apa yang bisa saya bantu?")))
+        MutableStateFlow(arrayListOf(Message("assistant", "")))
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     private val _chatCounter = MutableStateFlow(0)
@@ -147,32 +146,8 @@ class MainViewModel(
         _status.value = false
     }
 
-
-//    private fun sendChat(message: List<Message>) {
-//        viewModelScope.launch {
-//            _isLoading.value = true
-//
-//            _llmResponse.value.add(
-//                llmRepository.chatResult(
-//                    LLMRequest(
-//                        model = "Kawan-Usaha",
-//                        stream = false,
-//                        messages = message,
-//                        max_tokens = 512,
-//                        temperature = 0.5,
-//                        top_p = 0.5
-//                    )
-//                )?.choices?.get(0)?.message ?: Message("Server", "Failed to Connect to Server")
-//            )
-//            addCounter()
-//            _isLoading.value = false
-//        }
-//    }
-
     private fun sendStreamChat(message: List<Message>) {
         _isLoading.value = true
-        _llmResponse.value.add(Message(role = "assistant", content = stringResponse.value))
-        addCounter()
         val llmRequest = LLMRequest(
             model = "Kawan-Usaha",
             stream = true,
@@ -214,45 +189,7 @@ class MainViewModel(
                 })
             }
         }
-        _isLoading.value = false
     }
-
-
-//    private fun sendStreamChat(message: List<Message>) {
-//        viewModelScope.launch {
-//            _isLoading.value = true
-//
-//            val request = LLMRequest(
-//                model = "Kawan-Usaha",
-//                stream = true,
-//                messages = message,
-//                max_tokens = 512,
-//                temperature = 0.5,
-//                top_p = 0.5
-//            )
-//
-//            try {
-//                val response = llmRepository.streamChatResult(request)
-//                val choices = response?.choices!!
-//                if (choices.isNotEmpty()) {
-//                    val delta = choices[0].delta
-//                    val role = delta?.role
-//                    val content = delta?.content
-//
-//                    if (role != null && role == "assistant" && content != null) {
-//                        Log.e("STREAM", content)
-//                    }
-//                }
-//            } catch (e: Exception) {
-//                // Handle exception or error
-//                Log.e("STREAM", "Error: ${e.message}")
-//            }
-//
-//            addCounter()
-//            _isLoading.value = false
-//        }
-//    }
-
 
     private fun addCounter() {
         _chatCounter.value += 1
@@ -272,11 +209,14 @@ class MainViewModel(
             super.onOpen(eventSource, response)
             Log.e("SSE", "Connection Opened")
             _stringResponse.value = ""
+            addCounter()
         }
 
         override fun onClosed(eventSource: EventSource) {
             super.onClosed(eventSource)
             Log.e("SSE", "Connection Closed")
+            _llmResponse.value.add(Message("assistant", stringResponse.value))
+            _isLoading.value = false
         }
 
         override fun onEvent(
@@ -288,12 +228,18 @@ class MainViewModel(
             super.onEvent(eventSource, id, type, data)
             val gson = Gson().fromJson(data, LLMResponse::class.java)
             Log.e("SSE", "On Event Received! Data -: ${gson.choices[0].delta.content}")
-            _stringResponse.value += gson.choices[0].delta.content.toString()
+            gson.choices[0].delta.content.toString().let {
+                _stringResponse.value += if (it == "null") "" else it
+            }
         }
 
         override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
             super.onFailure(eventSource, t, response)
             Log.e("SSE", "On Failure -: ${response?.message}")
+            addCounter()
+            _stringResponse.value = "Error"
+            _llmResponse.value.add(Message("assistant", stringResponse.value))
+            _isLoading.value = false
         }
     }
 
@@ -312,8 +258,7 @@ class MainViewModelFactory(
             return MainViewModel(
                 Injection.provideRepository(),
                 preferences,
-                Injection.provideRepository(application),
-//                Injection.provideLLMRepository()
+                Injection.provideRepository(application)
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
