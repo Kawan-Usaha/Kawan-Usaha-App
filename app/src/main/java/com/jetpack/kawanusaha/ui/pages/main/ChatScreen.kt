@@ -1,18 +1,17 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,7 +30,6 @@ import java.util.*
 fun ChatScreen(mainViewModel: MainViewModel) {
     val msg = mainViewModel.llmResponse.collectAsState(initial = emptyList())
     val newMsg by mainViewModel.stringResponse.collectAsState("")
-    val msgCounter by mainViewModel.chatCounter.collectAsState(0)
     var text by remember { mutableStateOf(TextFieldValue("")) }
     val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.US)
     val scope = rememberCoroutineScope()
@@ -59,11 +57,11 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                         .weight(1f),
                     state = lazyListState
                 ) {
-                    items(msgCounter) { id ->
+                    items(msg.value.size) { id ->
                         MessageItem(
-                            messageText = msg.value[id+1].content,
+                            messageText = msg.value[id].content,
                             time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),
-                            isOut = msg.value[id+1].role == "user",
+                            isOut = msg.value[id].role == "user",
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                     }
@@ -85,39 +83,46 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                     backgroundColor = MaterialTheme.colors.primary,
                     elevation = 10.dp,
                 ) {
-                    OutlinedTextField(
-                        placeholder = {
-                            Text(text = "Text Message")
-                        },
-                        value = text,
-                        onValueChange = { text = it },
-                        enabled = !isLoading.value,
-                        shape = RoundedCornerShape(15.dp),
-                        trailingIcon = {
-                            if (text.text.isNotBlank()) {
-                                Icon(
-                                    imageVector = Icons.Default.Send,
-                                    contentDescription = "Send",
-                                    tint = MaterialTheme.colors.secondary,
-                                    modifier = Modifier.clickable {
-                                        scope.launch {
-                                            mainViewModel.sendMsg(text.text)
-                                            text = TextFieldValue("")
-                                            scrollToBottom()
+                    Row (verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = {
+                            mainViewModel.clearCache()
+                        }) {
+                            Icon(Icons.Default.Clear, contentDescription = "Clear Cache")
+                        }
+                        OutlinedTextField(
+                            placeholder = {
+                                Text(text = "Text Message")
+                            },
+                            value = text,
+                            onValueChange = { text = it },
+                            enabled = !isLoading.value,
+                            shape = RoundedCornerShape(15.dp),
+                            trailingIcon = {
+                                if (text.text.isNotBlank()) {
+                                    Icon(
+                                        imageVector = Icons.Default.Send,
+                                        contentDescription = "Send",
+                                        tint = MaterialTheme.colors.secondary,
+                                        modifier = Modifier.clickable {
+                                            scope.launch {
+                                                mainViewModel.sendMsg(text.text)
+                                                text = TextFieldValue("")
+                                                scrollToBottom()
+                                            }
                                         }
-                                    }
-                                )
-                            }
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            unfocusedLabelColor = MaterialTheme.colors.surface,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    )
+                                    )
+                                }
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedLabelColor = MaterialTheme.colors.surface,
+                                focusedBorderColor = MaterialTheme.colors.secondary,
+                                cursorColor = MaterialTheme.colors.onPrimary,
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp)
+                        )
+                    }
                 }
             }
         }
@@ -197,26 +202,3 @@ fun MessageItem(
         )
     }
 }
-//
-//@Composable
-//fun ChatSection(
-//    modifier: Modifier = Modifier
-//) {
-//    val simpleDateFormat = SimpleDateFormat("hh:mm a", Locale.US)
-//    LazyColumn(
-//        modifier = modifier
-//            .fillMaxSize()
-//            .wrapContentHeight()
-//            .padding(16.dp),
-//        reverseLayout = false
-//    ) {
-//        items(message_dummy) { chat ->
-//            MessageItem(
-//                messageText = chat.text,
-//                time = simpleDateFormat.format(chat.time),
-//                isOut = chat.isOut
-//            )
-//            Spacer(modifier = Modifier.height(8.dp))
-//        }
-//    }
-//}

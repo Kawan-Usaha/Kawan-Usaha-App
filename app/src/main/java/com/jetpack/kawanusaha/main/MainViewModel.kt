@@ -46,7 +46,7 @@ class MainViewModel(
     val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
 
     private val _llmResponse =
-        MutableStateFlow(arrayListOf(Message("assistant", "")))
+        MutableStateFlow(arrayListOf(Message("assistant", "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya.")))
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     private val _chatCounter = MutableStateFlow(0)
@@ -146,13 +146,17 @@ class MainViewModel(
         _status.value = false
     }
 
+    fun clearCache(){
+        _llmResponse.value = arrayListOf(Message("assistant", "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."))
+    }
+
     private fun sendStreamChat(message: List<Message>) {
         _isLoading.value = true
         val llmRequest = LLMRequest(
             model = "Kawan-Usaha",
             stream = true,
             messages = message,
-            max_tokens = 512,
+            max_tokens = 1024,
             temperature = 0.5,
             top_p = 0.5
         )
@@ -168,7 +172,7 @@ class MainViewModel(
             .build()
 
         val request = Request.Builder()
-            .url("http://34.73.209.243:8000/v1/chat/completions")
+            .url("http://35.196.157.161:8000/v1/chat/completions")
             .header("Content-Type", "application/json")
             .addHeader("Accept", "text/event-stream")
             .post(requestBody)
@@ -207,14 +211,12 @@ class MainViewModel(
     private val eventSourceListener = object : EventSourceListener() {
         override fun onOpen(eventSource: EventSource, response: Response) {
             super.onOpen(eventSource, response)
-            Log.e("SSE", "Connection Opened")
             _stringResponse.value = ""
             addCounter()
         }
 
         override fun onClosed(eventSource: EventSource) {
             super.onClosed(eventSource)
-            Log.e("SSE", "Connection Closed")
             _llmResponse.value.add(Message("assistant", stringResponse.value))
             _isLoading.value = false
         }
@@ -227,7 +229,6 @@ class MainViewModel(
         ) {
             super.onEvent(eventSource, id, type, data)
             val gson = Gson().fromJson(data, LLMResponse::class.java)
-            Log.e("SSE", "On Event Received! Data -: ${gson.choices[0].delta.content}")
             gson.choices[0].delta.content.toString().let {
                 _stringResponse.value += if (it == "null") "" else it
             }
@@ -235,11 +236,13 @@ class MainViewModel(
 
         override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
             super.onFailure(eventSource, t, response)
-            Log.e("SSE", "On Failure -: ${response?.message}")
+            if (response?.message != "OK"){
+                _stringResponse.value = "Error"
+            }
             addCounter()
-            _stringResponse.value = "Error"
             _llmResponse.value.add(Message("assistant", stringResponse.value))
             _isLoading.value = false
+            _stringResponse.value = ""
         }
     }
 
