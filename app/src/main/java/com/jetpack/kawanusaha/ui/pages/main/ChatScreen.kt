@@ -51,6 +51,11 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.Top
             ) {
+                MessageItem(
+                    messageText = mainViewModel.stringResponse.collectAsState().value,
+                    time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),
+                    isOut = false,
+                )
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
