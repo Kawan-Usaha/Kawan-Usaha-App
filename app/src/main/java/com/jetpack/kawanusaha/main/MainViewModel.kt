@@ -2,16 +2,28 @@ package com.jetpack.kawanusaha.main
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.google.gson.Gson
 import com.jetpack.kawanusaha.data.*
 import com.jetpack.kawanusaha.db.DbData
 import com.jetpack.kawanusaha.db.DbRepository
 import com.jetpack.kawanusaha.`in`.Injection
-import com.jetpack.kawanusaha.network.ApiConfig
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.sse.EventSource
+import okhttp3.sse.EventSourceListener
+import okhttp3.sse.EventSources
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+
 
 class MainViewModel(
     private val dataRepository: DataRepository,
@@ -34,7 +46,8 @@ class MainViewModel(
     private val _articleDetail = MutableStateFlow<ArticleDetail?>(null)
     val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
 
-    private val _llmResponse = MutableStateFlow(arrayListOf(Message("assistant", "Hallo, apa yang bisa saya bantu?")))
+    private val _llmResponse =
+        MutableStateFlow(arrayListOf(Message("assistant", "Hallo, apa yang bisa saya bantu?")))
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     private val _chatCounter = MutableStateFlow(0)
@@ -42,6 +55,8 @@ class MainViewModel(
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
+
+    val _stringResponse = MutableStateFlow("")
 
     init {
         clearStatus()
@@ -134,21 +149,105 @@ class MainViewModel(
 
     private fun sendChat(message: List<Message>) {
         viewModelScope.launch {
-
             _isLoading.value = true
 
-            _llmResponse.value.add ( llmRepository.chatResult(LLMRequest(
-                model = "Kawan-Usaha",
-                stream = false,
-                messages = message,
-                max_tokens = 512,
-                temperature = 0.5,
-                top_p = 0.5
-            ))?.choices?.get(0)?.message ?: Message("Server","Failed to Connect to Server"))
+            _llmResponse.value.add(
+                llmRepository.chatResult(
+                    LLMRequest(
+                        model = "Kawan-Usaha",
+                        stream = false,
+                        messages = message,
+                        max_tokens = 512,
+                        temperature = 0.5,
+                        top_p = 0.5
+                    )
+                )?.choices?.get(0)?.message ?: Message("Server", "Failed to Connect to Server")
+            )
             addCounter()
             _isLoading.value = false
         }
     }
+
+    private fun sendStreamChat(message: List<Message>) {
+        val llmRequest = LLMRequest(
+            model = "Kawan-Usaha",
+            stream = true,
+            messages = message,
+            max_tokens = 512,
+            temperature = 0.5,
+            top_p = 0.5
+        )
+
+        val jsonPayload = Gson().toJson(llmRequest)
+        val mediaType = "application/json".toMediaType()
+        val requestBody = jsonPayload.toRequestBody(mediaType)
+
+
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .build()
+
+        val request = Request.Builder()
+            .url("http://34.73.209.243:8000/v1/chat/completions")
+            .header("Content-Type", "application/json")
+            .addHeader("Accept", "text/event-stream")
+            .post(requestBody)
+            .build()
+
+        EventSources.createFactory(client)
+            .newEventSource(request = request, listener = eventSourceListener)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                client.newCall(request).enqueue(responseCallback = object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        Log.e("DataRepository", "API Call Failure ${e.localizedMessage}")
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        Log.e("DataRepository", "APi Call Success $response")
+                    }
+                })
+            }
+        }
+    }
+
+
+//    private fun sendStreamChat(message: List<Message>) {
+//        viewModelScope.launch {
+//            _isLoading.value = true
+//
+//            val request = LLMRequest(
+//                model = "Kawan-Usaha",
+//                stream = true,
+//                messages = message,
+//                max_tokens = 512,
+//                temperature = 0.5,
+//                top_p = 0.5
+//            )
+//
+//            try {
+//                val response = llmRepository.streamChatResult(request)
+//                val choices = response?.choices!!
+//                if (choices.isNotEmpty()) {
+//                    val delta = choices[0].delta
+//                    val role = delta?.role
+//                    val content = delta?.content
+//
+//                    if (role != null && role == "assistant" && content != null) {
+//                        Log.e("STREAM", content)
+//                    }
+//                }
+//            } catch (e: Exception) {
+//                // Handle exception or error
+//                Log.e("STREAM", "Error: ${e.message}")
+//            }
+//
+//            addCounter()
+//            _isLoading.value = false
+//        }
+//    }
+
 
     private fun addCounter() {
         _chatCounter.value += 1
@@ -157,7 +256,7 @@ class MainViewModel(
     fun sendMsg(message: String) {
         _llmResponse.value.add(Message("user", message))
         addCounter()
-        sendChat(llmResponse.value)
+        sendStreamChat(llmResponse.value)
     }
 
     fun getAllData(): LiveData<List<DbData>> = localRepository.getAllData()
@@ -182,5 +281,35 @@ class MainViewModelFactory(
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+
+
+val eventSourceListener = object : EventSourceListener() {
+    override fun onOpen(eventSource: EventSource, response: Response) {
+        super.onOpen(eventSource, response)
+        Log.e("SSE", "Connection Opened")
+    }
+
+    override fun onClosed(eventSource: EventSource) {
+        super.onClosed(eventSource)
+        Log.e("SSE", "Connection Closed")
+    }
+
+    override fun onEvent(
+        eventSource: EventSource,
+        id: String?,
+        type: String?,
+        data: String
+    ) {
+        super.onEvent(eventSource, id, type, data)
+        val gson = Gson().fromJson(data, LLMResponse::class.java)
+        Log.e("SSE", "On Event Received! Data -: ${gson.choices[0].delta.content}")
+        gson.choices[0].delta.content.toString()
+    }
+
+    override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
+        super.onFailure(eventSource, t, response)
+        Log.e("SSE", "On Failure -: ${response?.message}")
     }
 }

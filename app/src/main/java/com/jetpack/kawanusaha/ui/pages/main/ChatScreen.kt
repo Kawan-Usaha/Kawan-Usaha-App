@@ -58,7 +58,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                         .weight(1f),
                     state = lazyListState
                 ) {
-                    itemsIndexed(msg.value) {index, chat ->
+                    itemsIndexed(msg.value) { _, chat ->
                         MessageItem(
                             messageText = chat.content,
                             time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),

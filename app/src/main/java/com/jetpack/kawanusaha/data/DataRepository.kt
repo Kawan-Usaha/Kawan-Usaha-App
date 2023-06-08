@@ -4,13 +4,12 @@ import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.jetpack.kawanusaha.network.ApiConfig
 import com.jetpack.kawanusaha.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import retrofit2.Response
+
 
 class DataRepository(private val apiService: ApiService) {
     suspend fun login(loginRequest: LoginRequest): LoginResponse? {
@@ -29,27 +28,34 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.forgotGenerate(forgotGenerateRequest).execute() }
     }
 
-    suspend fun verify(jwtToken: String, verificationRequest: VerificationRequest): GenerateVerificationResponse? {
-        return executeRequest { apiService.verify("Bearer $jwtToken", verificationRequest).execute() }
+    suspend fun verify(
+        jwtToken: String,
+        verificationRequest: VerificationRequest
+    ): GenerateVerificationResponse? {
+        return executeRequest {
+            apiService.verify("Bearer $jwtToken", verificationRequest).execute()
+        }
     }
 
     suspend fun forgotVerify(forgotVerifyRequest: ForgotVerifyRequest): GenerateVerificationResponse? {
         return executeRequest { apiService.forgotVerify(forgotVerifyRequest).execute() }
     }
 
-    suspend fun getUser(jwtToken: String): ProfileResponse?{
+    suspend fun getUser(jwtToken: String): ProfileResponse? {
         return executeRequest { apiService.getUser("Bearer $jwtToken").execute() }
     }
 
-    suspend fun updateProfile (jwtToken: String, profileRequest: ProfileRequest): DefaultResponse?{
-        return executeRequest { apiService.updateProfile("Bearer $jwtToken", profileRequest).execute() }
+    suspend fun updateProfile(jwtToken: String, profileRequest: ProfileRequest): DefaultResponse? {
+        return executeRequest {
+            apiService.updateProfile("Bearer $jwtToken", profileRequest).execute()
+        }
     }
 
-    suspend fun getListUsaha(jwtToken: String): UsahaResponse?{
+    suspend fun getListUsaha(jwtToken: String): UsahaResponse? {
         return executeRequest { apiService.getListUsaha("Bearer $jwtToken").execute() }
     }
 
-    suspend fun getUsahaDetail(jwtToken: String, id: Int): UsahaDetailResponse?{
+    suspend fun getUsahaDetail(jwtToken: String, id: Int): UsahaDetailResponse? {
         return executeRequest { apiService.getUsahaDetail("Bearer $jwtToken", id).execute() }
     }
 
@@ -59,43 +65,48 @@ class DataRepository(private val apiService: ApiService) {
 
 
     // Article
-    fun getListArticle (): Flow<PagingData<ArticlesItem>> {
+    fun getListArticle(): Flow<PagingData<ArticlesItem>> {
         return Pager(
             config = PagingConfig(pageSize = 6, initialLoadSize = 6),
             pagingSourceFactory = { ArticlePagingSource(apiService, null, null) }
         ).flow
     }
 
-    fun getUserArticle (jwtToken: String): Flow<PagingData<ArticlesItem>> {
+    fun getUserArticle(jwtToken: String): Flow<PagingData<ArticlesItem>> {
         return Pager(
             config = PagingConfig(pageSize = 6, initialLoadSize = 6),
             pagingSourceFactory = { ArticlePagingSource(apiService, "Bearer $jwtToken", null) }
         ).flow
     }
 
-    fun searchAllArticle (text: String): Flow<PagingData<ArticlesItem>> {
+    fun searchAllArticle(text: String): Flow<PagingData<ArticlesItem>> {
         return Pager(
             config = PagingConfig(pageSize = 6, initialLoadSize = 6),
             pagingSourceFactory = { ArticlePagingSource(apiService, null, text) }
         ).flow
     }
 
-    fun searchUserArticle (jwtToken: String, text: String): Flow<PagingData<ArticlesItem>> {
+    fun searchUserArticle(jwtToken: String, text: String): Flow<PagingData<ArticlesItem>> {
         return Pager(
             config = PagingConfig(pageSize = 6, initialLoadSize = 6),
             pagingSourceFactory = { ArticlePagingSource(apiService, "Bearer $jwtToken", text) }
         ).flow
     }
 
-    suspend fun getArticleDetail (id: Int) : ArticleDetailResponse? {
+    suspend fun getArticleDetail(id: Int): ArticleDetailResponse? {
         return executeRequest { apiService.getArticleDetails(id).execute() }
     }
 
-    suspend fun createArticle (jwtToken: String, createArticleRequest: CreateArticleRequest): DefaultResponse? {
-        return executeRequest { apiService.createArticle("Bearer $jwtToken", createArticleRequest).execute() }
+    suspend fun createArticle(
+        jwtToken: String,
+        createArticleRequest: CreateArticleRequest
+    ): DefaultResponse? {
+        return executeRequest {
+            apiService.createArticle("Bearer $jwtToken", createArticleRequest).execute()
+        }
     }
 
-    suspend fun chatResult (llmRequest: LLMRequest): LLMResponse? {
+    suspend fun chatResult(llmRequest: LLMRequest): LLMResponse? {
         return executeRequest { apiService.chatResponse(llmRequest).execute() }
     }
 

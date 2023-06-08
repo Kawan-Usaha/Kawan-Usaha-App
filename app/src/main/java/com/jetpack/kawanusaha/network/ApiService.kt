@@ -1,10 +1,14 @@
 package com.jetpack.kawanusaha.network
 
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
 import com.jetpack.kawanusaha.BuildConfig
 import com.jetpack.kawanusaha.data.*
+import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.sse.EventSources
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -137,6 +141,10 @@ interface ApiService {
         @Body request : LLMRequest
     ): Call<LLMResponse>
 
+    @POST("chat/completions")
+    fun streamChatResponse (
+        @Body request : LLMRequest
+    ): Call<StreamResponse>
 }
 
 class ApiConfig {
@@ -153,28 +161,6 @@ class ApiConfig {
             val retrofit = Retrofit.Builder()
                 .baseUrl("http://34.170.183.54:5000/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
-            return retrofit.create(ApiService::class.java)
-        }
-
-        fun getLLMApiService(): ApiService {
-            val gson = GsonBuilder()
-                .setLenient()
-                .create()
-            val loggingInterceptor = if(BuildConfig.DEBUG) {
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            } else {
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
-            }
-            val client = OkHttpClient.Builder()
-                .readTimeout(120, TimeUnit.SECONDS)
-                .connectTimeout(120, TimeUnit.SECONDS)
-                .addInterceptor(loggingInterceptor)
-                .build()
-            val retrofit = Retrofit.Builder()
-                .baseUrl("http://34.139.117.57:8000/v1/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build()
             return retrofit.create(ApiService::class.java)

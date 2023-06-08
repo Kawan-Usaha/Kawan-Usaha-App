@@ -1,5 +1,7 @@
 package com.jetpack.kawanusaha.data
 
+import com.google.gson.annotations.SerializedName
+
 data class DefaultResponse(
 	val success: Boolean,
 	val message: String
@@ -139,6 +141,9 @@ data class Choice(
 )
 
 data class Delta(
+	@field:SerializedName("role")
 	val role: String?,
+
+	@field:SerializedName("content")
 	val content: String?
 )
