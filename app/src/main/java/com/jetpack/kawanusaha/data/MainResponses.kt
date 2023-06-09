@@ -1,5 +1,7 @@
 package com.jetpack.kawanusaha.data
 
+import com.google.gson.annotations.SerializedName
+
 data class DefaultResponse(
 	val success: Boolean,
 	val message: String
@@ -116,16 +118,8 @@ data class Category(
 data class LLMResponse(
 	val created: Int,
 	val usage: Usage,
-	val model: String,
 	val id: String,
-	val choices: List<ChoicesItem>,
-	val objects: String
-)
-
-data class ChoicesItem(
-	val finishReason: String,
-	val index: Int,
-	val message: Message
+	val choices: List<Choice>,
 )
 
 data class Message(
@@ -139,4 +133,17 @@ data class Usage(
 	val totalTokens: Int
 )
 
+data class Choice(
+	val index: Int,
+	val delta: Delta,
+	val message: Message,
+	val finish_reason: String?
+)
 
+data class Delta(
+	@field:SerializedName("role")
+	val role: String?,
+
+	@field:SerializedName("content")
+	val content: String?
+)

@@ -2,9 +2,7 @@
 
 package com.jetpack.kawanusaha.ui.pages.main
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,13 +19,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
@@ -41,7 +37,8 @@ fun MainScreen(
     navToArticle: (Int) -> Unit,
     navToAddArticle: () -> Unit,
 ) {
-    val articles: LazyPagingItems<ArticlesItem> = mainViewModel.getUserArticles().collectAsLazyPagingItems()
+    val articles: LazyPagingItems<ArticlesItem> =
+        mainViewModel.getUserArticles().collectAsLazyPagingItems()
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -212,7 +209,9 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
         AsyncImage(
             model = "URL DISINI",
             contentDescription = "Articles",
-            modifier = Modifier.height(300.dp).background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+            modifier = Modifier
+                .height(300.dp)
+                .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
             onSuccess = { showShimmer.value = false }
         )
         Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)

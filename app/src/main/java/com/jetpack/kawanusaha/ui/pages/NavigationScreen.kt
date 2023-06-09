@@ -159,7 +159,7 @@ likeViewModel: LikeViewModel // sementara, ke composable line 217
             }
 
             composable(route = "chat_screen") {
-                ChatScreen()
+                ChatScreen(mainViewModel)
             }
 
             composable(

@@ -30,5 +30,8 @@ data class ArticleRequest (
 data class LLMRequest(
     val stream: Boolean,
     val messages: List<Message>,
-    val model: String
+    val model: String,
+    val max_tokens: Int,
+    val temperature: Double,
+    val top_p : Double
 )

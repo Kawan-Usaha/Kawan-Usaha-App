@@ -1,13 +1,20 @@
 package com.jetpack.kawanusaha.network
 
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonArray
 import com.jetpack.kawanusaha.BuildConfig
 import com.jetpack.kawanusaha.data.*
+import kotlinx.coroutines.flow.Flow
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.sse.EventSources
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.util.concurrent.TimeUnit
+
 
 interface ApiService {
     // AUTHENTICATION
@@ -129,7 +136,15 @@ interface ApiService {
 
 
     // CHAT BOT
+    @POST("chat/completions")
+    fun chatResponse (
+        @Body request : LLMRequest
+    ): Call<LLMResponse>
 
+    @POST("chat/completions")
+    fun streamChatResponse (
+        @Body request : LLMRequest
+    ): Call<StreamResponse>
 }
 
 class ApiConfig {
