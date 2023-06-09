@@ -69,20 +69,20 @@ fun MainScreen(
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(15.dp)
                         )
-                        Spacer(modifier = Modifier.height(5.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
                         CategorySection()
-                        Spacer(Modifier.height(8.dp))
-
-                        // Recommendation Articles Section
-                        SectionText(
-                            text = "Recommendation Articles",
-                            style = MaterialTheme.typography.h3,
-                            modifier = Modifier.padding(15.dp)
-                        )
-                        Spacer(modifier = Modifier.height(5.dp))
-                        ArticleSection(articles, navToArticle)
                     }
                 }
+                Spacer(Modifier.height(20.dp))
+
+                // Recommendation Articles Section
+                SectionText(
+                    text = "Recommendation Articles",
+                    style = MaterialTheme.typography.h3,
+                    modifier = Modifier.padding(15.dp)
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                ArticleSection(articles, navToArticle)
             }
         }
     }

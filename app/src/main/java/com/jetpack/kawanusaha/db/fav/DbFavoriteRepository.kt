@@ -9,11 +9,13 @@ import java.util.concurrent.Executors
 
 class DbFavoriteRepository(application: Application) {
     private val mFavDAO: FavDAO
+    private val mItemFavDao: ItemFavDao
     private val executorService: ExecutorService = Executors.newSingleThreadExecutor()
 
     init {
         val db = DataRoomDatabase.getDatabase(application)
         mFavDAO = db.favDao()
+        mItemFavDao = db.itemFavDao()
     }
 
     fun insert(data: DbFav){
@@ -29,5 +31,27 @@ class DbFavoriteRepository(application: Application) {
     }
 
     fun getAllDbFavData() = mFavDAO.getAllData()
-    suspend fun deleteById(name: String) = mFavDAO.deleteById(name)
+    fun getAllItemFavData() = mItemFavDao.getAllItemData()
+    fun getAllItemFavDataByListId(idList: Int?) = mItemFavDao.getAllItemDataByListId(idList)
+    suspend fun deleteById(id: Int) = mFavDAO.deleteById(id)
+
+    suspend fun deleteByName(name: String) = mItemFavDao.deleteByName(name)
+
+    fun insertItem(data: ItemFav){
+        executorService.execute { mItemFavDao.insert(data) }
+    }
+
+    fun getAllDataById(id: Int?) = mFavDAO.getAllDataById(id)
+
+
+    fun updateItem(data: ItemFav){
+        executorService.execute { mItemFavDao.update(data) }
+    }
+
+//    suspend fun getItemByName(name: String?) = mItemFavDao.getFavoriteDataByName(name)
+
+    fun deleteItem(data: ItemFav){
+        executorService.execute { mItemFavDao.delete(data) }
+    }
+
 }

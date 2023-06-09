@@ -15,6 +15,6 @@ data class DbData (
     @ColumnInfo(name = "content") var content: String? = null,
     @ColumnInfo(name = "image") var image: String? = null,
     @ColumnInfo(name = "is_published") var is_published: Boolean = false,
-    @ColumnInfo(name = "cration_time") var createdAt: String? = null,
+    @ColumnInfo(name = "creation_time") var createdAt: String? = null,
     @ColumnInfo(name = "article_id") var articleId: Int? = null
 ) : Parcelable

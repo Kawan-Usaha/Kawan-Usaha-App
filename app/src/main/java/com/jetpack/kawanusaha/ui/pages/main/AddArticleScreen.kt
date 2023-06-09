@@ -66,7 +66,7 @@ fun AddArticleScreen(
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
                         ) {
-                            Text(text = "Create")
+                            Text(text = "Create", style = MaterialTheme.typography.body1)
                         }
                     },
                 )
