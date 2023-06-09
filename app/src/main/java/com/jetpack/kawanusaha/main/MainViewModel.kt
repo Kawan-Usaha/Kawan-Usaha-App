@@ -11,6 +11,7 @@ import androidx.paging.cachedIn
 import com.jetpack.kawanusaha.data.*
 import com.jetpack.kawanusaha.db.DbData
 import com.jetpack.kawanusaha.db.DbRepository
+import com.jetpack.kawanusaha.db.fav.ItemFav
 import com.jetpack.kawanusaha.`in`.Injection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

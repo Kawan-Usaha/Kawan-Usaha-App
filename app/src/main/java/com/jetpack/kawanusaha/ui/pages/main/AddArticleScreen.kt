@@ -64,7 +64,7 @@ fun AddArticleScreen(
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            Text(text = "Create")
+                            Text(text = "Create", style = MaterialTheme.typography.body1)
                         }
                     },
 

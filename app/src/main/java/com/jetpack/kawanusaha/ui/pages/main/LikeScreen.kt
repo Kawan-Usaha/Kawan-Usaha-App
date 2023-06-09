@@ -22,8 +22,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.db.fav.DbFav
@@ -36,98 +38,12 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LikeScreen(
-    navToDetailList: (String, String?) -> Unit,
+    navToArticle: (Int?) -> Unit,
     viewModel: LikeViewModel
 ){
-    val coroutineScope = rememberCoroutineScope()
-    var title by remember { mutableStateOf(TextFieldValue("")) }
-    var description by remember { mutableStateOf(TextFieldValue("")) }
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
 
-    val data = listOf<ListArticle>()
-    val viewState = viewModel.consumableState().collectAsState()
-    val viewEvent = ListArticleViewState()
-
-    val context = LocalContext.current
     val list by viewModel.allData.observeAsState(listOf())
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-        sheetContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .padding(32.dp),
-                contentAlignment = Alignment.TopStart
-            ) {
-                Column {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(onClick = { coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.collapse()}}) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = "close")
-                        }
-                        Text(
-                            "Create List",
-                            style = MaterialTheme.typography.h3
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = title,
-                        onValueChange = {title = it},
-                        label = {Text("List name")},
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                            errorBorderColor = Color.Red,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            unfocusedBorderColor = MaterialTheme.colors.surface,
-                            focusedLabelColor = MaterialTheme.colors.secondary,
-                            unfocusedLabelColor = MaterialTheme.colors.surface
-                        ),
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = {description = it},
-                        modifier = Modifier.fillMaxWidth(),
-                        label = {Text("Description")},
-                        singleLine = true,
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                            errorBorderColor = Color.Red,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            unfocusedBorderColor = MaterialTheme.colors.surface,
-                            focusedLabelColor = MaterialTheme.colors.secondary,
-                            unfocusedLabelColor = MaterialTheme.colors.surface
-                        ),
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Button(
-                        onClick = {viewModel.add(title.text, description.text)},
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Add article list")
-                    }
-                }
-            }
-        },
-        modifier = Modifier.fillMaxWidth(),
-        sheetElevation = 10.dp,
-        sheetPeekHeight = 0.dp,
-        sheetBackgroundColor = MaterialTheme.colors.primary
-    ){
-        Scaffold(topBar = { TopBarFavorite(bottomSheetScaffoldState) }, modifier = Modifier.padding(15.dp)) { innerPadding ->
+        Scaffold(topBar = { TopBarFavorite() }, modifier = Modifier.padding(15.dp)) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -140,18 +56,19 @@ fun LikeScreen(
                         .fillMaxSize(),
                 ){
                     items(list, key = {item -> item.id}){
-                        ItemList(viewModel, { navToDetailList(it.listName,it.description) }, dbFav = it)
+                        ArticleList(
+                            title = it.title,
+                            description = it.content,
+                            articleId = it.articleId,
+                            navToArticle = navToArticle
+                        )
                     }
                 }
             }
         }
-    }
 }
 @Composable
-fun TopBarFavorite(
-    bottomSheetScaffoldState: BottomSheetScaffoldState,
-) {
-    val coroutineScope = rememberCoroutineScope()
+fun TopBarFavorite() {
     Row(
         horizontalArrangement = Arrangement.Start,
         modifier = Modifier
@@ -164,125 +81,85 @@ fun TopBarFavorite(
             style = MaterialTheme.typography.h3,
             modifier = Modifier.weight(1f)
         )
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
-                        bottomSheetScaffoldState.bottomSheetState.expand()
-                    } else {
-                        bottomSheetScaffoldState.bottomSheetState.collapse()
-                    }
-                } },
-            shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
-        ) {
-            Text(text = "Add article list")
-        }
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ItemList(
-    viewModel: LikeViewModel,
-    navToDetailList: () -> Unit,
-    dbFav: DbFav,
+fun ArticleList(
+    title: String?,
+    description: String?,
+    articleId: Int?,
+    navToArticle: (Int?) -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val count = listOf(dbFav)
-
     Card(
+        modifier = Modifier
+            .clickable { navToArticle(articleId) }
+            .fillMaxWidth()
+            .height(220.dp),
+        backgroundColor = MaterialTheme.colors.primary,
+        elevation = 10.dp,
+        shape = RoundedCornerShape(5.dp)
+    ) {
+        Row(
             modifier = Modifier
-                .clickable { navToDetailList() }
-                .fillMaxWidth(),
-            backgroundColor = MaterialTheme.colors.primary,
-            elevation = 10.dp,
-            shape = RoundedCornerShape(5.dp)
-        ){
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(10.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(
+                    id = R.drawable.background
+                ),
+                contentScale = ContentScale.Fit,
+                contentDescription = "Image",
+                modifier = Modifier.size(130.dp,80.dp)
+            )
+            Spacer(modifier = Modifier.width(10.dp))
             Column(
-                modifier = Modifier.padding(15.dp)
+                horizontalAlignment = Alignment.Start
             ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
                 ) {
                     Image(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "Image Account"
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Username", style = MaterialTheme.typography.body1)
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
                     Text(
-                        text = dbFav.listName,
+                        text = "Username",
                         style = MaterialTheme.typography.body1,
-                        fontWeight = FontWeight.Bold,
+                        fontWeight = FontWeight.Light
                     )
-                    Box(
-                        contentAlignment = Alignment.Center
-                    ){
-                        IconButton(onClick = {expanded = !expanded}) {
-                            Icon(
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "More")
-
-                        }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false },
-                            modifier = Modifier
-                                .background(MaterialTheme.colors.primary)
-                        ) {
-                            DropdownMenuItem(
-                                onClick = { Toast.makeText(context, "Edit List", Toast.LENGTH_SHORT).show() }
-                            ) {
-                                Text("Edit")
-                            }
-                            DropdownMenuItem(
-                                onClick = {
-                                    viewModel.deleteById(dbFav.listName)
-                                    Toast.makeText(context, "Delete List", Toast.LENGTH_SHORT).show() }
-                            ){
-                                Text("Delete List")
-                            }
-                        }
-                    }
                 }
-                Spacer(modifier = Modifier.height(3.dp))
-                Text(text = "${count.count()} Article")
+                Spacer(modifier = Modifier.height(8.dp))
+                if (title != null) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.h3
+                    )
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                if (description != null) {
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.body1,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
                 Spacer(modifier = Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Image(painter = painterResource(id = R.drawable.background),
-                        contentDescription = "Example image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(width = 150.dp, height = 100.dp)
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Image(painter = painterResource(id = R.drawable.background),
-                        contentDescription = "Example image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(width = 150.dp, height = 100.dp)
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Image(painter = painterResource(id = R.drawable.background),
-                        contentDescription = "Example image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.size(width = 150.dp, height = 100.dp)
-                    )
-                }
+                Text(
+                    text = "a few minutes ago",
+                    fontWeight = FontWeight.Light,
+                    fontStyle = FontStyle.Italic,
+                    style = MaterialTheme.typography.body1,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
-}
-
-@Composable
-fun DropDownMenu() {
-
+    }
 }

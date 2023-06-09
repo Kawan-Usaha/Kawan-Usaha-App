@@ -130,6 +130,11 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 
+    //Material 3
+    implementation "androidx.compose.material3:material3:1.1.0"
+    implementation "androidx.compose.material3:material3-window-size-class:1.1.0"
+    implementation "androidx.compose.material:material-icons-extended:1.4.3"
+
     //**********************  DOCUMENTATION  ***********************//
     dokkaPlugin("org.jetbrains.dokka:android-documentation-plugin:1.8.10")
 }

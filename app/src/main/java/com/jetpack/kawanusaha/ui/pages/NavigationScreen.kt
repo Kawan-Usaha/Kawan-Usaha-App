@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.jetpack.kawanusaha.db.fav.ItemFav
 import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
@@ -167,7 +168,7 @@ likeViewModel: LikeViewModel // sementara, ke composable line 217
             ) {
                 // Get Id From Argument
                 it.arguments?.getInt("id")?.let { id ->
-                    ArticleScreen(mainViewModel, articleId = id) {
+                    ArticleScreen(mainViewModel, likeViewModel, articleId = id) {
                         // Back to Previous Stack
                         navController.navigateUp()
                     }
@@ -218,29 +219,10 @@ likeViewModel: LikeViewModel // sementara, ke composable line 217
             }
 
             composable(route = "like_screen"){
-                LikeScreen({ param1, param2 ->
-                    navController.navigate("list_like_screen/$param1/$param2")
-                }, viewModel = likeViewModel)
-            }
-
-            composable(
-                route = "list_like_screen/{name}/{description}",
-                arguments = listOf(
-                    navArgument("name"){
-                        type = NavType.StringType
-                    },
-                    navArgument("description"){
-                        type = NavType.StringType
-                    }
+                LikeScreen({ param1 ->
+                    navController.navigate("article_screen/$param1")
+                }, viewModel = likeViewModel
                 )
-            ){
-                val name = it.arguments?.getString("name") ?: ""
-                val description = it.arguments?.getString("description")?:""
-                ListLikeScreen({
-                    navController.navigateUp()
-                }, viewModel = likeViewModel,
-                    name = name,
-                    description = description)
             }
 
             composable(

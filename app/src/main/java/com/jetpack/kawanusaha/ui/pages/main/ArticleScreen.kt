@@ -1,31 +1,29 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import android.content.Intent
-import android.widget.Space
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.db.fav.DbFav
+import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> Unit) {
+fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articleId: Int, navBack: () -> Unit) {
     LaunchedEffect(mainViewModel){
         mainViewModel.getArticleDetail(id = articleId)
     }
@@ -33,58 +31,9 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
     val context = LocalContext.current
     val text = "Share Text"
 
-    var title by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = BottomSheetState(BottomSheetValue.Collapsed)
-    )
-    val coroutineScope = rememberCoroutineScope()
-    var checkedState by remember { mutableStateOf(false) }
-    
-    BottomSheetScaffold(
-        scaffoldState = bottomSheetScaffoldState,
-        sheetShape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp),
-        sheetContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
-                    .padding(32.dp),
-                contentAlignment = Alignment.TopStart
-            ) {
-                Column {
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        IconButton(onClick = { coroutineScope.launch { bottomSheetScaffoldState.bottomSheetState.collapse()}}) {
-                            Icon(imageVector = Icons.Default.Close, contentDescription = "close")
-                        }
-                        Text(
-                            "Add to Favorite",
-                            style = MaterialTheme.typography.h3
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ){
-                        Checkbox(
-                            checked = checkedState,
-                            onCheckedChange = {checkedState = it}
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(text = "Create Text")
-                    }
-                }
-            }
-        },
-        modifier = Modifier.fillMaxWidth(),
-        sheetElevation = 10.dp,
-        sheetPeekHeight = 0.dp,
-        sheetBackgroundColor = MaterialTheme.colors.primary
-    ){
+    var isFavorite by rememberSaveable { mutableStateOf(false) }
+    val getById by viewModel.getAllDataById(articleId).observeAsState()
+
         Scaffold(
             topBar = {
                 TopAppBar(
@@ -101,30 +50,40 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
                     },
                     actions = {
                         // Like Button
-                        var likeButton = Icons.Default.FavoriteBorder
+                        val favoriteMap = DbFav(
+                                title = article?.title,
+                                content = article?.content,
+                                createdAt = article?.createdAt,
+                            articleId = articleId
+                            )
                         IconButton(
                             onClick = {
-                                likeButton = if (likeButton == Icons.Default.FavoriteBorder) {
-                                    Icons.Default.Favorite
-                                    // TODO add item to favourite
-                                } else {
-                                    Icons.Default.FavoriteBorder
-                                    // TODO remove item from favourite
+                                isFavorite = !isFavorite
+                                if (getById?.isEmpty() == true) {
+                                        viewModel.insert(favoriteMap)
+                                        Icons.Default.Favorite
+                                        Toast.makeText(
+                                            context,
+                                            "Added to favorite",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        viewModel.deleteById(articleId)
+                                        Icons.Default.FavoriteBorder
+                                        Toast.makeText(
+                                            context,
+                                            "Removed from favorite",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                 }
 
-                                coroutineScope.launch {
-                                    if (bottomSheetScaffoldState.bottomSheetState.isCollapsed) {
-                                        bottomSheetScaffoldState.bottomSheetState.expand()
-                                    } else {
-                                        bottomSheetScaffoldState.bottomSheetState.collapse()
-                                    }
-                                }
                             }) {
                             Icon(
-                                imageVector = likeButton,
+                                imageVector = if(getById?.isNotEmpty() == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 tint = MaterialTheme.colors.secondary,
                                 contentDescription = "Like"
                             )
+
                         }
                         // Share Button
                         IconButton(
@@ -189,5 +148,4 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
                 }
             }
         }
-    }
 }
