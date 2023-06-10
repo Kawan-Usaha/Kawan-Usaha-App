@@ -60,7 +60,7 @@ fun ExploreScreen(
                         active = false
                     },
                     active = active,
-                    onActiveChange = { active = it },
+                    onActiveChange = { active = it; search = ""},
                     colors = SearchBarDefaults.colors(MaterialTheme.colors.primary),
                     placeholder = { Text("Search") },
                     leadingIcon = {

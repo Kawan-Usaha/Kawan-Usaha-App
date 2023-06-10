@@ -5,16 +5,12 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,10 +27,10 @@ import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
 import com.jetpack.kawanusaha.ui.pages.main.*
 
 // TODO Security Leak in passing password
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel,
-likeViewModel: LikeViewModel
+fun NavigationScreen(
+    loginViewModel: LoginViewModel, mainViewModel: MainViewModel,
+    likeViewModel: LikeViewModel
 ) {
     val navController = rememberNavController()
     val startDestination: String =
@@ -65,7 +61,7 @@ likeViewModel: LikeViewModel
         "chat_screen" -> {
             bottomBarState.value = !isKeyboardOpen
         }
-        "explore_screen"->{
+        "explore_screen" -> {
             bottomBarState.value = !isKeyboardOpen
         }
         "article_screen/{id}" ->{
@@ -79,8 +75,12 @@ likeViewModel: LikeViewModel
         }
     }
 
-    Scaffold(bottomBar = {BottomBar(navController, bottomBarState)}) {innerPadding ->
-        NavHost(navController = navController, startDestination = startDestination, modifier = Modifier.padding(innerPadding))
+    Scaffold(bottomBar = { BottomBar(navController, bottomBarState) }) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "camera_screen",
+            modifier = Modifier.padding(innerPadding)
+        )
         {
             // LandingScreen Navigation
             composable(route = "landing_screen") {
@@ -234,14 +234,15 @@ likeViewModel: LikeViewModel
             composable(route = "add_article_screen") {
                 AddArticleScreen(
                     mainViewModel = mainViewModel,
-                    navigateToMain = {navController.navigateUp()}
+                    navigateToMain = { navController.navigateUp() }
                 )
             }
 
-            composable(route = "like_screen"){
-                LikeScreen({ param1 ->
-                    navController.navigate("article_screen/$param1")
-                }, viewModel = likeViewModel
+            composable(route = "like_screen") {
+                LikeScreen(
+                    { param1 ->
+                        navController.navigate("article_screen/$param1")
+                    }, viewModel = likeViewModel
                 )
             }
 
@@ -258,12 +259,16 @@ likeViewModel: LikeViewModel
                 }
             }
 
-            composable(route = "explore_screen"){
+            composable(route = "explore_screen") {
                 ExploreScreen(mainViewModel = mainViewModel,
                     navToAddArticle = { navController.navigate("add_article_screen") },
                     navToArticle = { id ->
                         navController.navigate("article_screen/$id")
                     })
+            }
+
+            composable(route = "camera_screen"){
+                CameraScreen(mainViewModel = mainViewModel)
             }
         }
     }

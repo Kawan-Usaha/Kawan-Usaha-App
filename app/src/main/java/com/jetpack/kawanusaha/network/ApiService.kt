@@ -5,6 +5,7 @@ import com.google.gson.JsonArray
 import com.jetpack.kawanusaha.BuildConfig
 import com.jetpack.kawanusaha.data.*
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
@@ -115,9 +116,12 @@ interface ApiService {
         @Query ("title") title: String
     ): ArticleResponse
 
+    @Multipart
     @POST("article/create")
     fun createArticle (
         @Header("Authorization") token: String,
+//        @Part image: MultipartBody.Part,
+//        @Part("article") createArticleRequest: CreateArticleRequest
         @Body createArticleRequest: CreateArticleRequest
     ) : Call<DefaultResponse>
 

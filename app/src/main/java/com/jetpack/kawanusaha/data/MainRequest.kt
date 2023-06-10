@@ -23,7 +23,6 @@ data class CreateArticleRequest(
 data class ArticleRequest (
     val title: String,
     val content: String,
-    val image: String,
     val is_published: Boolean
 )
 

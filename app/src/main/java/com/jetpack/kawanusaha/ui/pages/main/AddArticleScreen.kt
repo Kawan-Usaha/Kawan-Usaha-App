@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +19,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
+import coil.compose.rememberImagePainter
 import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
@@ -32,7 +35,9 @@ fun AddArticleScreen(
 
     Surface(
         color = MaterialTheme.colors.primary,
-        modifier = Modifier.fillMaxSize().safeDrawingPadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
     ) {
         Scaffold(
             topBar = {
