@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
 import com.jetpack.kawanusaha.main.*
 import com.jetpack.kawanusaha.ui.pages.NavigationScreen
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
         val preferences: SharedPreferences =
             getSharedPreferences("SESSION", Context.MODE_PRIVATE)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             KawanUsahaTheme {
                 Surface(
@@ -42,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     NavigationScreen(
                         loginViewModel = loginViewModel,
                         mainViewModel = mainViewModel,
-                        likeViewModel = likeViewModel // sementara, ke navigation screen
+                        likeViewModel = likeViewModel,
                     )
                 }
             }

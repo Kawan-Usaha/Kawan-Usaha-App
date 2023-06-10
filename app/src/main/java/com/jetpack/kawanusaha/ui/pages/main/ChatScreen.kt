@@ -42,7 +42,9 @@ fun ChatScreen(mainViewModel: MainViewModel) {
 
     Surface(
         color = MaterialTheme.colors.background,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
     ) {
         Scaffold(topBar = { TopBarSection() }) { innerPadding ->
             Column(
@@ -121,6 +123,11 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
+                        )
+                        Spacer(
+                            Modifier.windowInsetsBottomHeight(
+                                WindowInsets.systemBars
+                            )
                         )
                     }
                 }

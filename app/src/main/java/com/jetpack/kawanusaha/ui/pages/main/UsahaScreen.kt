@@ -64,7 +64,7 @@ fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        modifier = Modifier.height(screenHeight.dp)
+        modifier = Modifier.height(screenHeight.dp).safeDrawingPadding()
     ) {
         items(response?.data?.size ?: 0) {
             UsahaItem(usaha_name = response?.data?.get(it)!!, navToUsahaDetail)

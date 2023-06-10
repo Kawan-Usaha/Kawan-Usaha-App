@@ -32,7 +32,7 @@ fun AddArticleScreen(
 
     Surface(
         color = MaterialTheme.colors.primary,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().safeDrawingPadding()
     ) {
         Scaffold(
             topBar = {

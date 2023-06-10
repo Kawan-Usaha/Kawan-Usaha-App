@@ -105,12 +105,14 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                     elevation = 0.dp,
                     modifier = Modifier.padding(8.dp),
                 )
-            }
+            },
+            modifier = Modifier.safeDrawingPadding()
         ) { innerPadding ->
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
                     .padding(8.dp),
+
                 horizontalAlignment = Alignment.Start
             ) {
                 item {

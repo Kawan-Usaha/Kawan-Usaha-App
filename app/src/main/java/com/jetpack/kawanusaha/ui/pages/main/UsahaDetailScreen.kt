@@ -2,6 +2,7 @@ package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -34,7 +35,7 @@ fun UsahaDetailScreen (mainViewModel: MainViewModel, usahaId: Int, navBack: () -
             )
         }
     ){innerPadding ->
-        Column(Modifier.padding(innerPadding)) {
+        Column(Modifier.padding(innerPadding).safeDrawingPadding()) {
             Text(text = id.toString())
         }
     }

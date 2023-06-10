@@ -43,6 +43,7 @@ fun MainScreen(
         color = MaterialTheme.colors.background,
         modifier = Modifier
             .fillMaxSize()
+            .safeDrawingPadding()
     ) {
         Scaffold(
             topBar = { TopBar {} },

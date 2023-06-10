@@ -46,7 +46,8 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                 backgroundColor = MaterialTheme.colors.background,
                 elevation = 0.dp
             )
-        }
+        },
+        modifier = Modifier.safeDrawingPadding()
     ) { innerPadding ->
         Column(
             modifier = Modifier

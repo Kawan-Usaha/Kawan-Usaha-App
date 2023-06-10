@@ -3,18 +3,24 @@ package com.jetpack.kawanusaha.ui.pages
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jetpack.kawanusaha.db.fav.ItemFav
 import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
@@ -25,15 +31,17 @@ import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
 import com.jetpack.kawanusaha.ui.pages.main.*
 
 // TODO Security Leak in passing password
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun NavigationScreen(loginViewModel: LoginViewModel, mainViewModel: MainViewModel,
-likeViewModel: LikeViewModel // sementara, ke composable line 217
+likeViewModel: LikeViewModel
 ) {
     val navController = rememberNavController()
     val startDestination: String =
         if (loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
     val bottomBarState = rememberSaveable { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val isKeyboardOpen by onKeyboardVisible()
 
     when (navBackStackEntry?.destination?.route) {
         "landing_screen" -> {
@@ -53,6 +61,12 @@ likeViewModel: LikeViewModel // sementara, ke composable line 217
         }
         "add_article_screen" -> {
             bottomBarState.value = false
+        }
+        "chat_screen" -> {
+            bottomBarState.value = !isKeyboardOpen
+        }
+        "explore_screen"->{
+            bottomBarState.value = !isKeyboardOpen
         }
         else -> {
             bottomBarState.value = true
@@ -272,5 +286,11 @@ fun BackPressHandler(
             backCallback.remove()
         }
     }
+}
+
+@Composable
+fun onKeyboardVisible(): State<Boolean> {
+    val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+    return rememberUpdatedState(isImeVisible)
 }
 

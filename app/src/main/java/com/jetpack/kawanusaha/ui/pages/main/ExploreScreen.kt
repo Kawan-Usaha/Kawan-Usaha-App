@@ -38,7 +38,7 @@ fun ExploreScreen (
     Scaffold(
         topBar = { TopBar {} },
         floatingActionButton = { NavFabButton(navToAddArticle) },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().safeDrawingPadding()
     ) { innerPadding ->
         var searchText by remember { mutableStateOf(TextFieldValue("")) }
         var search by remember { mutableStateOf("") }
