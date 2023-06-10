@@ -60,7 +60,7 @@ fun UsahaScreen(
 fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
+        columns = GridCells.Adaptive(200.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -83,15 +83,7 @@ fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
                 .padding(20.dp),
         ) {
             val showShimmer = remember { mutableStateOf(true) }
-            AsyncImage(
-                model = "URL DISINI",
-                contentDescription = "Foto Usaha",
-                modifier = Modifier
-                    .height(300.dp)
-                    .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-                onSuccess = { showShimmer.value = false }
-            )
-            Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
+            Text(text = title, style = Typography.body1)
         }
     }
 }

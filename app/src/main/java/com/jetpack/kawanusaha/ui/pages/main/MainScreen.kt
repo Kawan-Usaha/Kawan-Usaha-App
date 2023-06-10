@@ -182,7 +182,7 @@ fun SectionText(text: String, style: TextStyle, modifier: Modifier) {
 @Composable
 fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) -> Unit) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 300.dp),
+        columns = GridCells.Adaptive(150.dp),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -204,17 +204,16 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable { navToArticle(id) }
-            .padding(20.dp),
     ) {
         val showShimmer = remember { mutableStateOf(true) }
         AsyncImage(
             model = "URL DISINI",
             contentDescription = "Articles",
             modifier = Modifier
-                .height(300.dp)
+                .height(100.dp)
                 .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
             onSuccess = { showShimmer.value = false }
         )
-        Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
+        Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h6)
     }
 }

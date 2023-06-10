@@ -38,7 +38,7 @@ likeViewModel: LikeViewModel
 ) {
     val navController = rememberNavController()
     val startDestination: String =
-        if (loginViewModel.isLoggedIn()) "main_screen" else "landing_screen"
+        if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
     val bottomBarState = rememberSaveable { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val isKeyboardOpen by onKeyboardVisible()

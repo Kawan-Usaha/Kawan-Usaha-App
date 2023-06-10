@@ -116,22 +116,6 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                 horizontalAlignment = Alignment.Start
             ) {
                 item {
-                    Row {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(
-                                imageVector = Icons.Default.AccountCircle,
-                                contentDescription = "Account",
-                                modifier = Modifier.size(30.dp)
-                            )
-                        }
-                        Column {
-                            Text(text = "Made by %s", style = MaterialTheme.typography.body1)
-                            Text("Published at %1%s - %2%s", style = MaterialTheme.typography.body1)
-                        }
-
-                    }
-                }
-                item {
                     AsyncImage(
                         model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
                         contentDescription = "Article Picture",

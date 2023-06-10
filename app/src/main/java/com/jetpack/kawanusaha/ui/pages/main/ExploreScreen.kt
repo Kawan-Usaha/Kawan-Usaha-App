@@ -4,8 +4,6 @@ package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
@@ -19,7 +17,6 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -27,27 +24,22 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
-import com.jetpack.kawanusaha.ui.pages.TopBar
 
 @Composable
-fun ExploreScreen (
+fun ExploreScreen(
     mainViewModel: MainViewModel,
     navToAddArticle: () -> Unit,
     navToArticle: (Int) -> Unit
 ) {
+    var searchText by remember { mutableStateOf(TextFieldValue("")) }
+    var search by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+    val items = remember { mutableStateListOf("") }
+    val articles = getData(mainViewModel = mainViewModel, searchText = search)
     Scaffold(
-        topBar = { TopBar {} },
         floatingActionButton = { NavFabButton(navToAddArticle) },
         modifier = Modifier.fillMaxSize().safeDrawingPadding()
     ) { innerPadding ->
-        var searchText by remember { mutableStateOf(TextFieldValue("")) }
-        var search by remember { mutableStateOf("") }
-        var active by remember { mutableStateOf(false) }
-        var items = remember {mutableStateListOf(
-            ""
-        )}
-        val articles = getData(mainViewModel = mainViewModel, searchText = search)
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -64,7 +56,8 @@ fun ExploreScreen (
                     onQueryChange = { search = it },
                     onSearch = {
                         items.add(search)
-                        active = false },
+                        active = false
+                    },
                     active = active,
                     onActiveChange = { active = it },
                     colors = SearchBarDefaults.colors(MaterialTheme.colors.primary),
@@ -91,61 +84,44 @@ fun ExploreScreen (
                             )
                         }
                     },
-
                 ) {
-                    items.forEach{
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start,
-                            modifier = Modifier
-                                .padding(start = 16.dp, end = 16.dp, bottom = 18.dp)
-                                .clickable { search = it }
-                        ){
-                            if(it.isNotEmpty()) {
+                    items.forEach {
+                        if (it.isNotEmpty()){
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start,
+                                modifier = Modifier
+                                    .clickable { search = it }.fillMaxWidth().height(60.dp).padding(horizontal = 20.dp)
+                            ) {
                                 Icon(
                                     imageVector = Icons.Default.History,
                                     contentDescription = "History Icon",
-                                    modifier = Modifier
+                                    modifier = Modifier.padding(end = 20.dp)
                                 )
+                                Text(text = it)
                             }
-                            Spacer(modifier = Modifier.width(5.dp))
-                            Text(text = it)
                         }
                     }
                 }
-                Spacer(Modifier.height(15.dp))
+
                 // Category Section
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start,
-                ){
+                ) {
                     Card(
-                        backgroundColor = MaterialTheme.colors.primary,
+                        backgroundColor = MaterialTheme.colors.background,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            SectionText(
-                                text = "Category",
-                                style = MaterialTheme.typography.h3,
-                                modifier = Modifier.padding(15.dp)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
                             CategorySection()
-                            Spacer(Modifier.height(15.dp))
                         }
                     }
                 }
 
-                Spacer(Modifier.height(15.dp))
                 // Recommendation Articles Section
-                SectionText(
-                    text = "Recommendation Articles",
-                    style = MaterialTheme.typography.h3,
-                    modifier = Modifier.padding(15.dp)
-                )
-                Spacer(modifier = Modifier.height(5.dp))
                 ArticleSection(articles, navToArticle)
             }
         }
@@ -153,8 +129,8 @@ fun ExploreScreen (
 }
 
 @Composable
-fun getData(mainViewModel: MainViewModel, searchText: String) : LazyPagingItems<ArticlesItem> {
-    return if (searchText.isNotEmpty()){
+fun getData(mainViewModel: MainViewModel, searchText: String): LazyPagingItems<ArticlesItem> {
+    return if (searchText.isNotEmpty()) {
         mainViewModel.searchAllArticle(searchText).collectAsLazyPagingItems()
     } else {
         mainViewModel.getAllArticles().collectAsLazyPagingItems()
