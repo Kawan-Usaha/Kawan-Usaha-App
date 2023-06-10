@@ -40,6 +40,10 @@ fun ChatScreen(mainViewModel: MainViewModel) {
         lazyListState.animateScrollToItem(lazyListState.layoutInfo.totalItemsCount)
     }
 
+    LaunchedEffect(msg.value){
+        scrollToBottom()
+    }
+
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier.fillMaxSize()
@@ -121,6 +125,11 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(10.dp)
+                                .clickable {
+                                    scope.launch {
+                                        scrollToBottom()
+                                    }
+                                }
                         )
                     }
                 }
@@ -151,9 +160,8 @@ fun TopBarSection() {
                     .size(42.dp)
                     .clip(CircleShape)
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
-
+ 
+            Spacer(modifier = Modifier.width(5.dp))
             Column {
                 Text(text = "Bot", fontWeight = FontWeight.SemiBold)
                 Text(

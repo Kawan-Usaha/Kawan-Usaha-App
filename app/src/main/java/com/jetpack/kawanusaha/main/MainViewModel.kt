@@ -47,7 +47,7 @@ class MainViewModel(
     val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
 
     private val _llmResponse =
-        MutableStateFlow(arrayListOf(Message("assistant", "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya.")))
+        MutableStateFlow(arrayListOf(Message("assistant", "Saya adalah AI asisten pembantu UMKM berbahasa Indonesia. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya.")))
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     private val _chatCounter = MutableStateFlow(0)
@@ -157,9 +157,9 @@ class MainViewModel(
             model = "Kawan-Usaha",
             stream = true,
             messages = message,
-            max_tokens = 1024,
+            max_tokens = 512,
             temperature = 0.5,
-            top_p = 0.5
+            top_p = 1.0
         )
 
         val jsonPayload = Gson().toJson(llmRequest)
@@ -172,8 +172,9 @@ class MainViewModel(
             .writeTimeout(10, TimeUnit.MINUTES)
             .build()
 
+
         val request = Request.Builder()
-            .url("http://35.196.157.161:8000/v1/chat/completions")
+            .url("http://34.74.45.133:8000/v1/chat/completions")
             .header("Content-Type", "application/json")
             .addHeader("Accept", "text/event-stream")
             .post(requestBody)
@@ -206,9 +207,6 @@ class MainViewModel(
         sendStreamChat(llmResponse.value)
     }
 
-    fun getAllData(): LiveData<List<DbData>> = localRepository.getAllData()
-
-
     private val eventSourceListener = object : EventSourceListener() {
         override fun onOpen(eventSource: EventSource, response: Response) {
             super.onOpen(eventSource, response)
@@ -239,6 +237,7 @@ class MainViewModel(
             super.onFailure(eventSource, t, response)
             if (response?.message != "OK"){
                 _stringResponse.value = "Error"
+                Log.e("TAG", response?.body?.string().toString())
             }
             addCounter()
             _llmResponse.value.add(Message("assistant", stringResponse.value))
