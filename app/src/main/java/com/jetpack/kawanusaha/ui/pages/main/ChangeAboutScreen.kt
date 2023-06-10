@@ -1,5 +1,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -12,10 +14,13 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -68,19 +73,27 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                 )
                 Icon(
                     imageVector = Icons.Default.Edit,
+                    tint = Color.White,
                     contentDescription = "Edit Profile Picture",
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
+                        .align(Alignment.Center)
+                        .size(40.dp)
+                        .alpha(0.8f)
                         .clickable {
                             // TODO open camera / gallery
                         }
                 )
             }
-            Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
+            Card(
+                backgroundColor = MaterialTheme.colors.primary,
+                elevation = 5.dp,
+                modifier = Modifier.padding(10.dp),
+                border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
+            ){
                 val user by mainViewModel.userProfile.collectAsState(initial = null)
                 if (user != null) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = user?.data?.name!!.toString())
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.padding(10.dp)) {
+                        Text(text = user?.data?.name!!.toString(), style = MaterialTheme.typography.h3)
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(2),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
@@ -90,19 +103,19 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                                 user?.data?.let { userData ->
                                 newName = TextFieldValue(userData.name)
                                 newEmail = TextFieldValue(userData.email)
-                                item { Text(text = "Account Id: ") }
+                                item { Text(text = "Account Id: ",fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.body1) }
                                 item { TextField(
                                     value = userData.userId,
                                     onValueChange = {  },
                                     readOnly = true
                                 ) }
-                                item { Text(text = "Name: ") }
+                                item { Text(text = "Name: ",fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.body1) }
                                 item { TextField(
                                     value = newName,
                                     onValueChange = {
                                         newName = it},
                                 ) }
-                                item { Text(text = "Email: ")}
+                                item { Text(text = "Email: ",fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.body1)}
                                 item { TextField(
                                     value = newEmail,
                                     onValueChange = {
@@ -110,13 +123,18 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                                 ) }
                             }
                         }
+                        Spacer(modifier = Modifier.height(20.dp))
                         user?.data?.let { userData ->
                             Button(
                                 onClick = {
                                     mainViewModel.saveProfileChange(newName.text, newEmail.text)
                                 },
                                 //TODO pake regex
-                                enabled = (newName.text != userData.name || newEmail.text != userData.email) && (newName.text != "" || newEmail.text != "")
+                                enabled = (newName.text != userData.name || newEmail.text != userData.email) && (newName.text != "" || newEmail.text != ""),
+                                colors = ButtonDefaults.buttonColors(
+                                    backgroundColor = MaterialTheme.colors.secondary,
+                                    disabledBackgroundColor = MaterialTheme.colors.surface,
+                                )
                             ) {
                                 Text(text = "Save Change")
                                 LaunchedEffect(status){
@@ -130,6 +148,11 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                     }
                 }
             }
+            Spacer(
+                Modifier.windowInsetsBottomHeight(
+                    WindowInsets.systemBars
+                )
+            )
         }
     }
 }

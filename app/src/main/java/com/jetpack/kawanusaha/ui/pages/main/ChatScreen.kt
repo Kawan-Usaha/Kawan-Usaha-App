@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.onKeyboardVisible
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,11 +57,13 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                     .padding(innerPadding),
                 verticalArrangement = Arrangement.Top
             ) {
+                val isKeyboardOpen by onKeyboardVisible()
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
-                        .weight(1f),
+                        .weight(1f)
+                        .imePadding(),
                     state = lazyListState
                 ) {
                     items(msg.value.size) { id ->
@@ -70,6 +73,11 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                             isOut = msg.value[id].role == "user",
                         )
                         Spacer(modifier = Modifier.height(8.dp))
+                        LaunchedEffect(isKeyboardOpen){
+                            if(isKeyboardOpen){
+                                scrollToBottom()
+                            }
+                        }
                     }
                     if (isLoading.value) {
                         item {
@@ -132,11 +140,6 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                                         scrollToBottom()
                                     }
                                 }
-                        )
-                        Spacer(
-                            Modifier.windowInsetsBottomHeight(
-                                WindowInsets.systemBars
-                            )
                         )
                     }
                 }
