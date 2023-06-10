@@ -133,7 +133,6 @@ class MainViewModel(
                     ArticleRequest(
                         title = title,
                         content = content,
-                        image = "https://example.com/updated_image.jpg",
                         is_published = true
                     ),
                     category

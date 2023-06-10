@@ -30,7 +30,6 @@ import com.jetpack.kawanusaha.ui.pages.authentication.mToast
 
 @Composable
 fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
-    val mContext = LocalContext.current
     var newName by remember { mutableStateOf(TextFieldValue("")) }
     var newEmail by remember { mutableStateOf(TextFieldValue("")) }
     val status by mainViewModel.status.collectAsState(initial = false)

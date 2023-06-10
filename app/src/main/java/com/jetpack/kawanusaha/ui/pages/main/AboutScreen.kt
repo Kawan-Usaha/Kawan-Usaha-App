@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
@@ -62,9 +63,8 @@ fun AboutScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                val showShimmer = remember { mutableStateOf(true) }
                 AsyncImage(
-                    model = "URL DISINI",
+                    model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
                     contentDescription = "Profile Picture",
                     placeholder = painterResource(id = R.drawable.profile),
                     contentScale = ContentScale.Crop,
@@ -72,13 +72,6 @@ fun AboutScreen(
                         .size(200.dp)
                         .padding(8.dp)
                         .clip(CircleShape)
-                        .background(
-                            shimmerBrush(
-                                targetValue = 1300f,
-                                showShimmer = showShimmer.value
-                            )
-                        ),
-                    onSuccess = {showShimmer.value = false}
                 )
             }
             item {
@@ -97,33 +90,24 @@ fun AboutScreen(
                                     text = user?.data?.name!!.toString(),
                                     style = MaterialTheme.typography.h3
                                 )
-                                LazyVerticalGrid(
-                                    columns = GridCells.Fixed(2),
-                                    contentPadding = PaddingValues(
-                                        horizontal = 16.dp,
-                                        vertical = 8.dp
-                                    ),
-                                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                                Column(
                                     verticalArrangement = Arrangement.spacedBy(5.dp),
-                                    modifier = Modifier.height(120.dp)
+                                    modifier = Modifier.padding(vertical = 20.dp)
                                 ) {
                                     user?.data?.let { userData ->
                                         listOf(
-                                            "Account Id: " to userData.userId,
                                             "Email: " to userData.email,
                                             "Member Since: " to userData.createdAt.slice(0..9),
                                         ).forEach { (label, value) ->
-                                            item {
-                                                Text(text = label, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.body1)
-                                            }
-                                            item {
-                                                Text(text = value, style = MaterialTheme.typography.body1)
+                                            Row(verticalAlignment = Alignment.CenterVertically){
+                                                Text(text = label, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.body1, modifier = Modifier.weight(1f))
+                                                Text(text = value, style = MaterialTheme.typography.body1, softWrap = true )
                                             }
                                         }
 
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(15.dp))
+                                Spacer(modifier = Modifier.height(10.dp))
                                 if (!(user?.data?.verified!!)) {
                                     Button(
                                         onClick = { navToVerify() },
@@ -148,8 +132,7 @@ fun AboutScreen(
                 }
             }
             item {
-                Spacer(modifier = Modifier.height(8.dp))
-                Divider(color = MaterialTheme.colors.onPrimary, modifier = Modifier.fillMaxWidth(), startIndent = 2.dp)
+                Divider(color = MaterialTheme.colors.onPrimary, modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), startIndent = 2.dp)
                 Row (Modifier.fillMaxWidth()){
                     SectionText(text = "Usaha", style = Typography.h3 , modifier = Modifier.weight(1f))
                     SectionText(text = "+", style = Typography.h3 , modifier = Modifier.clickable { navToAddUsaha() })
