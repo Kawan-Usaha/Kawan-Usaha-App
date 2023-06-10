@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
@@ -45,9 +46,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                             )
                         }
                     },
-                    title = {
-                        Text(text = article?.title ?: "Title")
-                    },
+                    title = { Text(text = "") },
                     actions = {
                         // Like Button
                         val favoriteMap = DbFav(
@@ -116,6 +115,9 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                 horizontalAlignment = Alignment.Start
             ) {
                 item {
+                    Text(text = article?.content ?: "Content", style = MaterialTheme.typography.h1, modifier = Modifier.padding(8.dp))
+                }
+                item {
                     AsyncImage(
                         model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
                         contentDescription = "Article Picture",
@@ -125,9 +127,6 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                             .size(width = 500.dp, height = 300.dp)
                             .padding(8.dp)
                     )
-                }
-                item {
-                    Text(text = article?.content ?: "Content", style = MaterialTheme.typography.h3, modifier = Modifier.padding(8.dp))
                 }
                 item {
                     Text(text = article?.content ?: "Content", style = MaterialTheme.typography.body1 ,modifier = Modifier.padding(8.dp))

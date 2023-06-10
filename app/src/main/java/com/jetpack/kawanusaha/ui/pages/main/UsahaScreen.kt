@@ -31,7 +31,9 @@ fun UsahaScreen(
 ) {
     Scaffold(
         floatingActionButton = { NavFabButton(navToAddUsaha) },
-        topBar = { TopBar {} }) { innerPadding ->
+        topBar = { TopBar {} },
+        modifier = Modifier.safeDrawingPadding()
+    ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             SectionText(
                 text = "Types",

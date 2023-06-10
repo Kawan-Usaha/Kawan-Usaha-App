@@ -68,6 +68,12 @@ likeViewModel: LikeViewModel
         "explore_screen"->{
             bottomBarState.value = !isKeyboardOpen
         }
+        "article_screen/{id}" ->{
+            bottomBarState.value = false
+        }
+        "change_about_screen" -> {
+            bottomBarState.value = false
+        }
         else -> {
             bottomBarState.value = true
         }
