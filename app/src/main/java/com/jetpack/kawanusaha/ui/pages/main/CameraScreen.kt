@@ -38,6 +38,7 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
+import com.jetpack.kawanusaha.main.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,7 +51,7 @@ import kotlin.coroutines.suspendCoroutine
 val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
 
 @Composable
-fun CameraScreen(modifier: Modifier = Modifier) {
+fun CameraScreen(modifier: Modifier = Modifier, mainViewModel: MainViewModel) {
     val emptyImageUri = Uri.parse("file://dev/null")
     var imageUri by remember { mutableStateOf(emptyImageUri) }
     if (imageUri != emptyImageUri) {
@@ -60,13 +61,21 @@ fun CameraScreen(modifier: Modifier = Modifier) {
                 painter = rememberImagePainter(imageUri),
                 contentDescription = "Captured image"
             )
-            Button(
-                modifier = Modifier.align(Alignment.BottomCenter),
-                onClick = {
-                    imageUri = emptyImageUri
+            Row(modifier = Modifier.align(Alignment.BottomCenter)) {
+                Button(
+                    onClick = {
+                        imageUri = emptyImageUri
+                    }
+                ) {
+                    Text("Remove image")
                 }
-            ) {
-                Text("Remove image")
+                Button(
+                    onClick = {
+                        mainViewModel.setImage(imageUri)
+                    }
+                ) {
+                    Text("Save image")
+                }
             }
         }
     } else {

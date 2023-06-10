@@ -2,13 +2,13 @@ package com.jetpack.kawanusaha.main
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.google.gson.Gson
 import com.jetpack.kawanusaha.data.*
-import com.jetpack.kawanusaha.db.DbData
 import com.jetpack.kawanusaha.db.DbRepository
 import com.jetpack.kawanusaha.`in`.Injection
 import kotlinx.coroutines.Dispatchers
@@ -45,8 +45,18 @@ class MainViewModel(
     private val _articleDetail = MutableStateFlow<ArticleDetail?>(null)
     val articleDetail: StateFlow<ArticleDetail?> = _articleDetail
 
+    private val _imageFile = MutableStateFlow<Uri>(Uri.parse("file://dev/null"))
+    val imageFile: StateFlow<Uri> = _imageFile
+
     private val _llmResponse =
-        MutableStateFlow(arrayListOf(Message("assistant", "Saya adalah AI asisten pembantu UMKM berbahasa Indonesia. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya.")))
+        MutableStateFlow(
+            arrayListOf(
+                Message(
+                    "assistant",
+                    "Saya adalah AI asisten pembantu UMKM berbahasa Indonesia. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."
+                )
+            )
+        )
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     private val _chatCounter = MutableStateFlow(0)
@@ -56,7 +66,7 @@ class MainViewModel(
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _stringResponse = MutableStateFlow("")
-    val stringResponse : StateFlow<String> = _stringResponse
+    val stringResponse: StateFlow<String> = _stringResponse
 
     init {
         clearStatus()
@@ -125,6 +135,10 @@ class MainViewModel(
         }
     }
 
+    fun setImage(uri: Uri) {
+        _imageFile.value = uri
+    }
+
     fun createArticle(title: String, content: String, category: Int) {
         viewModelScope.launch {
             _status.value = dataRepository.createArticle(
@@ -145,8 +159,13 @@ class MainViewModel(
         _status.value = false
     }
 
-    fun clearCache(){
-        _llmResponse.value = arrayListOf(Message("assistant", "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."))
+    fun clearCache() {
+        _llmResponse.value = arrayListOf(
+            Message(
+                "assistant",
+                "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."
+            )
+        )
     }
 
     private fun sendStreamChat(message: List<Message>) {
@@ -233,7 +252,7 @@ class MainViewModel(
 
         override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
             super.onFailure(eventSource, t, response)
-            if (response?.message != "OK"){
+            if (response?.message != "OK") {
                 _stringResponse.value = "Error"
                 Log.e("TAG", response?.body?.string().toString())
             }

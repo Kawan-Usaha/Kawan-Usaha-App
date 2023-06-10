@@ -262,7 +262,7 @@ fun NavigationScreen(
             }
 
             composable(route = "camera_screen"){
-                CameraScreen()
+                CameraScreen(mainViewModel = mainViewModel)
             }
         }
     }
