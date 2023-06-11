@@ -92,7 +92,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                         contentAlignment = Alignment.Center
                     ) {
                         bitmap.value.let { btm ->
-                            val resources = mContext.resources
+                            val resources = context.resources
                             val bitmapValue: Bitmap? = btm
                             val defaultBitmap = BitmapFactory.decodeResource(resources, R.drawable.profile)
                             val imageBitmap = bitmapValue?.asImageBitmap() ?: defaultBitmap.asImageBitmap()

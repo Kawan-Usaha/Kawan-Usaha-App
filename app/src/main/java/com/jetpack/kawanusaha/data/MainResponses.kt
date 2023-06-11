@@ -97,6 +97,7 @@ data class ArticleDetail(
 	val updatedAt: String,
 	val isPublished: Boolean,
 	val createdAt: String,
+	val image: String,
 	val id: Int,
 	val category: List<Category>,
 	val title: String,

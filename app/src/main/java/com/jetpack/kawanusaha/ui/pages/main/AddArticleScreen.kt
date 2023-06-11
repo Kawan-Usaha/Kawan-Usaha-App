@@ -177,7 +177,6 @@ fun AddArticleScreen(
                                 .fillMaxSize()
                                 .padding(bottom = 16.dp)){
                                 if (image != Uri.parse("file://dev/null")) {
-                                    val file = getFileFromUri(LocalContext.current, image) as File
                                     AsyncImage(
                                         model = image,
                                         contentDescription = "Image Preview",
