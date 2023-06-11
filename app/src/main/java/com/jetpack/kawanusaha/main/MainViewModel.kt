@@ -9,18 +9,21 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.google.gson.Gson
 import com.jetpack.kawanusaha.data.*
-import com.jetpack.kawanusaha.db.DbRepository
 import com.jetpack.kawanusaha.`in`.Injection
+import com.jetpack.kawanusaha.tools.getFileFromUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
+import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -28,7 +31,7 @@ import java.util.concurrent.TimeUnit
 class MainViewModel(
     private val dataRepository: DataRepository,
     private val preferences: SharedPreferences,
-    private val localRepository: DbRepository
+    private val application: Application
 ) : ViewModel() {
     private val _userProfile = MutableStateFlow<ProfileResponse?>(null)
     val userProfile: StateFlow<ProfileResponse?> = _userProfile
@@ -59,14 +62,14 @@ class MainViewModel(
         )
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
-    private val _chatCounter = MutableStateFlow(0)
-    val chatCounter: StateFlow<Int> = _chatCounter
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
     private val _stringResponse = MutableStateFlow("")
     val stringResponse: StateFlow<String> = _stringResponse
+
+    private val _articleCache = MutableStateFlow<CreateArticleRequest?>(null)
+    val articleCache : StateFlow<CreateArticleRequest?> = _articleCache
 
     init {
         clearStatus()
@@ -121,18 +124,31 @@ class MainViewModel(
     fun getUserArticles(): Flow<PagingData<ArticlesItem>> =
         dataRepository.getUserArticle(getToken()).cachedIn(viewModelScope)
 
-
     fun searchAllArticle(text: String): Flow<PagingData<ArticlesItem>> =
         dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
 
     fun searchUserArticle(text: String): Flow<PagingData<ArticlesItem>> =
         dataRepository.searchUserArticle(getToken(), text).cachedIn(viewModelScope)
 
-
     fun getArticleDetail(id: Int) {
         viewModelScope.launch {
             _articleDetail.value = dataRepository.getArticleDetail(id)?.data
         }
+    }
+
+    fun saveArticleCache(title: String, description: String, category: Int){
+        _articleCache.value = CreateArticleRequest(
+            ArticleRequest(
+                title = title,
+                content = description,
+                is_published = false
+            ),
+            category
+        )
+    }
+
+    fun clearArticleCache(){
+        _articleCache.value = null
     }
 
     fun setImage(uri: Uri) {
@@ -141,8 +157,17 @@ class MainViewModel(
 
     fun createArticle(title: String, content: String, category: Int) {
         viewModelScope.launch {
-            _status.value = dataRepository.createArticle(
-                getToken(),
+            if (imageFile.value != Uri.parse("file://dev/null")){
+                val file = getFileFromUri(application.applicationContext, imageFile.value) as File
+                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                    name = "image",
+                    filename = file.name,
+                    body = requestImageFile
+                )
+                _status.value = dataRepository.createArticle(
+                        getToken(),
+                imageMultipart,
                 CreateArticleRequest(
                     ArticleRequest(
                         title = title,
@@ -151,8 +176,26 @@ class MainViewModel(
                     ),
                     category
                 )
-            )?.success ?: false
+                )?.success ?: false
+            } else {
+                _status.value = dataRepository.createArticle(
+                    getToken(),
+                    null,
+                    CreateArticleRequest(
+                        ArticleRequest(
+                            title = title,
+                            content = content,
+                            is_published = true
+                        ),
+                        category
+                    )
+                )?.success ?: false
+            }
         }
+    }
+
+    fun clearImage(){
+        _imageFile.value = Uri.parse("file://dev/null")
     }
 
     fun clearStatus() {
@@ -214,13 +257,8 @@ class MainViewModel(
         }
     }
 
-    private fun addCounter() {
-        _chatCounter.value += 1
-    }
-
     fun sendMsg(message: String) {
         _llmResponse.value.add(Message("user", message))
-        addCounter()
         sendStreamChat(llmResponse.value)
     }
 
@@ -228,7 +266,6 @@ class MainViewModel(
         override fun onOpen(eventSource: EventSource, response: Response) {
             super.onOpen(eventSource, response)
             _stringResponse.value = ""
-            addCounter()
         }
 
         override fun onClosed(eventSource: EventSource) {
@@ -256,7 +293,6 @@ class MainViewModel(
                 _stringResponse.value = "Error"
                 Log.e("TAG", response?.body?.string().toString())
             }
-            addCounter()
             _llmResponse.value.add(Message("assistant", stringResponse.value))
             _isLoading.value = false
             _stringResponse.value = ""
@@ -278,7 +314,7 @@ class MainViewModelFactory(
             return MainViewModel(
                 Injection.provideRepository(),
                 preferences,
-                Injection.provideRepository(application)
+                application
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

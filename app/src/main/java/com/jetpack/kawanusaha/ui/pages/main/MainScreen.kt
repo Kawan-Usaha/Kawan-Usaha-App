@@ -207,12 +207,13 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
     ) {
         val showShimmer = remember { mutableStateOf(true) }
         AsyncImage(
-            model = "URL DISINI",
+            model = articlesItem.image,
             contentDescription = "Articles",
             modifier = Modifier
                 .height(100.dp)
                 .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-            onSuccess = { showShimmer.value = false }
+            onSuccess = { showShimmer.value = false },
+            onError = { showShimmer.value = false }
         )
         Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h6)
     }

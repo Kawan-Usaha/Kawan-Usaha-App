@@ -72,7 +72,7 @@ fun NavigationScreen(
     Scaffold(bottomBar = { BottomBar(navController, bottomBarState) }) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = "camera_screen",
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding)
         )
         {
@@ -228,7 +228,8 @@ fun NavigationScreen(
             composable(route = "add_article_screen") {
                 AddArticleScreen(
                     mainViewModel = mainViewModel,
-                    navigateToMain = { navController.navigateUp() }
+                    navigateToMain = { navController.navigateUp() },
+                    navToCamera = { navController.navigate("camera_screen") }
                 )
             }
 
@@ -262,7 +263,9 @@ fun NavigationScreen(
             }
 
             composable(route = "camera_screen"){
-                CameraScreen(mainViewModel = mainViewModel)
+                CameraScreen(mainViewModel = mainViewModel, navBack = {
+                    navController.navigateUp()
+                })
             }
         }
     }
