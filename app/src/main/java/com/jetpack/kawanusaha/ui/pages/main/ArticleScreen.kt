@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -30,7 +31,10 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
     }
     val article by mainViewModel.articleDetail.collectAsState(null)
     val context = LocalContext.current
-    val text = "Share Text"
+    val text = stringResource(R.string.share_text)
+    val addToFavorite = stringResource(R.string.added_to_favorite)
+    val removeFromFavorite = stringResource(R.string.removed_from_favorite)
+    val shareVia = stringResource(R.string.share_via)
 
     var isFavorite by rememberSaveable { mutableStateOf(false) }
     val getById by viewModel.getAllDataById(articleId).observeAsState()
@@ -42,7 +46,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                         IconButton(onClick = { navBack() }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = stringResource(R.string.back)
                             )
                         }
                     },
@@ -63,7 +67,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                                         Icons.Default.Favorite
                                         Toast.makeText(
                                             context,
-                                            "Added to favorite",
+                                            addToFavorite,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     } else {
@@ -71,7 +75,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                                         Icons.Default.FavoriteBorder
                                         Toast.makeText(
                                             context,
-                                            "Removed from favorite",
+                                            removeFromFavorite,
                                             Toast.LENGTH_SHORT
                                         ).show()
                                 }
@@ -80,7 +84,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                             Icon(
                                 imageVector = if(getById?.isNotEmpty() == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                                 tint = MaterialTheme.colors.secondary,
-                                contentDescription = "Like"
+                                contentDescription = stringResource(R.string.like)
                             )
 
                         }
@@ -89,14 +93,14 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                             onClick = {
                                 val intent = Intent(Intent.ACTION_SEND)
                                 intent.type = "text/plain"
-                                intent.putExtra(Intent.EXTRA_TEXT, text)
-                                val chooserIntent = Intent.createChooser(intent, "Share via")
+                                val putExtra = intent.putExtra(Intent.EXTRA_TEXT, text)
+                                val chooserIntent = Intent.createChooser(intent, shareVia)
                                 context.startActivity(chooserIntent)
                             }) {
                             Icon(
                                 imageVector = Icons.Default.Share,
                                 tint = MaterialTheme.colors.secondary,
-                                contentDescription = "Share"
+                                contentDescription = stringResource(R.string.share)
                             )
                         }
                     },
@@ -120,7 +124,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                 item {
                     AsyncImage(
                         model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                        contentDescription = "Article Picture",
+                        contentDescription = stringResource(R.string.article_picture),
                         placeholder = painterResource(id = R.drawable.profile),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

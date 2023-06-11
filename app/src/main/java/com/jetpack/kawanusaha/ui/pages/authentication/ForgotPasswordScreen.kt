@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -67,7 +68,7 @@ fun ForgotPasswordScreen(
             }
             Image(
                 painter = painterResource(R.drawable.baseline_key_day),
-                contentDescription = "key",
+                contentDescription = stringResource(R.string.key_icon),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(120.dp)
@@ -91,7 +92,7 @@ fun ForgotPasswordScreen(
                     contentAlignment = Alignment.CenterStart
                 ) {
                     SectionText(
-                        text = "RESET PASSWORD",
+                        text = stringResource(R.string.reset_password),
                         style = MaterialTheme.typography.h5,
                         modifier = Modifier
                             .padding(5.dp)
@@ -101,12 +102,12 @@ fun ForgotPasswordScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.email)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Email,
-                            contentDescription = "Email Icon",
+                            contentDescription = stringResource(R.string.email_icon),
                             tint = orange
                         )
                     },
@@ -127,13 +128,13 @@ fun ForgotPasswordScreen(
                 OutlinedTextField(
                     value = newPass,
                     onValueChange = { newPass = it },
-                    label = { Text("New Password") },
+                    label = { Text(stringResource(R.string.new_password)) },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = "Password Icon",
+                            contentDescription = stringResource(R.string.password_icon),
                             tint = orange
                         )
                     },
@@ -143,7 +144,8 @@ fun ForgotPasswordScreen(
                             painterResource(R.drawable.baseline_visibility_off_24)
 
                         val description =
-                            if (passwordVisible) "Hide Password" else "Show Password"
+                            if (passwordVisible) stringResource(R.string.hide_password) else
+                                stringResource(R.string.show_password)
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(painter = image, contentDescription = description)
                         }
@@ -166,13 +168,13 @@ fun ForgotPasswordScreen(
                 OutlinedTextField(
                     value = confPass,
                     onValueChange = { confPass = it },
-                    label = { Text("Confirm Password") },
+                    label = { Text(stringResource(R.string.confirm_password)) },
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Lock,
-                            contentDescription = "Password Icon",
+                            contentDescription = stringResource(R.string.password_icon),
                             tint = orange
                         )
                     },
@@ -182,7 +184,9 @@ fun ForgotPasswordScreen(
                             painterResource(R.drawable.baseline_visibility_off_24)
 
                         val description =
-                            if (passwordVisible) "Hide Password" else "Show Password"
+                            if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                R.string.show_password
+                            )
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(painter = image, contentDescription = description)
                         }
@@ -190,7 +194,7 @@ fun ForgotPasswordScreen(
                         if (newPass.text != confPass.text)
                             Icon(
                                 Icons.Filled.Warning,
-                                "error",
+                                stringResource(R.string.error),
                                 tint = MaterialTheme.colors.error
                             )
                     },
@@ -222,7 +226,7 @@ fun ForgotPasswordScreen(
                         .height(45.dp),
                 ) {
                     Text(
-                        text = "CHANGE PASSWORD",
+                        text = stringResource(R.string.change_password),
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
@@ -245,7 +249,7 @@ fun ForgotPasswordScreen(
                         .height(45.dp),
                 ) {
                     Text(
-                        text = "Cancel",
+                        text = stringResource(R.string.cancel),
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,

@@ -17,10 +17,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.onKeyboardVisible
 import kotlinx.coroutines.launch
@@ -82,7 +84,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                     if (isLoading.value) {
                         item {
                             MessageItem(
-                                messageText = if(newMsg == "") "Connecting" else newMsg,
+                                messageText = if(newMsg == "") stringResource(R.string.connecting) else newMsg,
                                 time = "",
                                 isOut = false,
                             )
@@ -101,11 +103,11 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                         IconButton(onClick = {
                             mainViewModel.clearCache()
                         }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Clear Cache")
+                            Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.clear_cache))
                         }
                         OutlinedTextField(
                             placeholder = {
-                                Text(text = "Text Message")
+                                Text(text = stringResource(R.string.text_message))
                             },
                             value = text,
                             onValueChange = { text = it },
@@ -115,7 +117,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                                 if (text.text.isNotBlank()) {
                                     Icon(
                                         imageVector = Icons.Default.Send,
-                                        contentDescription = "Send",
+                                        contentDescription = stringResource(R.string.send),
                                         tint = MaterialTheme.colors.secondary,
                                         modifier = Modifier.clickable {
                                             scope.launch {
@@ -173,9 +175,9 @@ fun TopBarSection() {
  
             Spacer(modifier = Modifier.width(5.dp))
             Column {
-                Text(text = "Bot", fontWeight = FontWeight.SemiBold)
+                Text(text = stringResource(R.string.bot), fontWeight = FontWeight.SemiBold)
                 Text(
-                    text = "Online",
+                    text = stringResource(R.string.online),
                     fontSize = 12.sp
                 )
             }

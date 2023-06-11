@@ -18,10 +18,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
@@ -32,7 +34,6 @@ fun ExploreScreen(
     navToAddArticle: () -> Unit,
     navToArticle: (Int) -> Unit
 ) {
-    var searchText by remember { mutableStateOf(TextFieldValue("")) }
     var search by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     val items = remember { mutableStateListOf("") }
@@ -62,11 +63,11 @@ fun ExploreScreen(
                     active = active,
                     onActiveChange = { active = it; search = ""},
                     colors = SearchBarDefaults.colors(MaterialTheme.colors.primary),
-                    placeholder = { Text("Search") },
+                    placeholder = { Text(stringResource(R.string.search)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Search Icon",
+                            contentDescription = stringResource(R.string.search_icon),
                             tint = MaterialTheme.colors.secondary
                         )
                     },
@@ -74,7 +75,7 @@ fun ExploreScreen(
                         if (active) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "close",
+                                contentDescription = stringResource(R.string.close),
                                 modifier = Modifier.clickable {
                                     if (search.isNotEmpty()) {
                                         search = ""
@@ -96,7 +97,7 @@ fun ExploreScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.History,
-                                    contentDescription = "History Icon",
+                                    contentDescription = stringResource(R.string.history_icon),
                                     modifier = Modifier.padding(end = 20.dp)
                                 )
                                 Text(text = it)

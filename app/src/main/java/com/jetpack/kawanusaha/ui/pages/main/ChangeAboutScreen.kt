@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -39,7 +40,6 @@ import com.jetpack.kawanusaha.MainActivity
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
-import com.jetpack.kawanusaha.ui.pages.CameraView
 
 @Composable
 fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewModel, navBack: () -> Unit) {
@@ -73,12 +73,12 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                     IconButton(onClick = { navBack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
                 title = {
-                    Text(text = "Profile")
+                    Text(text = stringResource(R.string.profile))
                 },
                 backgroundColor = MaterialTheme.colors.background,
                 elevation = 0.dp
@@ -105,7 +105,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                             val imageBitmap = bitmapValue?.asImageBitmap() ?: defaultBitmap.asImageBitmap()
                             Image(
                                 bitmap = imageBitmap,
-                                contentDescription = "Profile Picture",
+                                contentDescription = stringResource(R.string.profile_picture),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(200.dp)
@@ -115,7 +115,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                             Icon(
                                 imageVector = Icons.Default.Edit,
                                 tint = Color.White,
-                                contentDescription = "Edit Profile Picture",
+                                contentDescription = stringResource(R.string.edit_profile_picture),
                                 modifier = Modifier
                                     .size(40.dp)
                                     .alpha(0.8f)
@@ -165,7 +165,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                                         newName = TextFieldValue(userData.name)
                                         newEmail = TextFieldValue(userData.email)
                                         Text(
-                                            text = "Account Id: ",
+                                            text = stringResource(R.string.account_id) + ": ",
                                             fontWeight = FontWeight.SemiBold,
                                             style = MaterialTheme.typography.body1,
                                             modifier = Modifier.weight(0.3f)
@@ -192,7 +192,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Name: ",
+                                        text = stringResource(R.string.name) + ": ",
                                         fontWeight = FontWeight.SemiBold,
                                         style = MaterialTheme.typography.body1,
                                         modifier = Modifier.weight(0.3f)
@@ -217,7 +217,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                                 ) {
                                     Text(
-                                        text = "Email: ",
+                                        text = stringResource(R.string.email) + ": ",
                                         fontWeight = FontWeight.SemiBold,
                                         style = MaterialTheme.typography.body1,
                                         modifier = Modifier.weight(0.3f)
@@ -252,7 +252,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                                             disabledBackgroundColor = MaterialTheme.colors.surface,
                                         )
                                     ) {
-                                        Text(text = "Save Change")
+                                        Text(text = stringResource(R.string.save_change))
                                         LaunchedEffect(status) {
                                             if (status) {
                                                 mainViewModel.clearStatus()

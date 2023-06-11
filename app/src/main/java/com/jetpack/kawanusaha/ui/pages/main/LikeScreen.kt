@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -68,7 +69,7 @@ fun TopBarFavorite(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Your Favorite Page",
+            text = stringResource(R.string.your_favorite_page),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.weight(1f)
         )
@@ -102,11 +103,11 @@ fun ArticleList(
                 ) {
                     Image(
                         imageVector = Icons.Default.AccountCircle,
-                        contentDescription = "Image Account"
+                        contentDescription = stringResource(R.string.image_account)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "Username",
+                        text = stringResource(R.string.username),
                         style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.Light
                     )
@@ -129,7 +130,7 @@ fun ArticleList(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "a few minutes ago",
+                    text = stringResource(R.string.a_few_minutes_ago),
                     fontWeight = FontWeight.Light,
                     fontStyle = FontStyle.Italic,
                     style = MaterialTheme.typography.body1,

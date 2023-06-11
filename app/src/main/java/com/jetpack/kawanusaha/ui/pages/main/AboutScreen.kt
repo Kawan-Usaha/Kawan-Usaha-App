@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,7 @@ fun AboutScreen(
                 }) {
                     Icon(
                         imageVector = Icons.Default.Settings,
-                        contentDescription = "Edit"
+                        contentDescription = stringResource(R.string.edit)
                     )
                 }
             }
@@ -65,7 +66,7 @@ fun AboutScreen(
             item {
                 AsyncImage(
                     model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                    contentDescription = "Profile Picture",
+                    contentDescription = stringResource(R.string.profile_picture),
                     placeholder = painterResource(id = R.drawable.profile),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -96,8 +97,8 @@ fun AboutScreen(
                                 ) {
                                     user?.data?.let { userData ->
                                         listOf(
-                                            "Email: " to userData.email,
-                                            "Member Since: " to userData.createdAt.slice(0..9),
+                                            stringResource(R.string.email) + ": " to userData.email,
+                                            stringResource(R.string.member_since) to userData.createdAt.slice(0..9),
                                         ).forEach { (label, value) ->
                                             Row(verticalAlignment = Alignment.CenterVertically){
                                                 Text(text = label, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.body1, modifier = Modifier.weight(1f))
@@ -113,7 +114,7 @@ fun AboutScreen(
                                         onClick = { navToVerify() },
                                         colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
                                     ) {
-                                        Text(text = "Verify Account", style = MaterialTheme.typography.body1)
+                                        Text(text = stringResource(R.string.verify_account), style = MaterialTheme.typography.body1)
                                     }
                                 }
 
@@ -124,7 +125,7 @@ fun AboutScreen(
                                     },
                                     colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
                                 ) {
-                                    Text(text = "Sign Out", style = MaterialTheme.typography.body1)
+                                    Text(text = stringResource(R.string.sign_out), style = MaterialTheme.typography.body1)
                                 }
                             }
                         }
@@ -132,9 +133,11 @@ fun AboutScreen(
                 }
             }
             item {
-                Divider(color = MaterialTheme.colors.onPrimary, modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp), startIndent = 2.dp)
+                Divider(color = MaterialTheme.colors.onPrimary, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp), startIndent = 2.dp)
                 Row (Modifier.fillMaxWidth()){
-                    SectionText(text = "Usaha", style = Typography.h3 , modifier = Modifier.weight(1f))
+                    SectionText(text = stringResource(R.string.usaha), style = Typography.h3 , modifier = Modifier.weight(1f))
                     SectionText(text = "+", style = Typography.h3 , modifier = Modifier.clickable { navToAddUsaha() })
                 }
             }

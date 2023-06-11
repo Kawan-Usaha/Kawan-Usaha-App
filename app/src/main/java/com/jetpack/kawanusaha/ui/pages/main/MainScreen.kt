@@ -19,11 +19,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
@@ -66,7 +68,7 @@ fun MainScreen(
                     ) {
                         // Category Section
                         SectionText(
-                            text = "Category",
+                            text = stringResource(R.string.category),
                             style = MaterialTheme.typography.h3,
                             modifier = Modifier.padding(15.dp)
                         )
@@ -78,7 +80,7 @@ fun MainScreen(
 
                 // Recommendation Articles Section
                 SectionText(
-                    text = "Recommendation Articles",
+                    text = stringResource(R.string.recommendation_articles),
                     style = MaterialTheme.typography.h3,
                     modifier = Modifier.padding(15.dp)
                 )
@@ -105,7 +107,7 @@ fun ChatBox(navToChat: () -> Unit) {
             Modifier.padding(22.dp)
         ) {
             Text(
-                "Chat With Your AI Mentor!",
+                stringResource(R.string.chat_with_your_ai_mentor),
                 color = MaterialTheme.colors.onPrimary,
                 style = MaterialTheme.typography.h3
             )
@@ -123,15 +125,15 @@ fun ChatBox(navToChat: () -> Unit) {
                         .height(30.dp), verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Send a Message",
-                        Modifier.weight(1f),
+                        text = stringResource(R.string.send_a_message),
+                        modifier = Modifier.weight(1f),
                         style = MaterialTheme.typography.body1,
                         color = MaterialTheme.colors.onPrimary
                     )
                     Icon(
                         imageVector = Icons.Default.Send,
                         tint = MaterialTheme.colors.secondary,
-                        contentDescription = "Send"
+                        contentDescription = stringResource(R.string.send)
                     )
                 }
             }
@@ -158,7 +160,7 @@ fun CategoryItem() {
         val showShimmer = remember { mutableStateOf(true) }
         AsyncImage(
             model = "URL DISINI",
-            contentDescription = "Category",
+            contentDescription = stringResource(R.string.category),
             modifier = Modifier
                 .size(50.dp)
                 .clip(shape = CircleShape)
@@ -208,7 +210,7 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
         val showShimmer = remember { mutableStateOf(true) }
         AsyncImage(
             model = articlesItem.image,
-            contentDescription = "Articles",
+            contentDescription = stringResource(R.string.articles),
             modifier = Modifier
                 .height(100.dp)
                 .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),

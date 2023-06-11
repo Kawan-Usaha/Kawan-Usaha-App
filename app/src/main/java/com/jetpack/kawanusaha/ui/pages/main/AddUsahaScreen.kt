@@ -7,9 +7,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.Tag
 import com.jetpack.kawanusaha.main.MainViewModel
 
@@ -23,7 +25,7 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
     var tag3 by remember { mutableStateOf(TextFieldValue("")) }
     Column {
         SectionText(
-            text = "Ubah Usaha",
+            text = stringResource(R.string.change_usaha),
             style = MaterialTheme.typography.h3,
             modifier = Modifier.padding(15.dp)
         )
@@ -31,21 +33,21 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
         OutlinedTextField(
             value = usahaName,
             onValueChange = { usahaName = it },
-            label = { Text(text = "Usaha Name") }
+            label = { Text(text = stringResource(R.string.usaha_name)) }
         )
 
         OutlinedTextField(
             value = type,
             onValueChange = { type = it },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            label = { Text(text = "Type") }
+            label = { Text(text = stringResource(R.string.type)) }
         )
         OutlinedTextField(
             value = tag1,
             onValueChange = {
                 tag1 = it
             },
-            label = { Text(text = "Tag 1") }
+            label = { Text(text = stringResource(R.string.tag_one)) }
         )
 
         OutlinedTextField(
@@ -53,7 +55,7 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
             onValueChange = {
                 tag2 = it
             },
-            label = { Text(text = "Tag 2") }
+            label = { Text(text = stringResource(R.string.tag_two)) }
         )
 
         OutlinedTextField(
@@ -61,7 +63,7 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
             onValueChange = {
                 tag3 = it
             },
-            label = { Text(text = "Tag 3") }
+            label = { Text(text = stringResource(R.string.tag_three)) }
         )
 
         Button(onClick = {
@@ -77,7 +79,7 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
             }
             mainViewModel.createUsaha(usahaName.text, type.text.toInt(), tagList)
         }) {
-            Text(text = "Create")
+            Text(text = stringResource(R.string.create))
         }
     }
 }

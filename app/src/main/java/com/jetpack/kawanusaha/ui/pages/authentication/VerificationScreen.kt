@@ -86,7 +86,7 @@ fun VerificationScreen(
             }
             Image(
                 painter = painterResource(R.drawable.email_open),
-                contentDescription = "email_open",
+                contentDescription = stringResource(R.string.email_open),
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(120.dp)
@@ -166,7 +166,7 @@ fun VerificationScreen(
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = "Resend Code",
+                    text = stringResource(R.string.resend_code),
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
                         // re-generate code
@@ -192,7 +192,7 @@ fun VerificationScreen(
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
-                    text = "Verify email later",
+                    text = stringResource(R.string.verify_email_later),
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable {
                         if (password != null || passwordConfirm != null) {

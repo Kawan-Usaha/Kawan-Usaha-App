@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
@@ -40,6 +41,7 @@ import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,7 +67,7 @@ fun CameraScreen(
             Image(
                 modifier = Modifier.fillMaxSize(),
                 painter = rememberAsyncImagePainter(imageUri),
-                contentDescription = "Captured image"
+                contentDescription = stringResource(R.string.captured_image)
             )
             Row(modifier = Modifier.align(Alignment.BottomCenter), Arrangement.spacedBy(10.dp)) {
                 Button(
@@ -73,7 +75,7 @@ fun CameraScreen(
                         imageUri = emptyImageUri
                     }
                 ) {
-                    Text("Remove image")
+                    Text(stringResource(R.string.remove_image))
                 }
                 Button(
                     onClick = {
@@ -81,7 +83,7 @@ fun CameraScreen(
                         navBack()
                     }
                 ) {
-                    Text("Use image")
+                    Text(stringResource(R.string.use_image))
                 }
             }
         }
@@ -111,7 +113,7 @@ fun CameraScreen(
                         showGallerySelect = true
                     },
                     content = {
-                        Icon(Icons.Default.BrowseGallery, contentDescription = "Gallery")
+                        Icon(Icons.Default.BrowseGallery, contentDescription = stringResource(R.string.gallery))
                     }
                 )
             }
@@ -129,11 +131,11 @@ fun CameraCapture(
     val context = LocalContext.current
     Permission(
         permission = Manifest.permission.CAMERA,
-        rationale = "You said you wanted a picture, so I'm going to have to ask for permission.",
+        rationale = stringResource(R.string.you_said_you_wanted_a_picture),
         permissionNotAvailableContent = {
             Box(modifier.fillMaxSize()) {
                 Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.align(Alignment.Center)){
-                    Text("No Permission Camera Granted!")
+                    Text(stringResource(R.string.no_permission_camera_granted))
                     Spacer(modifier = modifier.height(15.dp))
                     Button(
                         onClick = {
@@ -141,7 +143,7 @@ fun CameraCapture(
                                 data = Uri.fromParts("package", context.packageName, null)
                             })
                         }) {
-                        Text("Open Settings")
+                        Text(stringResource(R.string.open_settings))
                     }
                 }
             }
@@ -176,7 +178,7 @@ fun CameraCapture(
                         }
                     },
                     content = {
-                        Icon(Icons.Default.PhotoCamera, contentDescription = "Take Picture")
+                        Icon(Icons.Default.PhotoCamera, contentDescription = stringResource(R.string.take_picture))
                     }
                 )
                 IconButton(
@@ -191,7 +193,7 @@ fun CameraCapture(
                             CameraSelector.DEFAULT_FRONT_CAMERA
                         }
                     }, content = {
-                        Icon(Icons.Default.FlipCameraAndroid, contentDescription = "Flip Camera")
+                        Icon(Icons.Default.FlipCameraAndroid, contentDescription = stringResource(R.string.flip_camera))
                     }
                 )
             }
@@ -279,7 +281,7 @@ val Context.executor: Executor
 @Composable
 fun Permission(
     permission: String = Manifest.permission.CAMERA,
-    rationale: String = "This permission is important for this app. Please grant the permission.",
+    rationale: String = stringResource(R.string.this_permission_is_important_for_this_app),
     permissionNotAvailableContent: @Composable () -> Unit = { },
     content: @Composable () -> Unit = { }
 ) {
@@ -305,14 +307,14 @@ private fun Rationale(
     AlertDialog(
         onDismissRequest = { /* Don't */ },
         title = {
-            Text(text = "Permission request")
+            Text(text = stringResource(R.string.permission_request))
         },
         text = {
             Text(text)
         },
         confirmButton = {
             Button(onClick = onRequestPermission) {
-                Text("Ok")
+                Text(stringResource(R.string.ok))
             }
         }
     )
@@ -341,10 +343,10 @@ fun GallerySelect(
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         Permission(
             permission = Manifest.permission.ACCESS_MEDIA_LOCATION,
-            rationale = "You want to read from photo gallery, so I'm going to have to ask for permission.",
+            rationale = stringResource(R.string.you_want_to_read_from_photo_gallery),
             permissionNotAvailableContent = {
                 Column(modifier) {
-                    Text("O noes! No Photo Gallery!")
+                    Text(stringResource(R.string.no_photo_gallery))
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {
                         Button(
@@ -355,7 +357,7 @@ fun GallerySelect(
                                 })
                             }
                         ) {
-                            Text("Open Settings")
+                            Text(stringResource(R.string.open_settings))
                         }
                         // If they don't want to grant permissions, this button will result in going back
                         Button(
@@ -364,7 +366,7 @@ fun GallerySelect(
                                 onImageUri(EMPTY_IMAGE_URI)
                             }
                         ) {
-                            Text("Use Camera")
+                            Text(stringResource(R.string.use_camera))
                         }
                     }
                 }

@@ -13,8 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.UsahaData
 import com.jetpack.kawanusaha.data.UsahaResponse
 import com.jetpack.kawanusaha.main.MainViewModel
@@ -36,7 +38,7 @@ fun UsahaScreen(
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
             SectionText(
-                text = "Types",
+                text = stringResource(R.string.types),
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier.padding(15.dp)
             )
@@ -46,7 +48,7 @@ fun UsahaScreen(
             Spacer(Modifier.height(8.dp))
             // Recommendation Articles Section
             SectionText(
-                text = "Usaha",
+                text = stringResource(R.string.usaha),
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier.padding(15.dp)
             )
@@ -66,7 +68,9 @@ fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        modifier = Modifier.height(screenHeight.dp).safeDrawingPadding()
+        modifier = Modifier
+            .height(screenHeight.dp)
+            .safeDrawingPadding()
     ) {
         items(response?.data?.size ?: 0) {
             UsahaItem(usaha_name = response?.data?.get(it)!!, navToUsahaDetail)

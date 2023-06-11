@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +52,9 @@ fun LoginScreen(
     val secondaryColor = MaterialTheme.colors.secondary
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -91,7 +94,7 @@ fun LoginScreen(
                         contentAlignment = Alignment.CenterStart
                     ) {
                         SectionText(
-                            text = "LOGIN",
+                            text = stringResource(R.string.login),
                             style = MaterialTheme.typography.h5,
                             modifier = Modifier
                                 .padding(5.dp)
@@ -101,7 +104,7 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text(stringResource(R.string.email)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                         ),
@@ -109,7 +112,7 @@ fun LoginScreen(
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
-                                contentDescription = "Email Icon",
+                                contentDescription = stringResource(R.string.email_icon),
                                 tint = secondaryColor
                             )
                         },
@@ -131,13 +134,13 @@ fun LoginScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text(stringResource(R.string.password)) },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
-                                contentDescription = "Password Icon",
+                                contentDescription = stringResource(R.string.password_icon),
                                 tint = secondaryColor
                             )
                         },
@@ -146,7 +149,9 @@ fun LoginScreen(
                                 painterResource(R.drawable.baseline_visibility_24) else
                                 painterResource(R.drawable.baseline_visibility_off_24)
 
-                            val description = if (passwordVisible) "Hide Password" else "Show Password"
+                            val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                R.string.show_password
+                            )
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(painter = image, contentDescription = description)
                             }
@@ -167,7 +172,7 @@ fun LoginScreen(
                     )
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = "Forgot Password?",
+                        text = stringResource(R.string.forgot_password),
                         textDecoration = TextDecoration.Underline,
                         style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.Bold,
@@ -191,7 +196,7 @@ fun LoginScreen(
                             .height(45.dp),
                     ) {
                         Text(
-                            text = "LOGIN",
+                            text = stringResource(R.string.login),
                             style = MaterialTheme.typography.h3,
                             fontWeight = FontWeight.Normal,
                             fontSize = 18.sp,
@@ -213,7 +218,7 @@ fun LoginScreen(
                         )
 
                         Text(
-                            text = "Or Login With",
+                            text = stringResource(R.string.or_login_with),
                             color = MaterialTheme.colors.onPrimary,
                             style = MaterialTheme.typography.body1,
                             modifier = Modifier
@@ -231,11 +236,11 @@ fun LoginScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Don't have an account? ",
+                    text = stringResource(R.string.dont_have_an_account),
                     color = MaterialTheme.colors.onPrimary
                 )
                 Text(
-                    text = "Sign Up Now!",
+                    text = stringResource(R.string.sign_up_now),
                     color = MaterialTheme.colors.onPrimary,
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.Underline,

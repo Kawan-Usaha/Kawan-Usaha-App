@@ -23,12 +23,14 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.tools.getFileFromUri
 import java.io.File
@@ -58,7 +60,7 @@ fun AddArticleScreen(
                     backgroundColor = MaterialTheme.colors.primary,
                     title = {
                         Text(
-                            text = "Create Your Article",
+                            text = stringResource(R.string.create_your_article),
                             style = MaterialTheme.typography.h3
                         )
                     },
@@ -66,7 +68,7 @@ fun AddArticleScreen(
                         IconButton(onClick = { navigateToMain() }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
-                                contentDescription = "Close Add Article",
+                                contentDescription = stringResource(R.string.close_add_article),
                                 modifier = Modifier.padding(start = 16.dp)
                             )
                         }
@@ -83,7 +85,7 @@ fun AddArticleScreen(
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
                         ) {
-                            Text(text = "Create", style = MaterialTheme.typography.body1)
+                            Text(text = stringResource(R.string.create), style = MaterialTheme.typography.body1)
                         }
                     },
                 )
@@ -99,7 +101,7 @@ fun AddArticleScreen(
                 }) {
                     Icon(
                         imageVector = Icons.Default.PhotoCamera,
-                        contentDescription = "Add Picture"
+                        contentDescription = stringResource(R.string.add_picture)
                     )
                 }
             }
@@ -144,7 +146,7 @@ fun AddArticleScreen(
                                     singleLine = true,
                                     placeholder = {
                                         Text(
-                                            text = "Enter Title Here",
+                                            text = stringResource(R.string.enter_title_here),
                                             color = MaterialTheme.colors.surface,
                                             style = MaterialTheme.typography.h3
                                         )
@@ -165,7 +167,7 @@ fun AddArticleScreen(
                                     ),
                                     placeholder = {
                                         Text(
-                                            text = "Enter body here",
+                                            text = stringResource(R.string.enter_body_here),
                                             color = MaterialTheme.colors.surface,
                                             style = MaterialTheme.typography.body1
                                         )
@@ -180,11 +182,11 @@ fun AddArticleScreen(
                                     val file = getFileFromUri(LocalContext.current, image) as File
                                     AsyncImage(
                                         model = image,
-                                        contentDescription = "Image Preview",
+                                        contentDescription = stringResource(R.string.image_preview),
                                     )
                                     IconButton(onClick = { mainViewModel.clearImage() },
                                         modifier = Modifier.align(Alignment.TopEnd) )  {
-                                        Icon(Icons.Default.Delete, contentDescription = "Delete Picture")
+                                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_picture))
                                     }
                                 }
                             }

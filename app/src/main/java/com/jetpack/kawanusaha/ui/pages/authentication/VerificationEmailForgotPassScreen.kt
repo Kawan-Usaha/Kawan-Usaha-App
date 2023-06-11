@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -103,14 +104,14 @@ fun VerificationEmailForgotPassScreen(
                 ) {
                     Column {
                         SectionText(
-                            text = "RESET PASSWORD",
+                            text = stringResource(R.string.reset_password),
                             style = MaterialTheme.typography.h5,
                             modifier = Modifier
                                 .padding(5.dp)
                         )
                         Spacer(Modifier.height(15.dp))
                         SectionText(
-                            text = "Please insert email to reset your password",
+                            text = stringResource(R.string.please_insert_email_to_reset_your_password),
                             style = MaterialTheme.typography.body1,
                             modifier = Modifier
                                 .padding(5.dp)
@@ -121,7 +122,7 @@ fun VerificationEmailForgotPassScreen(
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Email") },
+                    label = { Text(stringResource(R.string.email)) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                     ),
@@ -129,7 +130,7 @@ fun VerificationEmailForgotPassScreen(
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Email,
-                            contentDescription = "Email Icon",
+                            contentDescription = stringResource(R.string.email_icon),
                             tint = MaterialTheme.colors.secondary
                         )
                     },
@@ -161,7 +162,7 @@ fun VerificationEmailForgotPassScreen(
                         .height(45.dp),
                 ) {
                     Text(
-                        text = "Confirm",
+                        text = stringResource(R.string.confirm),
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,
@@ -184,7 +185,7 @@ fun VerificationEmailForgotPassScreen(
                         .height(45.dp),
                 ) {
                     Text(
-                        text = "Cancel",
+                        text = stringResource(R.string.cancel),
                         style = MaterialTheme.typography.h3,
                         fontWeight = FontWeight.Normal,
                         fontSize = 18.sp,

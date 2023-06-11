@@ -9,8 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
@@ -25,7 +27,7 @@ fun UsahaDetailScreen (mainViewModel: MainViewModel, usahaId: Int, navBack: () -
                     IconButton(onClick = { navBack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },

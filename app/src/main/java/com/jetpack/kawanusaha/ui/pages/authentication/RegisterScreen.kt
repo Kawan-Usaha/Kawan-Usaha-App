@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +54,9 @@ fun RegisterScreen(
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(top = 48.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -79,11 +82,11 @@ fun RegisterScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "Already have an account? ",
+                    text = stringResource(R.string.already_have_an_account),
                     color = MaterialTheme.colors.onPrimary
                 )
                 Text(
-                    text = "Sign In Now!",
+                    text = stringResource(R.string.sign_in_now),
                     color = MaterialTheme.colors.onPrimary,
                     fontWeight = FontWeight.Bold,
                     textDecoration = TextDecoration.Underline,
@@ -111,7 +114,7 @@ fun RegisterScreen(
                         contentAlignment = Alignment.CenterStart
                     ) {
                         SectionText(
-                            text = "REGISTER",
+                            text = stringResource(R.string.register),
                             style = MaterialTheme.typography.h5,
                             modifier = Modifier
                                 .padding(5.dp)
@@ -121,7 +124,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Name") },
+                        label = { Text(stringResource(R.string.name)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                         ),
@@ -129,7 +132,7 @@ fun RegisterScreen(
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.AccountCircle,
-                                contentDescription = "Name Icon",
+                                contentDescription = stringResource(R.string.name_icon),
                                 tint = orange
                             )
                         },
@@ -151,7 +154,7 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
-                        label = { Text("Email") },
+                        label = { Text(stringResource(R.string.email)) },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email,
                         ),
@@ -159,7 +162,7 @@ fun RegisterScreen(
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Email,
-                                contentDescription = "Email Icon",
+                                contentDescription = stringResource(R.string.email_icon),
                                 tint = orange
                             )
                         },
@@ -181,13 +184,13 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
-                        label = { Text("Password") },
+                        label = { Text(stringResource(R.string.password)) },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
-                                contentDescription = "Password Icon",
+                                contentDescription = stringResource(R.string.password_icon),
                                 tint = orange
                             )
                         },
@@ -196,7 +199,9 @@ fun RegisterScreen(
                                 painterResource(R.drawable.baseline_visibility_24) else
                                 painterResource(R.drawable.baseline_visibility_off_24)
 
-                            val description = if (passwordVisible) "Hide Password" else "Show Password"
+                            val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                R.string.show_password
+                            )
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(painter = image, contentDescription = description)
                             }
@@ -219,13 +224,13 @@ fun RegisterScreen(
                     OutlinedTextField(
                         value = confirmPassword,
                         onValueChange = { confirmPassword = it },
-                        label = { Text("Confirm Password") },
+                        label = { Text(stringResource(R.string.confirm_password)) },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.Lock,
-                                contentDescription = "Password Icon",
+                                contentDescription = stringResource(R.string.password_icon),
                                 tint = orange
                             )
                         },
@@ -234,13 +239,14 @@ fun RegisterScreen(
                                 painterResource(R.drawable.baseline_visibility_24) else
                                 painterResource(R.drawable.baseline_visibility_off_24)
 
-                            val description = if (passwordVisible) "Hide Password" else "Show Password"
+                            val description = if (passwordVisible) stringResource(R.string.hide_password) else
+                                stringResource(R.string.show_password)
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(painter = image, contentDescription = description)
                             }
 
                             if (confirmPassword.text != password.text)
-                                Icon(Icons.Filled.Warning, "error", tint = MaterialTheme.colors.error)
+                                Icon(Icons.Filled.Warning, stringResource(R.string.error), tint = MaterialTheme.colors.error)
                         },
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
@@ -274,7 +280,7 @@ fun RegisterScreen(
                             .height(45.dp),
                     ) {
                         Text(
-                            text = "REGISTER",
+                            text = stringResource(R.string.register),
                             style = MaterialTheme.typography.h3,
                             fontWeight = FontWeight.Normal,
                             fontSize = 18.sp,

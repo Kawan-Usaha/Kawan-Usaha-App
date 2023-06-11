@@ -74,7 +74,7 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
                     .width(200.dp)
                     .padding(top = 150.dp)
             ) {
-                Text("LOGIN")
+                Text(stringResource(R.string.login))
             }
             Button(
                 onClick = { navToRegister() },
@@ -82,7 +82,7 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
                     .align(Alignment.CenterHorizontally)
                     .width(200.dp)
             ) {
-                Text("REGISTER")
+                Text(stringResource(R.string.register))
             }
         }
     }
