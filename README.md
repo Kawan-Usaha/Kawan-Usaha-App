@@ -8,32 +8,33 @@ Documentation [here](./app/gfm/index.md)
 
 #### Main Features
 Chat with your AI mentor
-![Chat Screen](./documentation/Chat.jpg)
+<img src="./documentation/Chat.jpg" width="170" height="380" />
 
-Explore others Articles
-![Explore Screen](./documentation/Explore.jpg)
+Explore other articles
+<img src="./documentation/Explore.jpg" width="170" height="380" />
 
-What your recommendation Articles
-![FYP Screen](./documentation/FYP.jpg)
+Recommended articles for you
+<img src="./documentation/FYP.jpg" width="170" height="380" />
 
-View more detail about the Article
-![Article Screen](./documentation/Article.jpg)
+View more details about an article
+<img src="./documentation/Article.jpg" width="170" height="380" />
 
-Write Your Own Articles
-![Create Article Screen](./documentation/CreateArticle.jpg)
+Write your own articles
+<img src="./documentation/CreateArticle.jpg" width="170" height="380" />
+
 
 #### About You
 Login to make this more personal
-![Login Screen](./documentation/Login.jpg)
+<img src="./documentation/Login.jpg" width="170" height="380" />
 
-Have not account? just create a new one!
-![Register Screen](./documentation/Register.jpg)
+Create a new account
+<img src="./documentation/Register.jpg" width="170" height="380" />
 
-Forgot your password? Reset here
-![Reset Password Screen](./documentation/ResetPassword.jpg)
+Reset your password
+<img src="./documentation/ResetPassword.jpg" width="170" height="380" />
 
-Detail about yourself?
-![Profile Screen](./documentation/About.jpg)
+Your profile details
+<img src="./documentation/About.jpg" width="170" height="380" />
 
-Wrong data? Customize it!
-![Edit Profile Screen](./documentation/EditProfile.jpg)
+Edit your profile
+<img src="./documentation/EditProfile.jpg" width="170" height="380" />
