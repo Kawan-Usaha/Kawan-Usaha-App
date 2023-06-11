@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrowseGallery
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FlipCameraAndroid
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
@@ -51,17 +53,21 @@ import kotlin.coroutines.suspendCoroutine
 val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
 
 @Composable
-fun CameraScreen(modifier: Modifier = Modifier, mainViewModel: MainViewModel) {
+fun CameraScreen(
+    modifier: Modifier = Modifier,
+    mainViewModel: MainViewModel,
+    navBack : () -> Unit
+) {
     val emptyImageUri = Uri.parse("file://dev/null")
     var imageUri by remember { mutableStateOf(emptyImageUri) }
     if (imageUri != emptyImageUri) {
         Box(modifier = modifier) {
             Image(
                 modifier = Modifier.fillMaxSize(),
-                painter = rememberImagePainter(imageUri),
+                painter = rememberAsyncImagePainter(imageUri),
                 contentDescription = "Captured image"
             )
-            Row(modifier = Modifier.align(Alignment.BottomCenter)) {
+            Row(modifier = Modifier.align(Alignment.BottomCenter), Arrangement.spacedBy(10.dp)) {
                 Button(
                     onClick = {
                         imageUri = emptyImageUri
@@ -72,9 +78,10 @@ fun CameraScreen(modifier: Modifier = Modifier, mainViewModel: MainViewModel) {
                 Button(
                     onClick = {
                         mainViewModel.setImage(imageUri)
+                        navBack()
                     }
                 ) {
-                    Text("Save image")
+                    Text("Use image")
                 }
             }
         }
@@ -169,7 +176,7 @@ fun CameraCapture(
                         }
                     },
                     content = {
-                        Icon(Icons.Default.Camera, contentDescription = "Take Picture")
+                        Icon(Icons.Default.PhotoCamera, contentDescription = "Take Picture")
                     }
                 )
                 IconButton(
@@ -235,7 +242,7 @@ fun CameraPreview(
 suspend fun ImageCapture.takePicture(executor: Executor): File {
     val photoFile = withContext(Dispatchers.IO) {
         kotlin.runCatching {
-            File.createTempFile("image", "jpg")
+            File.createTempFile("image", ".jpg")
         }.getOrElse { ex ->
             Log.e("TakePicture", "Failed to create temporary file", ex)
             File("/dev/null")

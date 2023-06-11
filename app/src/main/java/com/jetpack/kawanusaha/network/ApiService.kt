@@ -1,5 +1,7 @@
 package com.jetpack.kawanusaha.network
 
+import android.net.Uri
+import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.jetpack.kawanusaha.BuildConfig
@@ -8,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.sse.EventSources
 import retrofit2.Call
@@ -120,9 +123,8 @@ interface ApiService {
     @POST("article/create")
     fun createArticle (
         @Header("Authorization") token: String,
-//        @Part image: MultipartBody.Part,
-//        @Part("article") createArticleRequest: CreateArticleRequest
-        @Body createArticleRequest: CreateArticleRequest
+        @Part image: MultipartBody.Part?,
+        @Part("article") createArticleRequest: CreateArticleRequest
     ) : Call<DefaultResponse>
 
 

@@ -8,6 +8,7 @@ import com.jetpack.kawanusaha.network.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 
@@ -99,10 +100,11 @@ class DataRepository(private val apiService: ApiService) {
 
     suspend fun createArticle(
         jwtToken: String,
+        imageMultipart: MultipartBody.Part?,
         createArticleRequest: CreateArticleRequest
     ): DefaultResponse? {
         return executeRequest {
-            apiService.createArticle("Bearer $jwtToken", createArticleRequest).execute()
+            apiService.createArticle("Bearer $jwtToken", imageMultipart , createArticleRequest).execute()
         }
     }
 

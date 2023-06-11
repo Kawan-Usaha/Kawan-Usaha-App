@@ -1,5 +1,9 @@
 package com.jetpack.kawanusaha.data
 
+import android.net.Uri
+import retrofit2.http.Body
+import java.io.File
+
 data class ProfileRequest(
     val name: String,
     val email: String,
@@ -13,6 +17,11 @@ data class UsahaRequest(
 
 data class Tag (
     val name: String
+)
+
+data class CreateArticleImageRequest (
+    val articleRequest: CreateArticleRequest,
+    val image: Uri
 )
 
 data class CreateArticleRequest(
