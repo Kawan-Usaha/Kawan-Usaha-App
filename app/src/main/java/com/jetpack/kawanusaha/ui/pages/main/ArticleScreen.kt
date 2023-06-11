@@ -62,7 +62,8 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                                 title = article?.title,
                                 content = article?.content,
                                 createdAt = article?.createdAt,
-                            articleId = articleId
+                            articleId = articleId,
+                            image = article?.image
                             )
                         IconButton(
                             onClick = {

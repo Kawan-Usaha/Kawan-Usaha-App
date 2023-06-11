@@ -215,7 +215,9 @@ fun NavigationScreen(
             }
 
             composable(route = "change_about_screen") {
-                ChangeAboutScreen(mainViewModel = mainViewModel, cameraViewModel = cameraViewModel) {
+                ChangeAboutScreen(mainViewModel = mainViewModel, {
+                    navController.navigate("camera_screen")
+                }) {
                     navController.navigateUp()
                 }
             }

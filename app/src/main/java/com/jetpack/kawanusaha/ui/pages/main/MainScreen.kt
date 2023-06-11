@@ -213,15 +213,6 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
             .clickable { navToArticle(id) }
     ) {
         val showShimmer = remember { mutableStateOf(true) }
-        AsyncImage(
-            model = articlesItem.image,
-            contentDescription = stringResource(R.string.articles),
-            modifier = Modifier
-                .height(100.dp)
-                .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-            onSuccess = { showShimmer.value = false },
-            onError = { showShimmer.value = false }
-        )
         if (isError){
             Image(
                 painter = painterResource(id = R.drawable.logo),

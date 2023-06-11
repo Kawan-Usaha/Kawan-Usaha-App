@@ -47,7 +47,7 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
 
     <string name="edit">Edit</string>
     <string name="profile_picture">Profile Picture</string>
-    <string name="member_since">\"Member Since: \"</string>
+    <string name="member_since">Member Since: </string>
     <string name="verify_account">Verify Account</string>
     <string name="sign_out">Sign Out</string>
 

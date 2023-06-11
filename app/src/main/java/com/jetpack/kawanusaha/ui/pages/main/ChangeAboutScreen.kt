@@ -20,6 +20,7 @@ import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,32 +31,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.MainActivity
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
-fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewModel, navBack: () -> Unit) {
+fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, navBack: () -> Unit) {
     var newName by remember { mutableStateOf(TextFieldValue("")) }
     var newEmail by remember { mutableStateOf(TextFieldValue("")) }
     val status by mainViewModel.status.collectAsState(initial = false)
 
-    var showAlertDialog by remember { mutableStateOf(false) }
+    val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
-    val activity = MainActivity()
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
-
-    val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){uri: Uri? ->
-        imageUri = uri
-    }
 
     imageUri?.let {
         if (Build.VERSION.SDK_INT < 28) {
@@ -98,38 +96,49 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
                     Box(
                         contentAlignment = Alignment.Center
                     ) {
-                        bitmap.value.let { btm ->
-                            val resources = context.resources
-                            val bitmapValue: Bitmap? = btm
-                            val defaultBitmap = BitmapFactory.decodeResource(resources, R.drawable.profile)
-                            val imageBitmap = bitmapValue?.asImageBitmap() ?: defaultBitmap.asImageBitmap()
-                            Image(
-                                bitmap = imageBitmap,
-                                contentDescription = stringResource(R.string.profile_picture),
+                        if (image != Uri.parse("file://dev/null")) {
+                            AsyncImage(
+                                model = image,
+                                contentDescription = stringResource(R.string.image_preview),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(200.dp)
                                     .padding(8.dp)
                                     .clip(CircleShape)
                             )
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                tint = Color.White,
-                                contentDescription = stringResource(R.string.edit_profile_picture),
+
+
+                            IconButton(onClick = { mainViewModel.clearImage() },
+                                    modifier = Modifier.align(Alignment.BottomEnd).size(80.dp) )  {
+                                    Icon(Icons.Default.Delete,
+                                        contentDescription = stringResource(R.string.delete_picture),
+                                        tint = MaterialTheme.colors.primary,
+                                        modifier = Modifier
+                                            .background(MaterialTheme.colors.secondary)
+                                            .size(40.dp)
+
+                                    )
+                                }
+                        } else {
+                            Image(
+                                painter = painterResource(id = R.drawable.profile),
+                                contentDescription = "Failed to get Image",
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .size(40.dp)
-                                    .alpha(0.8f)
-                                    .clickable {
-                                        showAlertDialog = !showAlertDialog
-                                    }
+                                    .size(200.dp)
+                                    .padding(8.dp)
+                                    .clip(CircleShape)
                             )
-                            if (showAlertDialog) {
-                                SelectImageAlertDialog(onDismiss = {
-                                    showAlertDialog = !showAlertDialog
-                                }, cameraViewModel, context, activity, launcher
-                                )
-                            }
                         }
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            tint = Color.White,
+                            contentDescription = stringResource(R.string.edit_profile_picture),
+                            modifier = Modifier
+                                .size(40.dp)
+                                .alpha(0.8f)
+                                .clickable { navToCamera() }
+                        )
                     }
                 }
             }
@@ -275,53 +284,53 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewM
     }
 }
 
-@Composable
-fun SelectImageAlertDialog(
-    onDismiss: () -> Unit,
-    cameraViewModel: CameraViewModel,
-    context: Context,
-    activity: MainActivity,
-    launcher: ManagedActivityResultLauncher<String, Uri?>,
-) {
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true,
-        )
-    ) {
-        Card(
-            backgroundColor = MaterialTheme.colors.primary,
-            modifier = Modifier
-                .padding(8.dp),
-            shape = RoundedCornerShape(10.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            ) {
-
-                Text(
-                    text = "Take from Camera",
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable {
-                        }
-                )
-                Divider(color = MaterialTheme.colors.onPrimary)
-                Text(
-                    text = "Select from Gallery",
-                    style = MaterialTheme.typography.body1,
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clickable {
-                            launcher.launch("image/*")
-                        }
-                )
-            }
-        }
-    }
-}
+//@Composable
+//fun SelectImageAlertDialog(
+//    onDismiss: () -> Unit,
+//    cameraViewModel: CameraViewModel,
+//    context: Context,
+//    activity: MainActivity,
+//    launcher: ManagedActivityResultLauncher<String, Uri?>,
+//) {
+//    Dialog(
+//        onDismissRequest = onDismiss,
+//        properties = DialogProperties(
+//            dismissOnBackPress = true,
+//            dismissOnClickOutside = true,
+//        )
+//    ) {
+//        Card(
+//            backgroundColor = MaterialTheme.colors.primary,
+//            modifier = Modifier
+//                .padding(8.dp),
+//            shape = RoundedCornerShape(10.dp)
+//        ) {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(10.dp)
+//            ) {
+//
+//                Text(
+//                    text = "Take from Camera",
+//                    style = MaterialTheme.typography.body1,
+//                    modifier = Modifier
+//                        .padding(16.dp)
+//                        .clickable {
+//                        }
+//                )
+//                Divider(color = MaterialTheme.colors.onPrimary)
+//                Text(
+//                    text = "Select from Gallery",
+//                    style = MaterialTheme.typography.body1,
+//                    modifier = Modifier
+//                        .padding(16.dp)
+//                        .clickable {
+//                            launcher.launch("image/*")
+//                        }
+//                )
+//            }
+//        }
+//    }
+//}
 

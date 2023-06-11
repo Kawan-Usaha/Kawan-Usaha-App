@@ -2,6 +2,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,8 +23,10 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LikeViewModel
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 
 @Composable
 fun LikeScreen(
@@ -33,7 +36,9 @@ fun LikeScreen(
     val list by viewModel.allData.observeAsState(listOf())
     var search by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
-    Scaffold(topBar = { TopBarFavorite() }, modifier = Modifier.padding(15.dp).safeDrawingPadding()) { innerPadding ->
+    Scaffold(topBar = { TopBarFavorite() }, modifier = Modifier
+        .padding(15.dp)
+        .safeDrawingPadding()) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -51,6 +56,7 @@ fun LikeScreen(
                         title = it.title,
                         description = it.content,
                         articleId = it.articleId,
+                        image = it.image,
                         navToArticle = navToArticle
                     )
                 }
@@ -82,6 +88,7 @@ fun ArticleList(
     title: String?,
     description: String?,
     articleId: Int?,
+    image: String?,
     navToArticle: (Int?) -> Unit,
 ) {
     Card(
@@ -92,50 +99,78 @@ fun ArticleList(
         backgroundColor = MaterialTheme.colors.primary,
         shape = RoundedCornerShape(15.dp)
     ) {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(32.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ){
+                val showShimmer = remember { mutableStateOf(true) }
+                if (image == null){
                     Image(
-                        imageVector = Icons.Default.AccountCircle,
-                        contentDescription = stringResource(R.string.image_account)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = stringResource(R.string.username),
-                        style = MaterialTheme.typography.body1,
-                        fontWeight = FontWeight.Light
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Failed to get Image",
+                        modifier = Modifier.height(100.dp).weight(0.3f))
+                } else {
+                    AsyncImage(
+                        model = image,
+                        contentDescription = "Articles",
+                        modifier = Modifier
+                            .height(100.dp)
+                            .background(
+                                shimmerBrush(
+                                    targetValue = 1300f,
+                                    showShimmer = showShimmer.value
+                                )
+                            )
+                            .weight(0.3f),
+                        onSuccess = { showShimmer.value = false },
+                        onError = { showShimmer.value = false},
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                if (title != null) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(32.dp).weight(0.7f)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        Image(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = stringResource(R.string.image_account)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = stringResource(R.string.username),
+                            style = MaterialTheme.typography.body1,
+                            fontWeight = FontWeight.Light
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    if (title != null) {
+                        Text(
+                            text = title,
+                            style = MaterialTheme.typography.h3
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
+                    if (description != null) {
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.body1,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        text = title,
-                        style = MaterialTheme.typography.h3
-                    )
-                }
-                Spacer(modifier = Modifier.height(5.dp))
-                if (description != null) {
-                    Text(
-                        text = description,
+                        text = stringResource(R.string.a_few_minutes_ago),
+                        fontWeight = FontWeight.Light,
+                        fontStyle = FontStyle.Italic,
                         style = MaterialTheme.typography.body1,
-                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(R.string.a_few_minutes_ago),
-                    fontWeight = FontWeight.Light,
-                    fontStyle = FontStyle.Italic,
-                    style = MaterialTheme.typography.body1,
-                    overflow = TextOverflow.Ellipsis,
-                )
             }
     }
 }
