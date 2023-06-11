@@ -3,6 +3,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -202,6 +204,9 @@ fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) 
 fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
     val title = articlesItem.title
     val id = articlesItem.id
+    var isError by remember {
+        mutableStateOf(false)
+    }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -217,6 +222,22 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
             onSuccess = { showShimmer.value = false },
             onError = { showShimmer.value = false }
         )
+        if (isError){
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Failed to get Image",
+                modifier = Modifier.height(100.dp))
+        } else {
+            AsyncImage(
+                model = articlesItem.image,
+                contentDescription = "Articles",
+                modifier = Modifier
+                    .height(100.dp)
+                    .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                onSuccess = { showShimmer.value = false },
+                onError = { showShimmer.value = false; isError = true }
+            )
+        }
         Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h6)
     }
 }

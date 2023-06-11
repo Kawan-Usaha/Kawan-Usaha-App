@@ -1,7 +1,10 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -23,7 +26,9 @@ import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.db.fav.DbFav
 import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articleId: Int, navBack: () -> Unit) {
     LaunchedEffect(mainViewModel){
@@ -123,12 +128,11 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                 }
                 item {
                     AsyncImage(
-                        model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                        contentDescription = stringResource(R.string.article_picture),
-                        placeholder = painterResource(id = R.drawable.profile),
+                        model = article?.image,
+                        contentDescription = "Article Picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
-                            .size(width = 500.dp, height = 300.dp)
+                            .fillMaxWidth()
                             .padding(8.dp)
                     )
                 }
