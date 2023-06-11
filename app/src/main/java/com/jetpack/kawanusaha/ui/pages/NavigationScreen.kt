@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
@@ -30,7 +31,7 @@ import com.jetpack.kawanusaha.ui.pages.main.*
 @Composable
 fun NavigationScreen(
     loginViewModel: LoginViewModel, mainViewModel: MainViewModel,
-    likeViewModel: LikeViewModel
+    likeViewModel: LikeViewModel, cameraViewModel: CameraViewModel
 ) {
     val navController = rememberNavController()
     val startDestination: String =
@@ -214,7 +215,7 @@ fun NavigationScreen(
             }
 
             composable(route = "change_about_screen") {
-                ChangeAboutScreen(mainViewModel = mainViewModel) {
+                ChangeAboutScreen(mainViewModel = mainViewModel, cameraViewModel = cameraViewModel) {
                     navController.navigateUp()
                 }
             }

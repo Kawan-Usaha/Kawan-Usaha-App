@@ -1,9 +1,12 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.*
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,11 +35,14 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.jetpack.kawanusaha.MainActivity
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.CameraView
 
 @Composable
-fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
+fun ChangeAboutScreen(mainViewModel: MainViewModel, cameraViewModel: CameraViewModel, navBack: () -> Unit) {
     var newName by remember { mutableStateOf(TextFieldValue("")) }
     var newEmail by remember { mutableStateOf(TextFieldValue("")) }
     val status by mainViewModel.status.collectAsState(initial = false)
@@ -44,6 +50,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
     var showAlertDialog by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
+    val activity = MainActivity()
     val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
     val launcher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()){uri: Uri? ->
@@ -92,7 +99,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                         contentAlignment = Alignment.Center
                     ) {
                         bitmap.value.let { btm ->
-                            val resources = mContext.resources
+                            val resources = context.resources
                             val bitmapValue: Bitmap? = btm
                             val defaultBitmap = BitmapFactory.decodeResource(resources, R.drawable.profile)
                             val imageBitmap = bitmapValue?.asImageBitmap() ?: defaultBitmap.asImageBitmap()
@@ -119,7 +126,8 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                             if (showAlertDialog) {
                                 SelectImageAlertDialog(onDismiss = {
                                     showAlertDialog = !showAlertDialog
-                                }, launcher)
+                                }, cameraViewModel, context, activity, launcher
+                                )
                             }
                         }
                     }
@@ -270,6 +278,9 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
 @Composable
 fun SelectImageAlertDialog(
     onDismiss: () -> Unit,
+    cameraViewModel: CameraViewModel,
+    context: Context,
+    activity: MainActivity,
     launcher: ManagedActivityResultLauncher<String, Uri?>,
 ) {
     Dialog(
@@ -313,3 +324,4 @@ fun SelectImageAlertDialog(
         }
     }
 }
+
