@@ -3,12 +3,14 @@ package com.jetpack.kawanusaha.ui.pages.main
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
@@ -33,10 +35,16 @@ fun UsahaDetailScreen (mainViewModel: MainViewModel, usahaId: Int, navBack: () -
                 backgroundColor = MaterialTheme.colors.background,
                 elevation = 0.dp
             )
-        }
+        },
+        modifier = Modifier.safeDrawingPadding()
     ){innerPadding ->
-        Column(Modifier.padding(innerPadding).safeDrawingPadding()) {
-            Text(text = id.toString())
+        LazyColumn(modifier = Modifier.padding(innerPadding)){
+            item{
+                Text(text = "Ini Usaha Detail", style = MaterialTheme.typography.h1)
+            }
+            item{
+                Text(text = "ini usaha content", style = MaterialTheme.typography.body1)
+            }
         }
     }
 
