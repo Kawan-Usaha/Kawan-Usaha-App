@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.pages.BackPressHandler
-import com.jetpack.kawanusaha.ui.pages.main.SectionText
+import com.jetpack.kawanusaha.ui.pages.SectionText
 
 @Composable
 fun RegisterScreen(

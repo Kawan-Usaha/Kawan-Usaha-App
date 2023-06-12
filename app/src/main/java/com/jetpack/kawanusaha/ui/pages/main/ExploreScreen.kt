@@ -27,6 +27,7 @@ import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
+import com.jetpack.kawanusaha.ui.pages.main.utils.CategorySection
 
 @Composable
 fun ExploreScreen(

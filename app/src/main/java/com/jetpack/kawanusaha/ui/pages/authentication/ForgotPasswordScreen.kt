@@ -28,8 +28,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.pages.main.SectionText
+import com.jetpack.kawanusaha.ui.pages.SectionText
 
 // TODO Security Leak in passing password
 @Composable

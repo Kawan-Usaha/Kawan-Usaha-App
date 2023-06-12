@@ -21,7 +21,9 @@ import com.jetpack.kawanusaha.data.UsahaData
 import com.jetpack.kawanusaha.data.UsahaResponse
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
+import com.jetpack.kawanusaha.ui.pages.SectionText
 import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.pages.main.utils.CategorySection
 import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 
@@ -57,46 +59,5 @@ fun UsahaScreen(
             val data by mainViewModel.listUsaha.collectAsState(null)
             UsahaSection(data, navToUsahaDetail)
         }
-    }
-}
-
-@Composable
-fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
-    val screenHeight = LocalConfiguration.current.screenHeightDp
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(200.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        modifier = Modifier
-            .height(screenHeight.dp)
-            .safeDrawingPadding()
-    ) {
-        items(response?.data?.size ?: 0) {
-            UsahaItem(usaha_name = response?.data?.get(it)!!, navToUsahaDetail)
-        }
-    }
-}
-
-@Composable
-fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
-    val title = usaha_name.usaha_name
-    val id = usaha_name.id
-    Card(modifier = Modifier.clickable { navToUsahaDetail(id) }) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(20.dp),
-        ) {
-            val showShimmer = remember { mutableStateOf(true) }
-            Text(text = title, style = Typography.body1)
-        }
-    }
-}
-
-@Composable
-fun CallUsahaLists(mainViewModel: MainViewModel) {
-    LaunchedEffect(mainViewModel.listUsaha) {
-        mainViewModel.getListUsaha()
     }
 }

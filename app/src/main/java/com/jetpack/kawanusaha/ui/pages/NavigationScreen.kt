@@ -199,8 +199,8 @@ fun NavigationScreen(
             composable(route = "about_screen") {
                 AboutScreen(
                     loginViewModel = loginViewModel,
-                    mainViewModel = mainViewModel, {
-                        navController.navigateUp()
+                    mainViewModel = mainViewModel, { id ->
+                        navController.navigate("article_screen/$id")
                     }, {
                         navController.navigate("landing_screen")
                     }, {

@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -202,61 +203,11 @@ fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush
     }
 }
 
-//@Composable
-//fun CameraView(
-//    outputDirectory: File,
-//    executor: Executor,
-//    onImageCaptured: (Uri) -> Unit,
-//    onError: (ImageCaptureException) -> Unit,
-//    viewModel: CameraViewModel,
-//) {
-//    val lensFacing = CameraSelector.LENS_FACING_BACK
-//    val context = LocalContext.current
-//    val lifecycleOwner = LocalLifecycleOwner.current
-//
-//    val preview = Preview.Builder().build()
-//    val previewView = remember {PreviewView(context)}
-//    val imageCapture: ImageCapture = remember {ImageCapture.Builder().build()}
-//
-//    val cameraSelector = CameraSelector.Builder()
-//        .requireLensFacing(lensFacing)
-//        .build()
-//
-//    LaunchedEffect(lensFacing){
-//        val cameraProvider = context.getCameraProvider()
-//        cameraProvider.unbindAll()
-//        cameraProvider.bindToLifecycle(
-//            lifecycleOwner,
-//            cameraSelector,
-//            preview,
-//            imageCapture
-//        )
-//        preview.setSurfaceProvider(previewView.surfaceProvider)
-//    }
-//
-//    Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()){
-//        AndroidView({previewView}, modifier = Modifier.fillMaxSize())
-//        IconButton(
-//            onClick = {
-//                      Log.i("Camera", "ON CLICK")
-//                viewModel.takePhoto(
-//                    filenameFormat = "yyyy-MM-dd-HH-mm-ss-SSS",
-//                    imageCapture = imageCapture,
-//                    outputDirectory = outputDirectory,
-//                    executor, onImageCaptured, onError
-//                )
-//                      },
-//            modifier = Modifier.padding(20.dp)
-//        ) {
-//            Icon(
-//                imageVector = Icons.Sharp.Lens,
-//                contentDescription = "Take Picture",
-//                tint = MaterialTheme.colors.secondary,
-//                modifier = Modifier
-//                    .size(100.dp)
-//                    .padding(1.dp)
-//                    .border(1.dp, Color.White, CircleShape)
-//            )
-//        }
-//    }
-//}
+@Composable
+fun SectionText(text: String, style: TextStyle, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        color = MaterialTheme.colors.onPrimary,
+        style = style,
+    )
+}

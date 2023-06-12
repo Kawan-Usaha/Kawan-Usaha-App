@@ -1,6 +1,5 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.Tag
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.SectionText
 
 
 @Composable
