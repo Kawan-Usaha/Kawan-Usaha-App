@@ -158,11 +158,6 @@ interface ApiService {
     fun chatResponse (
         @Body request : LLMRequest
     ): Call<LLMResponse>
-
-    @POST("chat/completions")
-    fun streamChatResponse (
-        @Body request : LLMRequest
-    ): Call<StreamResponse>
 }
 
 class ApiConfig {

@@ -20,14 +20,12 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
-
 
 class MainViewModel(
     private val dataRepository: DataRepository,
@@ -53,7 +51,7 @@ class MainViewModel(
     val imageFile: StateFlow<Uri> = _imageFile
 
     private val _categoryList = MutableStateFlow<CategoryResponse?>(null)
-    val categoryList : StateFlow<CategoryResponse?> = _categoryList
+    val categoryList: StateFlow<CategoryResponse?> = _categoryList
 
     private val _llmResponse =
         MutableStateFlow(
@@ -67,6 +65,7 @@ class MainViewModel(
 
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
+
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -74,10 +73,10 @@ class MainViewModel(
     val stringResponse: StateFlow<String> = _stringResponse
 
     private val _articleCache = MutableStateFlow<CreateArticleRequest?>(null)
-    val articleCache : StateFlow<CreateArticleRequest?> = _articleCache
+    val articleCache: StateFlow<CreateArticleRequest?> = _articleCache
 
     private val _selectedCategory = MutableStateFlow(0)
-    val selectedCategory : StateFlow<Int> = _selectedCategory
+    val selectedCategory: StateFlow<Int> = _selectedCategory
 
 
     init {
@@ -87,13 +86,13 @@ class MainViewModel(
     private fun getToken(): String = preferences.getString(TOKEN, "").toString()
 
     // Category
-    fun getCategory () {
+    fun getCategory() {
         viewModelScope.launch {
             _categoryList.value = dataRepository.getCategory()
         }
     }
 
-    fun selectThisCategory(id: Int){
+    fun selectThisCategory(id: Int) {
         _selectedCategory.value = id
     }
 
@@ -146,13 +145,13 @@ class MainViewModel(
         dataRepository.getUserArticle(getToken()).cachedIn(viewModelScope)
 
     fun searchAllArticle(text: String): Flow<PagingData<ArticlesItem>> =
-        if (selectedCategory.value == 0){
+        if (selectedCategory.value == 0) {
             dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
         } else {
             filterCategory(selectedCategory.value)
         }
 
-    private fun filterCategory (id : Int): Flow<PagingData<ArticlesItem>> =
+    private fun filterCategory(id: Int): Flow<PagingData<ArticlesItem>> =
         dataRepository.getCategorizedArticles(id).cachedIn(viewModelScope)
 
     fun getArticleDetail(id: Int) {
@@ -161,7 +160,7 @@ class MainViewModel(
         }
     }
 
-    fun saveArticleCache(title: String, description: String, category: Int){
+    fun saveArticleCache(title: String, description: String, category: Int) {
         _articleCache.value = CreateArticleRequest(
             ArticleRequest(
                 title = title,
@@ -172,7 +171,7 @@ class MainViewModel(
         )
     }
 
-    fun clearArticleCache(){
+    fun clearArticleCache() {
         _articleCache.value = null
     }
 
@@ -180,9 +179,27 @@ class MainViewModel(
         _imageFile.value = uri
     }
 
+    private fun createNewArticle (imageMultipart: MultipartBody.Part?,createArticleRequest: CreateArticleRequest){
+        viewModelScope.launch {
+            _status.value = dataRepository.createArticle(
+                getToken(),
+                imageMultipart,
+                createArticleRequest
+            )?.success ?: false
+        }
+    }
+
     fun createArticle(title: String, content: String, category: Int) {
         viewModelScope.launch {
-            if (imageFile.value != Uri.parse("file://dev/null")){
+            val articleRequest = CreateArticleRequest(
+                ArticleRequest(
+                    title = title,
+                    content = content,
+                    is_published = true
+                ),
+                category
+            )
+            if (imageFile.value != Uri.parse("file://dev/null")) {
                 val file = getFileFromUri(application.applicationContext, imageFile.value) as File
                 val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
@@ -190,36 +207,14 @@ class MainViewModel(
                     filename = file.name,
                     body = requestImageFile
                 )
-                _status.value = dataRepository.createArticle(
-                        getToken(),
-                imageMultipart,
-                CreateArticleRequest(
-                    ArticleRequest(
-                        title = title,
-                        content = content,
-                        is_published = true
-                    ),
-                    category
-                )
-                )?.success ?: false
+                createNewArticle(imageMultipart, articleRequest)
             } else {
-                _status.value = dataRepository.createArticle(
-                    getToken(),
-                    null,
-                    CreateArticleRequest(
-                        ArticleRequest(
-                            title = title,
-                            content = content,
-                            is_published = true
-                        ),
-                        category
-                    )
-                )?.success ?: false
+                createNewArticle(null, articleRequest)
             }
         }
     }
 
-    fun clearImage(){
+    fun clearImage() {
         _imageFile.value = Uri.parse("file://dev/null")
     }
 
@@ -259,7 +254,7 @@ class MainViewModel(
 
 
         val request = Request.Builder()
-            .url("http://34.74.45.133:8000/v1/chat/completions")
+            .url("http://$API_HOST/v1/chat/completions")
             .header("Content-Type", "application/json")
             .addHeader("Accept", "text/event-stream")
             .post(requestBody)
@@ -284,7 +279,71 @@ class MainViewModel(
 
     fun sendMsg(message: String) {
         _llmResponse.value.add(Message("user", message))
+        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
+            viewModelScope.launch {
+                generateAIArticle()
+            }
+        }
         sendStreamChat(llmResponse.value)
+    }
+
+
+    private var topic: String = ""
+    private var articleText: String = ""
+    private suspend fun generateAIArticle() {
+        val message = llmResponse.value
+        message.add(Message("user", "Apa topik dari percakapan diatas?"))
+        topic = dataRepository.chatResult(
+            llmRequest = LLMRequest(
+                model = "Kawan-Usaha",
+                stream = false,
+                messages = message,
+                max_tokens = 512,
+                temperature = 0.5,
+                top_p = 1.0
+            )
+        )?.choices?.get(0)?.message?.content ?: "No Topic"
+        if (topic == "No Topic") {
+            Log.e("Generate Article", "Cannot get topic")
+        } else {
+            message.add(
+                Message(
+                    "user",
+                    "Buatkan artikel untuk mengedukasi saya mengenai topik tersebut. Buat dengan selengkap lengkapnya"
+                )
+            )
+            generateAIArticle2(message)
+        }
+    }
+
+    private suspend fun generateAIArticle2(message: ArrayList<Message>) {
+        val response = dataRepository.chatResult(
+            llmRequest = LLMRequest(
+                model = "Kawan-Usaha",
+                stream = false,
+                messages = message,
+                max_tokens = 512,
+                temperature = 0.5,
+                top_p = 1.0
+            )
+        )
+        articleText += response?.choices?.get(0)?.message?.content ?: ""
+        if (response != null && response.choices[0].finish_reason != "stop") {
+            message.add(Message("user", "Lanjutkan dari pesan terakhir anda"))
+            generateAIArticle2(message)
+        }
+        if (response != null && response.choices[0].finish_reason == "stop"){
+             createNewArticle(
+                 imageMultipart = null,
+                 createArticleRequest = CreateArticleRequest(
+                    article = ArticleRequest(
+                        title = topic,
+                        content = articleText,
+                        is_published = true
+                    ), category = 1
+                )
+             )
+        }
     }
 
     private val eventSourceListener = object : EventSourceListener() {
@@ -326,6 +385,8 @@ class MainViewModel(
 
     companion object {
         private const val TOKEN = "TOKEN"
+        private const val GENERATE_COUNTER = 6
+        private const val API_HOST = "34.74.45.133:8000"
     }
 }
 
