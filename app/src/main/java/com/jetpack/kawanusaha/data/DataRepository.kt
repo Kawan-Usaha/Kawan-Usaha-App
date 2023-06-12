@@ -64,6 +64,11 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.createUsaha("Bearer $jwtToken", usahaRequest).execute() }
     }
 
+    // Category
+    suspend fun getCategory(): CategoryResponse?{
+        return executeRequest { apiService.getCategory().execute() }
+    }
+
 
     // Article
     fun getListArticle(): Flow<PagingData<ArticlesItem>> {
@@ -87,10 +92,10 @@ class DataRepository(private val apiService: ApiService) {
         ).flow
     }
 
-    fun searchUserArticle(jwtToken: String, text: String): Flow<PagingData<ArticlesItem>> {
+    fun getCategorizedArticles (id : Int): Flow<PagingData<ArticlesItem>>{
         return Pager(
             config = PagingConfig(pageSize = 6, initialLoadSize = 6),
-            pagingSourceFactory = { ArticlePagingSource(apiService, "Bearer $jwtToken", text) }
+            pagingSourceFactory = { CategorizedPagingSource(apiService, id) }
         ).flow
     }
 

@@ -83,6 +83,18 @@ interface ApiService {
     ) : Call <DefaultResponse>
 
 
+    // CATEGORY
+    @GET("category")
+    fun getCategory () : Call<CategoryResponse>
+
+    @GET("article/category")
+    fun getCategorizedArticle (
+        @Query ("page") page : Int,
+        @Query ("page_size") page_size: Int,
+        @Query ("id") id: Int
+    ) : ArticleResponse
+
+
     // ALL ARTICLES
     @GET("article")
     suspend fun getAllArticles (

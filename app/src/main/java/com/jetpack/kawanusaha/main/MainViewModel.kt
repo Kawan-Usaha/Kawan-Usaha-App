@@ -20,6 +20,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
@@ -51,6 +52,9 @@ class MainViewModel(
     private val _imageFile = MutableStateFlow<Uri>(Uri.parse("file://dev/null"))
     val imageFile: StateFlow<Uri> = _imageFile
 
+    private val _categoryList = MutableStateFlow<CategoryResponse?>(null)
+    val categoryList : StateFlow<CategoryResponse?> = _categoryList
+
     private val _llmResponse =
         MutableStateFlow(
             arrayListOf(
@@ -60,6 +64,7 @@ class MainViewModel(
                 )
             )
         )
+
     val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     private val _isLoading = MutableStateFlow(false)
@@ -71,11 +76,27 @@ class MainViewModel(
     private val _articleCache = MutableStateFlow<CreateArticleRequest?>(null)
     val articleCache : StateFlow<CreateArticleRequest?> = _articleCache
 
+    private val _selectedCategory = MutableStateFlow(0)
+    val selectedCategory : StateFlow<Int> = _selectedCategory
+
+
     init {
         clearStatus()
     }
 
     private fun getToken(): String = preferences.getString(TOKEN, "").toString()
+
+    // Category
+    fun getCategory () {
+        viewModelScope.launch {
+            _categoryList.value = dataRepository.getCategory()
+        }
+    }
+
+    fun selectThisCategory(id: Int){
+        _selectedCategory.value = id
+    }
+
 
     // User Profile
     fun getUser() {
@@ -125,10 +146,14 @@ class MainViewModel(
         dataRepository.getUserArticle(getToken()).cachedIn(viewModelScope)
 
     fun searchAllArticle(text: String): Flow<PagingData<ArticlesItem>> =
-        dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
+        if (selectedCategory.value == 0){
+            dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
+        } else {
+            filterCategory(selectedCategory.value)
+        }
 
-    fun searchUserArticle(text: String): Flow<PagingData<ArticlesItem>> =
-        dataRepository.searchUserArticle(getToken(), text).cachedIn(viewModelScope)
+    private fun filterCategory (id : Int): Flow<PagingData<ArticlesItem>> =
+        dataRepository.getCategorizedArticles(id).cachedIn(viewModelScope)
 
     fun getArticleDetail(id: Int) {
         viewModelScope.launch {

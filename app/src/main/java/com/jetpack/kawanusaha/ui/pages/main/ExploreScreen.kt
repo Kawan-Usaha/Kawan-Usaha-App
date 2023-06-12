@@ -57,6 +57,7 @@ fun ExploreScreen(
                 SearchBar(
                     query = search,
                     onQueryChange = { search = it },
+                    modifier = Modifier.fillMaxWidth(),
                     onSearch = {
                         items.add(search)
                         active = false
@@ -119,12 +120,10 @@ fun ExploreScreen(
                         Column(
                             modifier = Modifier.padding(16.dp)
                         ) {
-                            CategorySection()
+                            CategorySection(mainViewModel)
                         }
                     }
                 }
-
-                // Recommendation Articles Section
                 ArticleSection(articles, navToArticle)
             }
         }
