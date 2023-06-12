@@ -105,17 +105,19 @@ data class ArticleDetail(
 	val user: String
 )
 
-
-data class Category(
-	val id: Int,
-	val title: String,
-	val image: String,
-	val tags: Any,
-	val articles: Any,
-	val createdAt: String,
-	val updatedAt: String
+data class CategoryResponse(
+	val data: List<Category>,
+	val success: Boolean,
+	val message: String
 )
 
+data class Category(
+	val image: String,
+	val updatedAt: String,
+	val createdAt: String,
+	val id: Int,
+	val title: String
+)
 
 data class LLMResponse(
 	val created: Int,

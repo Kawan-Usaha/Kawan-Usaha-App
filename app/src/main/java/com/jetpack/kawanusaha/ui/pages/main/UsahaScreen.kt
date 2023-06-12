@@ -45,7 +45,7 @@ fun UsahaScreen(
                 modifier = Modifier.padding(15.dp)
             )
             Spacer(modifier = Modifier.height(5.dp))
-            CategorySection()
+            CategorySection(mainViewModel)
 
             Spacer(Modifier.height(8.dp))
             // Recommendation Articles Section

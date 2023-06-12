@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
@@ -23,7 +24,7 @@ fun MainScreen(
     navToArticle: (Int) -> Unit,
     navToAddArticle: () -> Unit,
 ) {
-
+    val articles = mainViewModel.getAllArticles().collectAsLazyPagingItems()
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -38,8 +39,6 @@ fun MainScreen(
                 modifier = Modifier
                     .padding(innerPadding)
             ) {
-//                ChatBox(navToChat)
-
                 Card(
                     shape = RoundedCornerShape(10.dp),
                     backgroundColor = MaterialTheme.colors.primary,
@@ -56,12 +55,13 @@ fun MainScreen(
                             modifier = Modifier.padding(15.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        CategorySection()
+                        CategorySection(mainViewModel)
                     }
                 }
                 Spacer(Modifier.height(20.dp))
 
-
+                // TODO Make this only AI Generated and recommender
+                ArticleSection(articles, navToArticle)
             }
         }
     }
