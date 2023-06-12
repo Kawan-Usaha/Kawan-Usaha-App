@@ -238,6 +238,7 @@ fun LoginScreen(
                     text = stringResource(R.string.dont_have_an_account),
                     color = MaterialTheme.colors.onPrimary
                 )
+                Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = stringResource(R.string.sign_up_now),
                     color = MaterialTheme.colors.onPrimary,

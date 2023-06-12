@@ -246,7 +246,7 @@ fun NavigationScreen(
                 LikeScreen(
                     { param1 ->
                         navController.navigate("article_screen/$param1")
-                    }, viewModel = likeViewModel
+                    }, viewModel = likeViewModel, mainViewModel = mainViewModel
                 )
             }
 

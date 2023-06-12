@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.pages.BackPressHandler
@@ -24,6 +28,8 @@ import com.jetpack.kawanusaha.ui.theme.*
 
 @Composable
 fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
+    val chocolateVariant = MaterialTheme.colors.secondaryVariant
+    val secondaryColor = MaterialTheme.colors.secondary
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -35,9 +41,20 @@ fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
             modifier = Modifier.padding(20.dp)
         )
         Text(
-            stringResource(id = R.string.app_name)
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(color = chocolateVariant),
+                ) {
+                    append("KAWAN")
+                }
+                withStyle(
+                    style = SpanStyle(color = secondaryColor)
+                ) {
+                    append(" USAHA")
+                }
+            },
+            style = MaterialTheme.typography.h4
         )
-
         Gradient(navToLogin, navToRegister)
     }
 

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -83,7 +84,6 @@ class MainViewModel(
             _userProfile.value = dataRepository.getUser(getToken())
         }
     }
-
     fun saveProfileChange(name: String, email: String) {
         viewModelScope.launch {
             _status.value = dataRepository.updateProfile(

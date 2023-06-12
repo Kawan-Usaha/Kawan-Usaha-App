@@ -14,14 +14,14 @@ data class ProfileResponse(
 )
 
 data class ProfileData(
-	val createdAt: String,
-	val name: String,
-	val verified: Boolean,
-	val usaha: Any?,
-	val articles: Any?,
-	val userId: String,
-	val email: String,
-	val updatedAt: String
+    val createdAt: String,
+    var name: String,
+    val verified: Boolean,
+    val usaha: Any?,
+    val articles: Any?,
+    val userId: String,
+    val email: String,
+    val updatedAt: String
 )
 
 data class UsahaResponse(

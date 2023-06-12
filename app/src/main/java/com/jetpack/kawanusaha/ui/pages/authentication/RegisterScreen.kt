@@ -77,24 +77,6 @@ fun RegisterScreen(
                 style = MaterialTheme.typography.h4
             )
         }
-        item {
-            Row(
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = stringResource(R.string.already_have_an_account),
-                    color = MaterialTheme.colors.onPrimary
-                )
-                Text(
-                    text = stringResource(R.string.sign_in_now),
-                    color = MaterialTheme.colors.onPrimary,
-                    fontWeight = FontWeight.Bold,
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier
-                        .clickable { navToLogin() }
-                )
-            }
-        }
         item{
             Card(
                 shape = RoundedCornerShape(10.dp),
@@ -291,6 +273,25 @@ fun RegisterScreen(
                         )
                     }
                 }
+            }
+        }
+        item {
+            Row(
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.already_have_an_account),
+                    color = MaterialTheme.colors.onPrimary
+                )
+                Spacer(modifier = Modifier.width(3.dp))
+                Text(
+                    text = stringResource(R.string.sign_in_now),
+                    color = MaterialTheme.colors.onPrimary,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier
+                        .clickable { navToLogin() }
+                )
             }
         }
     }

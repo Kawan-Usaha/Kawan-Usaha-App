@@ -13,6 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -35,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -43,6 +46,7 @@ import com.jetpack.kawanusaha.MainActivity
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.authentication.mToast
 
 @Composable
 fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, navBack: () -> Unit) {
@@ -51,19 +55,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
     val status by mainViewModel.status.collectAsState(initial = false)
 
     val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
-    val context = LocalContext.current
-    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
 
-    imageUri?.let {
-        if (Build.VERSION.SDK_INT < 28) {
-            bitmap.value = MediaStore.Images
-                .Media.getBitmap(context.contentResolver, it)
-        } else {
-            val source = ImageDecoder.createSource(context.contentResolver, it)
-            bitmap.value = ImageDecoder.decodeBitmap(source)
-        }
-    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -107,18 +99,24 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                     .clip(CircleShape)
                             )
 
-
-                            IconButton(onClick = { mainViewModel.clearImage() },
-                                    modifier = Modifier.align(Alignment.BottomEnd).size(80.dp) )  {
-                                    Icon(Icons.Default.Delete,
-                                        contentDescription = stringResource(R.string.delete_picture),
-                                        tint = MaterialTheme.colors.primary,
-                                        modifier = Modifier
-                                            .background(MaterialTheme.colors.secondary)
-                                            .size(40.dp)
-
-                                    )
-                                }
+                            IconButton(
+                                onClick = { mainViewModel.clearImage() },
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .size(80.dp)
+                            ) {
+                                Icon(
+                                    Icons.Default.Delete,
+                                    contentDescription = stringResource(R.string.delete_picture),
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .background(
+                                            MaterialTheme.colors.secondary,
+                                            shape = CircleShape
+                                        )
+                                        .size(45.dp)
+                                )
+                            }
                         } else {
                             Image(
                                 painter = painterResource(id = R.drawable.profile),
@@ -142,7 +140,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                     }
                 }
             }
-            item{
+            item {
                 Card(
                     backgroundColor = MaterialTheme.colors.primary,
                     elevation = 5.dp,
@@ -162,17 +160,19 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                 modifier = Modifier.padding(10.dp)
                             ) {
                                 Text(
-                                    text = user?.data?.name!!.toString(),
+                                    text = user?.data?.name.toString(),
                                     style = MaterialTheme.typography.h3
                                 )
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                ) {
-                                    user?.data?.let { userData ->
-                                        newName = TextFieldValue(userData.name)
-                                        newEmail = TextFieldValue(userData.email)
+                                user?.data?.let { userData ->
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        )
+                                    ) {
+
                                         Text(
                                             text = stringResource(R.string.account_id) + ": ",
                                             fontWeight = FontWeight.SemiBold,
@@ -194,56 +194,65 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                         )
 
                                     }
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.name) + ": ",
-                                        fontWeight = FontWeight.SemiBold,
-                                        style = MaterialTheme.typography.body1,
-                                        modifier = Modifier.weight(0.3f)
-                                    )
-                                    Spacer(modifier = Modifier.width(100.dp))
-                                    TextField(
-                                        value = newName,
-                                        onValueChange = {
-                                            newName = it
-                                        },
-                                        colors = TextFieldDefaults.textFieldColors(
-                                            backgroundColor = MaterialTheme.colors.primary,
-                                            disabledIndicatorColor = MaterialTheme.colors.primary,
-                                            focusedIndicatorColor = MaterialTheme.colors.onPrimary
-                                        ),
-                                        modifier = Modifier.weight(0.7f)
-                                    )
-                                }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.email) + ": ",
-                                        fontWeight = FontWeight.SemiBold,
-                                        style = MaterialTheme.typography.body1,
-                                        modifier = Modifier.weight(0.3f)
-                                    )
-                                    Spacer(modifier = Modifier.width(100.dp))
-                                    TextField(
-                                        value = newEmail,
-                                        onValueChange = {
-                                            newEmail = it
-                                        },
-                                        colors = TextFieldDefaults.textFieldColors(
-                                            backgroundColor = MaterialTheme.colors.primary,
-                                            disabledIndicatorColor = MaterialTheme.colors.primary,
-                                            focusedIndicatorColor = MaterialTheme.colors.onPrimary
-                                        ),
-                                        modifier = Modifier.weight(0.7f)
-                                    )
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        )
+                                    ) {
+                                        newName = TextFieldValue(userData.name)
+                                        Text(
+                                            text = stringResource(R.string.name) + ": ",
+                                            fontWeight = FontWeight.SemiBold,
+                                            style = MaterialTheme.typography.body1,
+                                            modifier = Modifier.weight(0.3f)
+                                        )
+                                        Spacer(modifier = Modifier.width(100.dp))
+                                        TextField(
+                                            value = newName,
+                                            onValueChange = {
+                                                newName = it
+                                            },
+                                            colors = TextFieldDefaults.textFieldColors(
+                                                backgroundColor = MaterialTheme.colors.primary,
+                                                disabledIndicatorColor = MaterialTheme.colors.primary,
+                                                focusedIndicatorColor = MaterialTheme.colors.onPrimary,
+                                                cursorColor = MaterialTheme.colors.onPrimary,
+                                            ),
+                                            modifier = Modifier.weight(0.7f),
+                                        )
+                                    }
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        modifier = Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 8.dp
+                                        )
+                                    ) {
+                                        newEmail = TextFieldValue(userData.email)
+                                        Text(
+                                            text = stringResource(R.string.email) + ": ",
+                                            fontWeight = FontWeight.SemiBold,
+                                            style = MaterialTheme.typography.body1,
+                                            modifier = Modifier.weight(0.3f)
+                                        )
+                                        Spacer(modifier = Modifier.width(100.dp))
+                                        TextField(
+                                            value = newEmail,
+                                            onValueChange = {
+                                                newEmail = it
+                                            },
+                                            colors = TextFieldDefaults.textFieldColors(
+                                                backgroundColor = MaterialTheme.colors.primary,
+                                                disabledIndicatorColor = MaterialTheme.colors.primary,
+                                                focusedIndicatorColor = MaterialTheme.colors.onPrimary
+                                            ),
+                                            modifier = Modifier.weight(0.7f)
+                                        )
+                                    }
                                 }
                                 Spacer(modifier = Modifier.height(20.dp))
                                 user?.data?.let { userData ->
@@ -255,7 +264,9 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             )
                                         },
                                         //TODO pake regex
-                                        enabled = (newName.text != userData.name || newEmail.text != userData.email) && (newName.text != "" || newEmail.text != ""),
+                                        enabled =
+                                        (newName.text != userData.name || newEmail.text != userData.email) &&
+                                                (newName.text != "" || newEmail.text != ""),
                                         colors = ButtonDefaults.buttonColors(
                                             backgroundColor = MaterialTheme.colors.secondary,
                                             disabledBackgroundColor = MaterialTheme.colors.surface,
@@ -283,54 +294,4 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
         }
     }
 }
-
-//@Composable
-//fun SelectImageAlertDialog(
-//    onDismiss: () -> Unit,
-//    cameraViewModel: CameraViewModel,
-//    context: Context,
-//    activity: MainActivity,
-//    launcher: ManagedActivityResultLauncher<String, Uri?>,
-//) {
-//    Dialog(
-//        onDismissRequest = onDismiss,
-//        properties = DialogProperties(
-//            dismissOnBackPress = true,
-//            dismissOnClickOutside = true,
-//        )
-//    ) {
-//        Card(
-//            backgroundColor = MaterialTheme.colors.primary,
-//            modifier = Modifier
-//                .padding(8.dp),
-//            shape = RoundedCornerShape(10.dp)
-//        ) {
-//            Column(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(10.dp)
-//            ) {
-//
-//                Text(
-//                    text = "Take from Camera",
-//                    style = MaterialTheme.typography.body1,
-//                    modifier = Modifier
-//                        .padding(16.dp)
-//                        .clickable {
-//                        }
-//                )
-//                Divider(color = MaterialTheme.colors.onPrimary)
-//                Text(
-//                    text = "Select from Gallery",
-//                    style = MaterialTheme.typography.body1,
-//                    modifier = Modifier
-//                        .padding(16.dp)
-//                        .clickable {
-//                            launcher.launch("image/*")
-//                        }
-//                )
-//            }
-//        }
-//    }
-//}
 

@@ -2,6 +2,7 @@ package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -23,7 +24,9 @@ fun AddUsahaScreen(mainViewModel: MainViewModel) {
     var tag1 by remember { mutableStateOf(TextFieldValue("")) }
     var tag2 by remember { mutableStateOf(TextFieldValue("")) }
     var tag3 by remember { mutableStateOf(TextFieldValue("")) }
-    Column {
+    Column(
+        modifier = Modifier.safeDrawingPadding()
+    ) {
         SectionText(
             text = stringResource(R.string.change_usaha),
             style = MaterialTheme.typography.h3,

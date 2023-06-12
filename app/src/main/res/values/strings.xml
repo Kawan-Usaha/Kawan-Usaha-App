@@ -32,10 +32,10 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="password">Password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="or_login_with">Or Login With</string>
-    <string name="dont_have_an_account">\"Don\'t have an account? \"</string>
+    <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="sign_up_now">Sign Up Now!</string>
 
-    <string name="already_have_an_account">\"Already have an account? \"</string>
+    <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in_now">Sign In Now!</string>
     <string name="name">Name</string>
     <string name="name_icon">Name Icon</string>
