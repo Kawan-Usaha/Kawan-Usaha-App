@@ -167,6 +167,7 @@ fun VerificationScreen(
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
                     text = stringResource(R.string.resend_code),
+                    style = MaterialTheme.typography.h3,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable {
                         // re-generate code

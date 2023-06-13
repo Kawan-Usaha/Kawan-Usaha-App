@@ -9,6 +9,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -52,6 +54,7 @@ fun AddArticleScreen(
     var category by remember { mutableStateOf(TextFieldValue("1")) }
     val status by mainViewModel.status.collectAsState(initial = false)
     val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
+    val context = LocalContext.current
 
     Surface(
         color = MaterialTheme.colors.primary,
@@ -131,6 +134,13 @@ fun AddArticleScreen(
                                 .fillMaxSize()
                                 .padding(start = 16.dp, end = 16.dp)
                         ) {
+                            var isClicked by remember{mutableStateOf(false)}
+                            var newCategory by remember{mutableStateOf("")}
+                            val icon = if (isClicked){
+                                Icons.Default.Close
+                            } else {
+                                Icons.Default.Add
+                            }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,8 +152,44 @@ fun AddArticleScreen(
                                     style = MaterialTheme.typography.h3
                                 )
                                 Spacer(modifier = Modifier.width(16.dp))
-
+//                                if(isClicked){
+//                                    OutlinedTextField(
+//                                        value = newCategory,
+//                                        onValueChange = {newCategory = it},
+//                                        label = {Text(text = "Add New Category")},
+//                                        trailingIcon = {
+//                                            Card(
+//                                                backgroundColor = MaterialTheme.colors.secondary,
+//                                                shape = RoundedCornerShape(20.dp),
+//                                                modifier = Modifier.clickable { }
+//                                            ) {
+//                                                Row(
+//                                                    verticalAlignment = Alignment.CenterVertically,
+//                                                    horizontalArrangement = Arrangement.Center
+//                                                ) {
+//                                                    Text("Add")
+//                                                }
+//                                            }
+//                                        },
+//                                        colors = TextFieldDefaults.outlinedTextFieldColors(
+//                                            unfocusedBorderColor = MaterialTheme.colors.secondary,
+//                                            focusedBorderColor = MaterialTheme.colors.secondary,
+//                                            unfocusedLabelColor = MaterialTheme.colors.surface,
+//                                            focusedLabelColor = MaterialTheme.colors.secondary,
+//                                            cursorColor = MaterialTheme.colors.onPrimary
+//                                        )
+//                                    )
+//                                } else {
                                 DropDownMenu()
+//                                }
+//                                IconButton(onClick = { isClicked = !isClicked }) {
+//                                    Icon(imageVector = icon,
+//                                        contentDescription = "Add New Category",
+//                                        tint = MaterialTheme.colors.primary,
+//                                        modifier = Modifier
+//                                            .background(MaterialTheme.colors.secondary, shape = CircleShape)
+//                                    )
+//                                }
                             }
                             val customTextSelection = TextSelectionColors(
                                 handleColor = MaterialTheme.colors.secondary,
@@ -321,7 +367,6 @@ fun DropDownMenu(
             onValueChange = { selectedItem = it },
             modifier = Modifier
                 .padding(vertical = 16.dp)
-                .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
                     textFilledSize = coordinates.size.toSize()
                 },

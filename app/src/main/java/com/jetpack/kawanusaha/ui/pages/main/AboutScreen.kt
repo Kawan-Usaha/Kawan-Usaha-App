@@ -21,11 +21,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-<<<<<<< HEAD
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
-=======
->>>>>>> d28fcb4f4ea307cc119314defb54f444c2b788ac
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -57,8 +54,6 @@ fun AboutScreen(
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
-    CallData(mainViewModel = mainViewModel)
-    val user by mainViewModel.userProfile.collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
@@ -197,200 +192,108 @@ fun AboutScreen(
                 modifier = Modifier
                     .padding(innerPadding)
                     .padding(10.dp)
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-<<<<<<< HEAD
                     CallData(mainViewModel = mainViewModel)
                     val user by mainViewModel.userProfile.collectAsState(initial = null)
-                    if (user != null) {
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(16.dp)
-=======
-                    val showShimmer = remember { mutableStateOf(true) }
-                    val isError = remember { mutableStateOf(false) }
-                    if (!(isError.value)){
-                        AsyncImage(
-                            model = user?.data?.image ?: "",
-                            contentDescription = stringResource(R.string.profile_picture),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(200.dp)
-                                .padding(8.dp)
-                                .background(
-                                    shimmerBrush(
-                                        targetValue = 1300f,
-                                        showShimmer = showShimmer.value
-                                    )
-                                )
-                                .clip(CircleShape),
-                            onSuccess = { showShimmer.value = false },
-                            onError = { showShimmer.value = false; isError.value = true}
-                        )
-                    } else {
-                        Image(
-                            painterResource(id = R.drawable.profile),
-                            contentDescription = stringResource(R.string.profile_picture),
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(200.dp)
-                                .padding(8.dp)
-                                .clip(CircleShape),
-                        )
-                    }
-                }
-                item {
                     Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
                         if (user != null) {
-                            Card(
-                                backgroundColor = MaterialTheme.colors.primary,
-                                elevation = 5.dp,
-                                modifier = Modifier.padding(10.dp),
-                                border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
->>>>>>> d28fcb4f4ea307cc119314defb54f444c2b788ac
+                            Column(
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
-                                AsyncImage(
-                                    model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                                    contentDescription = stringResource(R.string.profile_picture),
-                                    placeholder = painterResource(id = R.drawable.profile),
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(120.dp)
-                                        .padding(8.dp)
-                                        .clip(CircleShape)
-                                )
-                                Spacer(modifier = Modifier.width(10.dp))
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                                    horizontalAlignment = Alignment.Start
+                                Row(
+                                    horizontalArrangement = Arrangement.Start,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.padding(16.dp)
                                 ) {
-                                    Text(
-                                        text = user?.data?.name!!.toString(),
-                                        style = MaterialTheme.typography.h2,
+                                    val showShimmer = remember { mutableStateOf(true) }
+                                    AsyncImage(
+                                        model = user?.data?.image ?: "",
+                                        contentDescription = stringResource(R.string.profile_picture),
+                                        placeholder = painterResource(id = R.drawable.profile),
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(120.dp)
+                                            .padding(8.dp)
+                                            .clip(CircleShape)
+                                            .background(
+                                                shimmerBrush(
+                                                    targetValue = 1300f,
+                                                    showShimmer = showShimmer.value
+                                                )
+                                            ),
+                                        onSuccess = { showShimmer.value = false },
+                                        onError = {
+                                            showShimmer.value = true
+                                        }
                                     )
-                                    Text(
-                                        text = user?.data?.email!!.toString(),
-                                        fontWeight = FontWeight.Normal,
-                                        style = MaterialTheme.typography.h3,
-                                    )
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                                        horizontalAlignment = Alignment.Start
+                                    ) {
+                                        Row{
+                                            Text(
+                                                text = user?.data?.name ?: "",
+                                                style = MaterialTheme.typography.h2,
+                                            )
+                                            Spacer(modifier = Modifier.width(5.dp))
+                                            if ((user?.data?.verified!!)) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Verified,
+                                                    contentDescription = "Verified",
+                                                    tint = MaterialTheme.colors.secondary
+                                                )
+                                            }
+                                        }
+                                        Text(
+                                            text = user?.data?.email ?: "",
+                                            fontWeight = FontWeight.Normal,
+                                            style = MaterialTheme.typography.h3,
+                                        )
 
-                                    Text(
-                                        text = "Since: " + user?.data?.createdAt!!.slice(
-                                            0..9
-                                        ),
-                                        fontWeight = FontWeight.Normal,
-                                        style = MaterialTheme.typography.h3,
-                                        softWrap = true
-                                    )
+                                        Text(
+                                            text = "Since: " + user?.data?.createdAt?.slice(
+                                                0..9
+                                            ),
+                                            fontWeight = FontWeight.Normal,
+                                            style = MaterialTheme.typography.h3,
+                                            softWrap = true
+                                        )
+                                    }
                                 }
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            if (!(user?.data?.verified!!)) {
-                                Button(
-                                    onClick = { navToVerify() },
-                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.verify_account),
-                                        style = MaterialTheme.typography.body1
-                                    )
+                                Spacer(modifier = Modifier.height(10.dp))
+                                if (!(user?.data?.verified!!)) {
+                                    Column(
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ){
+                                        Button(
+                                            onClick = { navToVerify() },
+                                            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
+                                        ) {
+                                            Text(
+                                                text = stringResource(R.string.verify_account),
+                                                style = MaterialTheme.typography.body1
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                }
-//                item {
-//                    Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-//                        CallData(mainViewModel = mainViewModel)
-//                        val user by mainViewModel.userProfile.collectAsState(initial = null)
-//                        if (user != null) {
-//                            Card(
-//                                backgroundColor = MaterialTheme.colors.primary,
-//                                elevation = 5.dp,
-//                                modifier = Modifier.padding(10.dp),
-//                                border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
-//                            ) {
-//                                Column(
-//                                    horizontalAlignment = Alignment.CenterHorizontally,
-//                                    modifier = Modifier.padding(10.dp)
-//                                ) {
-//                                    Text(
-//                                        text = user?.data?.name!!.toString(),
-//                                        style = MaterialTheme.typography.h3
-//                                    )
-//                                    Column(
-//                                        verticalArrangement = Arrangement.spacedBy(5.dp),
-//                                        modifier = Modifier.padding(vertical = 20.dp)
-//                                    ) {
-//                                        user?.data?.let { userData ->
-//                                            listOf(
-//                                                stringResource(R.string.email) + ": " to userData.email,
-//                                                stringResource(R.string.member_since) to userData.createdAt.slice(
-//                                                    0..9
-//                                                ),
-//                                            ).forEach { (label, value) ->
-//                                                Row(verticalAlignment = Alignment.CenterVertically) {
-//                                                    Text(
-//                                                        text = label,
-//                                                        fontWeight = FontWeight.SemiBold,
-//                                                        style = MaterialTheme.typography.body1,
-//                                                        modifier = Modifier.weight(1f)
-//                                                    )
-//                                                    Text(
-//                                                        text = value,
-//                                                        style = MaterialTheme.typography.body1,
-//                                                        softWrap = true
-//                                                    )
-//                                                }
-//                                            }
-//
-//                                        }
-//                                    }
-//                                    Spacer(modifier = Modifier.height(10.dp))
-//                                    if (!(user?.data?.verified!!)) {
-//                                        Button(
-//                                            onClick = { navToVerify() },
-//                                            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
-//                                        ) {
-//                                            Text(
-//                                                text = stringResource(R.string.verify_account),
-//                                                style = MaterialTheme.typography.body1
-//                                            )
-//                                        }
-//                                    }
-//
-////                                    Button(
-////                                        onClick = {
-////                                            loginViewModel.logout()
-////                                            navToLanding()
-////                                        },
-////                                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
-////                                    ) {
-////                                        Text(
-////                                            text = stringResource(R.string.sign_out),
-////                                            style = MaterialTheme.typography.body1
-////                                        )
-////                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-                item {
                     Divider(
                         color = MaterialTheme.colors.onPrimary, modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp), startIndent = 2.dp
                     )
+                }
+                item {
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
                         horizontalArrangement = Arrangement.Start,

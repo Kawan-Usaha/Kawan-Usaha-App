@@ -232,7 +232,9 @@ fun NavigationScreen(
             }
 
             composable(route = "add_usaha_screen") {
-                AddUsahaScreen(mainViewModel = mainViewModel)
+                AddUsahaScreen(mainViewModel = mainViewModel, {
+                    navController.navigateUp()
+                })
             }
 
             composable(route = "add_article_screen") {
