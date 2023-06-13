@@ -14,12 +14,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -47,7 +49,6 @@ fun AboutScreen(
 ) {
     val articles: LazyPagingItems<ArticlesItem> =
         mainViewModel.getUserArticles().collectAsLazyPagingItems()
-    var expanded by remember{mutableStateOf(false)}
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
@@ -146,7 +147,8 @@ fun AboutScreen(
                         .height(55.dp)
                         .clickable {
                             loginViewModel.logout()
-                            navToLanding() },
+                            navToLanding()
+                        },
                     contentAlignment = Alignment.CenterStart
                 ){
                     Row(
@@ -193,105 +195,165 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    AsyncImage(
-                        model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                        contentDescription = stringResource(R.string.profile_picture),
-                        placeholder = painterResource(id = R.drawable.profile),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(200.dp)
-                            .padding(8.dp)
-                            .clip(CircleShape)
-                    )
-                }
-                item {
-                    Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-                        CallData(mainViewModel = mainViewModel)
-                        val user by mainViewModel.userProfile.collectAsState(initial = null)
-                        if (user != null) {
-                            Card(
-                                backgroundColor = MaterialTheme.colors.primary,
-                                elevation = 5.dp,
-                                modifier = Modifier.padding(10.dp),
-                                border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
+                    CallData(mainViewModel = mainViewModel)
+                    val user by mainViewModel.userProfile.collectAsState(initial = null)
+                    if (user != null) {
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(16.dp)
                             ) {
+                                AsyncImage(
+                                    model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
+                                    contentDescription = stringResource(R.string.profile_picture),
+                                    placeholder = painterResource(id = R.drawable.profile),
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .size(120.dp)
+                                        .padding(8.dp)
+                                        .clip(CircleShape)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.padding(10.dp)
+                                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                                    horizontalAlignment = Alignment.Start
                                 ) {
                                     Text(
                                         text = user?.data?.name!!.toString(),
-                                        style = MaterialTheme.typography.h3
+                                        style = MaterialTheme.typography.h2,
                                     )
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy(5.dp),
-                                        modifier = Modifier.padding(vertical = 20.dp)
-                                    ) {
-                                        user?.data?.let { userData ->
-                                            listOf(
-                                                stringResource(R.string.email) + ": " to userData.email,
-                                                stringResource(R.string.member_since) to userData.createdAt.slice(
-                                                    0..9
-                                                ),
-                                            ).forEach { (label, value) ->
-                                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                                    Text(
-                                                        text = label,
-                                                        fontWeight = FontWeight.SemiBold,
-                                                        style = MaterialTheme.typography.body1,
-                                                        modifier = Modifier.weight(1f)
-                                                    )
-                                                    Text(
-                                                        text = value,
-                                                        style = MaterialTheme.typography.body1,
-                                                        softWrap = true
-                                                    )
-                                                }
-                                            }
+                                    Text(
+                                        text = user?.data?.email!!.toString(),
+                                        fontWeight = FontWeight.Normal,
+                                        style = MaterialTheme.typography.h3,
+                                    )
 
-                                        }
-                                    }
-                                    Spacer(modifier = Modifier.height(10.dp))
-                                    if (!(user?.data?.verified!!)) {
-                                        Button(
-                                            onClick = { navToVerify() },
-                                            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
-                                        ) {
-                                            Text(
-                                                text = stringResource(R.string.verify_account),
-                                                style = MaterialTheme.typography.body1
-                                            )
-                                        }
-                                    }
-
-//                                    Button(
-//                                        onClick = {
-//                                            loginViewModel.logout()
-//                                            navToLanding()
-//                                        },
-//                                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
-//                                    ) {
-//                                        Text(
-//                                            text = stringResource(R.string.sign_out),
-//                                            style = MaterialTheme.typography.body1
-//                                        )
-//                                    }
+                                    Text(
+                                        text = "Since: " + user?.data?.createdAt!!.slice(
+                                            0..9
+                                        ),
+                                        fontWeight = FontWeight.Normal,
+                                        style = MaterialTheme.typography.h3,
+                                        softWrap = true
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(10.dp))
+                            if (!(user?.data?.verified!!)) {
+                                Button(
+                                    onClick = { navToVerify() },
+                                    colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.verify_account),
+                                        style = MaterialTheme.typography.body1
+                                    )
                                 }
                             }
                         }
                     }
                 }
+//                item {
+//                    Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
+//                        CallData(mainViewModel = mainViewModel)
+//                        val user by mainViewModel.userProfile.collectAsState(initial = null)
+//                        if (user != null) {
+//                            Card(
+//                                backgroundColor = MaterialTheme.colors.primary,
+//                                elevation = 5.dp,
+//                                modifier = Modifier.padding(10.dp),
+//                                border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
+//                            ) {
+//                                Column(
+//                                    horizontalAlignment = Alignment.CenterHorizontally,
+//                                    modifier = Modifier.padding(10.dp)
+//                                ) {
+//                                    Text(
+//                                        text = user?.data?.name!!.toString(),
+//                                        style = MaterialTheme.typography.h3
+//                                    )
+//                                    Column(
+//                                        verticalArrangement = Arrangement.spacedBy(5.dp),
+//                                        modifier = Modifier.padding(vertical = 20.dp)
+//                                    ) {
+//                                        user?.data?.let { userData ->
+//                                            listOf(
+//                                                stringResource(R.string.email) + ": " to userData.email,
+//                                                stringResource(R.string.member_since) to userData.createdAt.slice(
+//                                                    0..9
+//                                                ),
+//                                            ).forEach { (label, value) ->
+//                                                Row(verticalAlignment = Alignment.CenterVertically) {
+//                                                    Text(
+//                                                        text = label,
+//                                                        fontWeight = FontWeight.SemiBold,
+//                                                        style = MaterialTheme.typography.body1,
+//                                                        modifier = Modifier.weight(1f)
+//                                                    )
+//                                                    Text(
+//                                                        text = value,
+//                                                        style = MaterialTheme.typography.body1,
+//                                                        softWrap = true
+//                                                    )
+//                                                }
+//                                            }
+//
+//                                        }
+//                                    }
+//                                    Spacer(modifier = Modifier.height(10.dp))
+//                                    if (!(user?.data?.verified!!)) {
+//                                        Button(
+//                                            onClick = { navToVerify() },
+//                                            colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
+//                                        ) {
+//                                            Text(
+//                                                text = stringResource(R.string.verify_account),
+//                                                style = MaterialTheme.typography.body1
+//                                            )
+//                                        }
+//                                    }
+//
+////                                    Button(
+////                                        onClick = {
+////                                            loginViewModel.logout()
+////                                            navToLanding()
+////                                        },
+////                                        colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
+////                                    ) {
+////                                        Text(
+////                                            text = stringResource(R.string.sign_out),
+////                                            style = MaterialTheme.typography.body1
+////                                        )
+////                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
                 item {
                     Divider(
                         color = MaterialTheme.colors.onPrimary, modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 10.dp), startIndent = 2.dp
                     )
-                    SectionText(
-                        text = stringResource(R.string.usaha),
-                        style = Typography.h3,
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
                         modifier = Modifier
-                    )
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ){
+                        SectionText(
+                            text = stringResource(R.string.usaha),
+                            style = Typography.h3,
+                            modifier = Modifier
+                        )
+                    }
                 }
                 item {
                     CallUsahaLists(mainViewModel = mainViewModel)
@@ -299,12 +361,20 @@ fun AboutScreen(
                     UsahaSection(response = data, navToUsahaDetail = navToUsahaDetail)
                 }
                 item {
+                    Spacer(modifier = Modifier.height(20.dp))
                     // Recommendation Articles Section
-                    SectionText(
-                        text = stringResource(R.string.your_articles),
-                        style = MaterialTheme.typography.h3,
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
                         modifier = Modifier
-                    )
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    ){
+                        SectionText(
+                            text = stringResource(R.string.your_articles),
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier
+                        )
+                    }
                     Spacer(modifier = Modifier.height(5.dp))
                     ArticleSection(articles, navToArticle)
                 }

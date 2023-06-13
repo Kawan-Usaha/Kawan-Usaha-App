@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +32,7 @@ fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
         modifier = Modifier
             .fillMaxHeight()
             .safeDrawingPadding()
+            .padding(horizontal = 16.dp)
     ) {
         items(response?.data?.size ?: 0) {
             UsahaItem(usaha_name = response?.data?.get(it)!!, navToUsahaDetail)
@@ -41,7 +44,11 @@ fun UsahaSection(response: UsahaResponse?, navToUsahaDetail: (Int) -> Unit) {
 fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
     val title = usaha_name.usaha_name
     val id = usaha_name.id
-    Card(modifier = Modifier.clickable { navToUsahaDetail(id) }) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        backgroundColor = MaterialTheme.colors.secondary,
+        modifier = Modifier
+        .clickable { navToUsahaDetail(id) }) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
