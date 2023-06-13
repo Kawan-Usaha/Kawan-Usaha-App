@@ -1,6 +1,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,12 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -30,6 +29,8 @@ import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.SectionText
 import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.pages.main.utils.ArticleSection
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 import kotlinx.coroutines.launch
 
@@ -51,6 +52,8 @@ fun AboutScreen(
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
+    CallData(mainViewModel = mainViewModel)
+    val user by mainViewModel.userProfile.collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
@@ -146,7 +149,8 @@ fun AboutScreen(
                         .height(55.dp)
                         .clickable {
                             loginViewModel.logout()
-                            navToLanding() },
+                            navToLanding()
+                        },
                     contentAlignment = Alignment.CenterStart
                 ){
                     Row(
@@ -193,21 +197,40 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    AsyncImage(
-                        model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                        contentDescription = stringResource(R.string.profile_picture),
-                        placeholder = painterResource(id = R.drawable.profile),
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(200.dp)
-                            .padding(8.dp)
-                            .clip(CircleShape)
-                    )
+                    val showShimmer = remember { mutableStateOf(true) }
+                    val isError = remember { mutableStateOf(false) }
+                    if (!(isError.value)){
+                        AsyncImage(
+                            model = user?.data?.image ?: "",
+                            contentDescription = stringResource(R.string.profile_picture),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(200.dp)
+                                .padding(8.dp)
+                                .background(
+                                    shimmerBrush(
+                                        targetValue = 1300f,
+                                        showShimmer = showShimmer.value
+                                    )
+                                )
+                                .clip(CircleShape),
+                            onSuccess = { showShimmer.value = false },
+                            onError = { showShimmer.value = false; isError.value = true}
+                        )
+                    } else {
+                        Image(
+                            painterResource(id = R.drawable.profile),
+                            contentDescription = stringResource(R.string.profile_picture),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(200.dp)
+                                .padding(8.dp)
+                                .clip(CircleShape),
+                        )
+                    }
                 }
                 item {
                     Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
-                        CallData(mainViewModel = mainViewModel)
-                        val user by mainViewModel.userProfile.collectAsState(initial = null)
                         if (user != null) {
                             Card(
                                 backgroundColor = MaterialTheme.colors.primary,

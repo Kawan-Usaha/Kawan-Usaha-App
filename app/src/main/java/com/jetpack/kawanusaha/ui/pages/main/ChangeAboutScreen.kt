@@ -86,7 +86,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
             item {
                 Column {
                     Box(
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center, modifier = Modifier.clickable { navToCamera() }
                     ) {
                         if (image != Uri.parse("file://dev/null")) {
                             AsyncImage(
@@ -135,7 +135,6 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                             modifier = Modifier
                                 .size(40.dp)
                                 .alpha(0.8f)
-                                .clickable { navToCamera() }
                         )
                     }
                 }
@@ -202,7 +201,6 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             vertical = 8.dp
                                         )
                                     ) {
-                                        newName = TextFieldValue(userData.name)
                                         Text(
                                             text = stringResource(R.string.name) + ": ",
                                             fontWeight = FontWeight.SemiBold,
@@ -215,6 +213,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             onValueChange = {
                                                 newName = it
                                             },
+                                            placeholder = { Text(text = userData.name)},
                                             colors = TextFieldDefaults.textFieldColors(
                                                 backgroundColor = MaterialTheme.colors.primary,
                                                 disabledIndicatorColor = MaterialTheme.colors.primary,
@@ -232,7 +231,6 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             vertical = 8.dp
                                         )
                                     ) {
-                                        newEmail = TextFieldValue(userData.email)
                                         Text(
                                             text = stringResource(R.string.email) + ": ",
                                             fontWeight = FontWeight.SemiBold,
@@ -245,6 +243,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             onValueChange = {
                                                 newEmail = it
                                             },
+                                            placeholder = { Text(text = userData.email)},
                                             colors = TextFieldDefaults.textFieldColors(
                                                 backgroundColor = MaterialTheme.colors.primary,
                                                 disabledIndicatorColor = MaterialTheme.colors.primary,
