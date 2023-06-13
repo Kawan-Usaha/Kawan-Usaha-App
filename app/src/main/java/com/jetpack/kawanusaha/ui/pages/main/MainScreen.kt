@@ -1,19 +1,14 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -25,7 +20,6 @@ import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
 import com.jetpack.kawanusaha.ui.pages.SectionText
 import com.jetpack.kawanusaha.ui.pages.TopBar
-import com.jetpack.kawanusaha.ui.pages.main.utils.ArticleItem
 import com.jetpack.kawanusaha.ui.pages.main.utils.CategorySection
 import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
@@ -36,7 +30,7 @@ fun MainScreen(
     navToArticle: (Int) -> Unit,
     navToAddArticle: () -> Unit,
 ) {
-    val articles = mainViewModel.getAllArticles().collectAsLazyPagingItems()
+    val articles = mainViewModel.getAllArticles().collectAsLazyPagingItems() //nanti filter by is_published
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -58,12 +52,18 @@ fun MainScreen(
 }
 
 @Composable
-fun MainArticleSection(mainViewModel: MainViewModel, articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) -> Unit) {
+fun MainArticleSection(
+    mainViewModel: MainViewModel,
+    articles: LazyPagingItems<ArticlesItem>,
+    navToArticle: (Int) -> Unit
+) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     LazyColumn(
-        modifier = Modifier.height((screenHeight).dp).fillMaxWidth(),
+        modifier = Modifier
+            .height((screenHeight).dp)
+            .fillMaxWidth(),
         content = {
-            item{
+            item {
                 Card(
                     shape = RoundedCornerShape(10.dp),
                     backgroundColor = MaterialTheme.colors.primary,
@@ -109,7 +109,7 @@ fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
     ) {
         val showShimmer = remember { mutableStateOf(true) }
         Divider()
-        if (!isError){
+        if (!isError) {
             AsyncImage(
                 model = articlesItem.image,
                 contentDescription = "Articles",

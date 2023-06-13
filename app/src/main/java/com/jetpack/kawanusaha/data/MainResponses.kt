@@ -84,8 +84,19 @@ data class ArticlesItem(
 	val createdAt: String,
 	val image: String,
 	val id: Int,
-	val category: List<Category>,
+	val category: Category,
 	val title: String,
+)
+
+
+data class FavResponse(
+	val data: FavList,
+	val success: Boolean,
+	val message: String
+)
+
+data class FavList(
+	val articles: List<ArticlesItem>
 )
 
 data class ArticleDetailResponse(
@@ -100,7 +111,7 @@ data class ArticleDetail(
 	val createdAt: String,
 	val image: String,
 	val id: Int,
-	val category: List<Category>,
+	val category: Category,
 	val title: String,
 	val content: String,
 	val user: String

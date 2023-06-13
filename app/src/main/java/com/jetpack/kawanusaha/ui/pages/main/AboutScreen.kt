@@ -1,7 +1,5 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,14 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -33,6 +28,8 @@ import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.SectionText
 import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.pages.main.utils.ArticleSection
+import com.jetpack.kawanusaha.ui.pages.main.utils.CallUsahaLists
+import com.jetpack.kawanusaha.ui.pages.main.utils.UsahaSection
 import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 import kotlinx.coroutines.launch
@@ -196,7 +193,6 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
-                    CallData(mainViewModel = mainViewModel)
                     val user by mainViewModel.userProfile.collectAsState(initial = null)
                     Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
                         if (user != null) {
@@ -333,12 +329,5 @@ fun AboutScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CallData(mainViewModel: MainViewModel) {
-    LaunchedEffect(mainViewModel) {
-        mainViewModel.getUser()
     }
 }
