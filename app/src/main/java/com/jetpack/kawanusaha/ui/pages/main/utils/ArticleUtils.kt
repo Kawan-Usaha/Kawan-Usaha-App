@@ -24,9 +24,8 @@ import com.jetpack.kawanusaha.ui.theme.Typography
 @Composable
 fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp * 3/4
-    val screenWidth = LocalConfiguration.current.screenWidthDp
     LazyVerticalGrid(
-        columns = if (screenWidth < 500){ GridCells.Adaptive(170.dp)} else {GridCells.Fixed(3)} ,
+        columns = GridCells.Fixed(2) ,
         verticalArrangement = Arrangement.spacedBy(5.dp),
         modifier = Modifier.height((screenHeight).dp),
         content = {
@@ -57,13 +56,14 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Failed to get Image",
-                modifier = Modifier.height(100.dp))
+                modifier = Modifier.height(200.dp)
+            )
         } else {
             AsyncImage(
                 model = articlesItem.image,
                 contentDescription = "Articles",
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(200.dp)
                     .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
                 onSuccess = { showShimmer.value = false },
                 onError = { showShimmer.value = false; isError = true }

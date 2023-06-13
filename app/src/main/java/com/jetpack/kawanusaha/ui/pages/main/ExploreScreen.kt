@@ -2,6 +2,7 @@
 
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -37,10 +38,13 @@ fun ExploreScreen(
     var search by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     val items = remember { mutableStateListOf("") }
-    val articles = getData(mainViewModel = mainViewModel, searchText = search)
+    val category by mainViewModel.selectedCategory.collectAsState()
+    val article = mainViewModel.filterAllArticle(search, category).collectAsLazyPagingItems()
     Scaffold(
         floatingActionButton = { NavFabButton(navToAddArticle) },
-        modifier = Modifier.fillMaxSize().safeDrawingPadding()
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
     ) { innerPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -94,7 +98,10 @@ fun ExploreScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start,
                                 modifier = Modifier
-                                    .clickable { search = it }.fillMaxWidth().height(60.dp).padding(horizontal = 20.dp)
+                                    .clickable { search = it }
+                                    .fillMaxWidth()
+                                    .height(60.dp)
+                                    .padding(horizontal = 20.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.History,
@@ -123,18 +130,9 @@ fun ExploreScreen(
                         }
                     }
                 }
-                ArticleSection(articles, navToArticle)
+                ArticleSection(article, navToArticle)
             }
         }
-    }
-}
-
-@Composable
-fun getData(mainViewModel: MainViewModel, searchText: String): LazyPagingItems<ArticlesItem> {
-    return if (searchText.isNotEmpty()) {
-        mainViewModel.searchAllArticle(searchText).collectAsLazyPagingItems()
-    } else {
-        mainViewModel.getAllArticles().collectAsLazyPagingItems()
     }
 }
 

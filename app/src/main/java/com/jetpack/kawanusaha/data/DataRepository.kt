@@ -113,8 +113,8 @@ class DataRepository(private val apiService: ApiService) {
         }
     }
 
-    suspend fun chatResult(llmRequest: LLMRequest): LLMResponse? {
-        return executeRequest { apiService.chatResponse(llmRequest).execute() }
+    suspend fun chatResult(jwtToken: String, llmRequest: LLMRequest): LLMResponse? {
+        return executeRequest { apiService.chatResponse("Bearer $jwtToken", llmRequest).execute() }
     }
 
 

@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -81,13 +80,14 @@ class MainViewModel(
 
 
     init {
+        getCategory()
         clearStatus()
     }
 
     private fun getToken(): String = preferences.getString(TOKEN, "").toString()
 
     // Category
-    fun getCategory() {
+    private fun getCategory() {
         viewModelScope.launch {
             _categoryList.value = dataRepository.getCategory()
         }
@@ -104,6 +104,7 @@ class MainViewModel(
             _userProfile.value = dataRepository.getUser(getToken())
         }
     }
+
     fun saveProfileChange(name: String, email: String) {
         viewModelScope.launch {
             if (imageFile.value != Uri.parse("file://dev/null")) {
@@ -159,8 +160,8 @@ class MainViewModel(
     fun getUserArticles(): Flow<PagingData<ArticlesItem>> =
         dataRepository.getUserArticle(getToken()).cachedIn(viewModelScope)
 
-    fun searchAllArticle(text: String): Flow<PagingData<ArticlesItem>> =
-        if (selectedCategory.value == 0) {
+    fun filterAllArticle(text: String, category: Int): Flow<PagingData<ArticlesItem>> =
+        if (category == 0) {
             dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
         } else {
             filterCategory(selectedCategory.value)
@@ -180,7 +181,7 @@ class MainViewModel(
             ArticleRequest(
                 title = title,
                 content = description,
-                is_published = false
+                is_published = true
             ),
             category
         )
@@ -267,8 +268,9 @@ class MainViewModel(
             .build()
 
         val request = Request.Builder()
-            .url("http://$API_HOST/chat/completions")
+            .url("$API_HOST/v1/chat/completions")
             .header("Content-Type", "application/json")
+            .addHeader("Authorization", "Bearer " + getToken())
             .addHeader("Accept", "text/event-stream")
             .post(requestBody)
             .build()
@@ -292,72 +294,74 @@ class MainViewModel(
 
     fun sendMsg(message: String) {
         _llmResponse.value.add(Message("user", message))
-        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
-            viewModelScope.launch {
-                generateAIArticle()
-            }
-        }
+//        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
+//            viewModelScope.launch {
+//                generateAIArticle()
+//            }
+//        }
         sendStreamChat(llmResponse.value)
     }
 
 
-    private var topic: String = ""
-    private var articleText: String = ""
-    private suspend fun generateAIArticle() {
-        val message = llmResponse.value
-        message.add(Message("user", "Apa topik dari percakapan diatas?"))
-        topic = dataRepository.chatResult(
-            llmRequest = LLMRequest(
-                model = "Kawan-Usaha",
-                stream = false,
-                messages = message,
-                max_tokens = 512,
-                temperature = 0.5,
-                top_p = 1.0
-            )
-        )?.choices?.get(0)?.message?.content ?: "No Topic"
-        if (topic == "No Topic") {
-            Log.e("Generate Article", "Cannot get topic")
-        } else {
-            message.add(
-                Message(
-                    "user",
-                    "Buatkan artikel untuk mengedukasi saya mengenai topik tersebut. Buat dengan selengkap lengkapnya"
-                )
-            )
-            generateAIArticle2(message)
-        }
-    }
+//    private var topic: String = ""
+//    private var articleText: String = ""
+//    private suspend fun generateAIArticle() {
+//        val message = llmResponse.value
+//        message.add(Message("user", "Apa topik dari percakapan diatas?"))
+//        topic = dataRepository.chatResult(
+//            jwtToken = getToken(),
+//            llmRequest = LLMRequest(
+//                model = "Kawan-Usaha",
+//                stream = false,
+//                messages = message,
+//                max_tokens = 512,
+//                temperature = 0.5,
+//                top_p = 1.0
+//            )
+//        )?.choices?.get(0)?.message?.content ?: "No Topic"
+//        if (topic == "No Topic") {
+//            Log.e("Generate Article", "Cannot get topic")
+//        } else {
+//            message.add(
+//                Message(
+//                    "user",
+//                    "Buatkan artikel untuk mengedukasi saya mengenai topik tersebut. Buat dengan selengkap lengkapnya"
+//                )
+//            )
+//            generateAIArticle2(message)
+//        }
+//    }
 
-    private suspend fun generateAIArticle2(message: ArrayList<Message>) {
-        val response = dataRepository.chatResult(
-            llmRequest = LLMRequest(
-                model = "Kawan-Usaha",
-                stream = false,
-                messages = message,
-                max_tokens = 512,
-                temperature = 0.5,
-                top_p = 1.0
-            )
-        )
-        articleText += response?.choices?.get(0)?.message?.content ?: ""
-        if (response != null && response.choices[0].finish_reason != "stop") {
-            message.add(Message("user", "Lanjutkan dari pesan terakhir anda"))
-            generateAIArticle2(message)
-        }
-        if (response != null && response.choices[0].finish_reason == "stop"){
-             createNewArticle(
-                 imageMultipart = null,
-                 createArticleRequest = CreateArticleRequest(
-                    article = ArticleRequest(
-                        title = topic,
-                        content = articleText,
-                        is_published = true
-                    ), category = 1
-                )
-             )
-        }
-    }
+//    private suspend fun generateAIArticle2(message: ArrayList<Message>) {
+//        val response = dataRepository.chatResult(
+//            jwtToken = getToken(),
+//            llmRequest = LLMRequest(
+//                model = "Kawan-Usaha",
+//                stream = false,
+//                messages = message,
+//                max_tokens = 512,
+//                temperature = 0.5,
+//                top_p = 1.0
+//            )
+//        )
+//        articleText += response?.choices?.get(0)?.message?.content ?: ""
+//        if (response != null && response.choices[0].finish_reason != "stop") {
+//            message.add(Message("user", "Lanjutkan dari pesan terakhir anda"))
+//            generateAIArticle2(message)
+//        }
+//        if (response != null && response.choices[0].finish_reason == "stop"){
+//             createNewArticle(
+//                 imageMultipart = null,
+//                 createArticleRequest = CreateArticleRequest(
+//                    article = ArticleRequest(
+//                        title = topic,
+//                        content = articleText,
+//                        is_published = false
+//                    ), category = 2
+//                )
+//             )
+//        }
+//    }
 
     private val eventSourceListener = object : EventSourceListener() {
         override fun onOpen(eventSource: EventSource, response: Response) {
@@ -382,13 +386,14 @@ class MainViewModel(
             gson.choices[0].delta.content.toString().let {
                 _stringResponse.value += if (it == "null") "" else it
             }
+            eventSource.cancel()
         }
 
         override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
             super.onFailure(eventSource, t, response)
             if (response?.message != "OK") {
                 _stringResponse.value = "Error"
-                Log.e("TAG", response?.body?.string().toString())
+                Log.e("Streaming Data", response?.body?.string().toString())
             }
             _llmResponse.value.add(Message("assistant", stringResponse.value))
             _isLoading.value = false
@@ -399,7 +404,7 @@ class MainViewModel(
     companion object {
         private const val TOKEN = "TOKEN"
         private const val GENERATE_COUNTER = 6
-        private const val API_HOST = "34.170.183.54:5000"
+        private const val API_HOST = "https://staging-dot-capstone-kawan-usaha.ue.r.appspot.com"
     }
 }
 
@@ -407,7 +412,7 @@ class MainViewModelFactory(
     private val preferences: SharedPreferences,
     private val application: Application
 ) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(

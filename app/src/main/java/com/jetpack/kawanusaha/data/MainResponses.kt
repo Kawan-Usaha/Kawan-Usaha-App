@@ -84,7 +84,7 @@ data class ArticlesItem(
 	val createdAt: String,
 	val image: String,
 	val id: Int,
-	val category: List<Category>,
+	val category: Category,
 	val title: String,
 )
 
@@ -100,7 +100,7 @@ data class ArticleDetail(
 	val createdAt: String,
 	val image: String,
 	val id: Int,
-	val category: List<Category>,
+	val category: Category,
 	val title: String,
 	val content: String,
 	val user: String

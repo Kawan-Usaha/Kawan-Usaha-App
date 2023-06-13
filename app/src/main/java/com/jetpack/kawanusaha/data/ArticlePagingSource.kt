@@ -53,7 +53,6 @@ class ArticlePagingSource(private val apiService: ApiService, private val jwtTok
     }
 }
 
-
 class CategorizedPagingSource(private val apiService: ApiService, private val id: Int) : PagingSource<Int, ArticlesItem>() {
     override fun getRefreshKey(state: PagingState<Int, ArticlesItem>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -66,7 +65,7 @@ class CategorizedPagingSource(private val apiService: ApiService, private val id
         return try {
             val page = params.key ?: INITIAL_PAGE_INDEX
             val responseData =
-                apiService.getCategorizedArticle(page, params.loadSize, id)
+                apiService.getCategorizedArticle(page = page, page_size = params.loadSize, category = id)
             LoadResult.Page(
                 data = responseData.data.articles,
                 prevKey = if (page == INITIAL_PAGE_INDEX) null else page - 1,
@@ -82,7 +81,7 @@ class CategorizedPagingSource(private val apiService: ApiService, private val id
         }
     }
     private companion object {
-        private const val TAG = "ArticlePagingSource"
+        private const val TAG = "CategorizedPagingSource"
         const val INITIAL_PAGE_INDEX = 1
     }
 }

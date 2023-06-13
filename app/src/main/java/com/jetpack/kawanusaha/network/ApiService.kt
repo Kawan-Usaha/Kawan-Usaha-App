@@ -88,10 +88,10 @@ interface ApiService {
     fun getCategory () : Call<CategoryResponse>
 
     @GET("article/category")
-    fun getCategorizedArticle (
+    suspend fun getCategorizedArticle (
         @Query ("page") page : Int,
         @Query ("page_size") page_size: Int,
-        @Query ("id") id: Int
+        @Query ("category") category: Int
     ) : ArticleResponse
 
 
@@ -156,8 +156,9 @@ interface ApiService {
 
 
     // CHAT BOT
-    @POST("chat/completions")
+    @POST("v1/chat/completions")
     fun chatResponse (
+        @Header("Authorization") token: String,
         @Body request : LLMRequest
     ): Call<LLMResponse>
 }
@@ -174,7 +175,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("http://34.170.183.54:5000/")
+                .baseUrl("https://staging-dot-capstone-kawan-usaha.ue.r.appspot.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

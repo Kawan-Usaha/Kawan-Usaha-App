@@ -23,7 +23,6 @@ import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
 fun CategorySection(mainViewModel: MainViewModel) {
-    mainViewModel.getCategory()
     val category by mainViewModel.categoryList.collectAsState()
     LazyRow(
         horizontalArrangement = Arrangement.SpaceAround,

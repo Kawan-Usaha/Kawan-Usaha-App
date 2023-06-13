@@ -55,7 +55,7 @@ class LoginViewModel(
         viewModelScope.launch {
             _loginCredential.value = dataRepository.login(
                 loginRequest = LoginRequest(
-                    email = email,
+                    email = email.lowercase(),
                     password = password
                 )
             )
@@ -80,7 +80,7 @@ class LoginViewModel(
             _registerCredential.value = dataRepository.register(
                 registerRequest = RegisterRequest(
                     name = name,
-                    email = email,
+                    email = email.lowercase(),
                     password = password,
                     password_confirm = passwordConfirm
                 )
