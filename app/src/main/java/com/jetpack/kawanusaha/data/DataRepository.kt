@@ -99,6 +99,14 @@ class DataRepository(private val apiService: ApiService) {
         ).flow
     }
 
+    suspend fun setFavourite (jwtToken: String, id: Int): DefaultResponse?{
+        return executeRequest { apiService.setFavourite("Bearer $jwtToken", id).execute() }
+    }
+
+    suspend fun getFavourite (jwtToken: String): FavResponse? {
+        return executeRequest { apiService.getFavourite("Bearer: $jwtToken").execute() }
+    }
+
     suspend fun getArticleDetail(id: Int): ArticleDetailResponse? {
         return executeRequest { apiService.getArticleDetails(id).execute() }
     }

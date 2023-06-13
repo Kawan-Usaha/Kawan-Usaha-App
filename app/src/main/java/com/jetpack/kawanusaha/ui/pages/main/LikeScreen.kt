@@ -35,7 +35,7 @@ fun LikeScreen(
     viewModel: LikeViewModel,
     mainViewModel: MainViewModel,
 ){
-    val list by viewModel.allData.observeAsState(listOf())
+    val list by mainViewModel.favouriteList.collectAsState()
     var search by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
     Scaffold(topBar = { TopBarFavorite() }, modifier = Modifier
@@ -93,12 +93,11 @@ fun LikeScreen(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                items(list, key = { item -> item.id }) {
+                items(list?.size ?: 0) {
                     ArticleList(
-                        title = it.title,
-                        description = it.content,
-                        articleId = it.articleId,
-                        image = it.image,
+                        title = list?.get(it)?.title,
+                        articleId = list?.get(it)?.id,
+                        image = list?.get(it)?.image,
                         navToArticle = navToArticle,
                         mainViewModel = mainViewModel
                     )
@@ -129,7 +128,6 @@ fun TopBarFavorite(
 @Composable
 fun ArticleList(
     title: String?,
-    description: String?,
     articleId: Int?,
     image: String?,
     navToArticle: (Int?) -> Unit,
@@ -204,15 +202,6 @@ fun ArticleList(
                         Text(
                             text = title,
                             style = MaterialTheme.typography.h3
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(5.dp))
-                    if (description != null) {
-                        Text(
-                            text = description,
-                            style = MaterialTheme.typography.body1,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                     Spacer(modifier = Modifier.height(10.dp))

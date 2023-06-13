@@ -154,6 +154,17 @@ interface ApiService {
         @Part("user") profileRequest: ProfileRequest
     ): Call<DefaultResponse>
 
+    // FAVORITE
+    @GET
+    fun getFavourite(
+        @Header("Authorization") token: String
+    ): Call<FavResponse>
+
+    @POST("/article/favorite")
+    fun setFavourite(
+        @Header("Authorization") token: String,
+        @Body id : Int
+    ): Call<DefaultResponse>
 
     // CHAT BOT
     @POST("v1/chat/completions")
@@ -175,7 +186,7 @@ class ApiConfig {
                 .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
-                .baseUrl("https://staging-dot-capstone-kawan-usaha.ue.r.appspot.com/")
+                .baseUrl("https://api.kawan-usaha.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client)
                 .build()

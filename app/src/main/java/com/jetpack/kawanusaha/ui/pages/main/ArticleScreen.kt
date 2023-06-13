@@ -68,8 +68,8 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                         IconButton(
                             onClick = {
                                 isFavorite = !isFavorite
+                                mainViewModel.setFavourite(id = articleId)
                                 if (getById?.isEmpty() == true) {
-                                        viewModel.insert(favoriteMap)
                                         Icons.Default.Favorite
                                         Toast.makeText(
                                             context,
@@ -77,7 +77,6 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     } else {
-                                        viewModel.deleteById(articleId)
                                         Icons.Default.FavoriteBorder
                                         Toast.makeText(
                                             context,

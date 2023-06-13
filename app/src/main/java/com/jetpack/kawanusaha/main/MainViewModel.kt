@@ -78,6 +78,9 @@ class MainViewModel(
     private val _selectedCategory = MutableStateFlow(0)
     val selectedCategory: StateFlow<Int> = _selectedCategory
 
+    private val _favouriteList = MutableStateFlow<List<ArticlesItem>?>(null)
+    val favouriteList : StateFlow<List<ArticlesItem>?> = _favouriteList
+
 
     init {
         getCategory()
@@ -187,6 +190,18 @@ class MainViewModel(
         )
     }
 
+    fun setFavourite(id : Int){
+        viewModelScope.launch {
+            dataRepository.setFavourite(getToken(), id)
+        }
+    }
+
+    fun getFavourite(){
+        viewModelScope.launch {
+            _favouriteList.value = dataRepository.getFavourite(getToken())?.data?.articles
+        }
+    }
+
     fun clearArticleCache() {
         _articleCache.value = null
     }
@@ -268,7 +283,7 @@ class MainViewModel(
             .build()
 
         val request = Request.Builder()
-            .url("$API_HOST/v1/chat/completions")
+            .url("${API_HOST}v1/chat/completions")
             .header("Content-Type", "application/json")
             .addHeader("Authorization", "Bearer " + getToken())
             .addHeader("Accept", "text/event-stream")
@@ -285,7 +300,7 @@ class MainViewModel(
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        Log.e("DataRepository", "APi Call Success $response")
+                        Log.e("DataRepository", "APi Call Success ${response}")
                     }
                 })
             }
@@ -386,14 +401,14 @@ class MainViewModel(
             gson.choices[0].delta.content.toString().let {
                 _stringResponse.value += if (it == "null") "" else it
             }
-            eventSource.cancel()
+            if (gson.choices[0].finish_reason == "stop") eventSource.cancel()
         }
 
         override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {
             super.onFailure(eventSource, t, response)
-            if (response?.message != "OK") {
+            if (response?.code != 200) {
                 _stringResponse.value = "Error"
-                Log.e("Streaming Data", response?.body?.string().toString())
+                Log.e("Streaming Data", response.toString())
             }
             _llmResponse.value.add(Message("assistant", stringResponse.value))
             _isLoading.value = false
@@ -404,7 +419,7 @@ class MainViewModel(
     companion object {
         private const val TOKEN = "TOKEN"
         private const val GENERATE_COUNTER = 6
-        private const val API_HOST = "https://staging-dot-capstone-kawan-usaha.ue.r.appspot.com"
+        private const val API_HOST = "https://api.kawan-usaha.com/"
     }
 }
 
