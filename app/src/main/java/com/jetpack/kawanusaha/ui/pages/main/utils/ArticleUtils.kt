@@ -1,12 +1,9 @@
-package com.jetpack.kawanusaha.ui.pages.main
+package com.jetpack.kawanusaha.ui.pages.main.utils
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.Text
@@ -15,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
@@ -23,14 +21,12 @@ import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 
-
 @Composable
 fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) -> Unit) {
     val screenHeight = LocalConfiguration.current.screenHeightDp * 3/4
+    val screenWidth = LocalConfiguration.current.screenWidthDp
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
+        columns = if (screenWidth < 500){ GridCells.Adaptive(170.dp)} else {GridCells.Fixed(3)} ,
         verticalArrangement = Arrangement.spacedBy(5.dp),
         modifier = Modifier.height((screenHeight).dp),
         content = {
@@ -54,6 +50,7 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable { navToArticle(id) }
+            .padding(bottom = 10.dp)
     ) {
         val showShimmer = remember { mutableStateOf(true) }
         if (isError){
@@ -72,6 +69,6 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
                 onError = { showShimmer.value = false; isError = true }
             )
         }
-        Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h6)
+        Text(text = title, style = Typography.h6, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }

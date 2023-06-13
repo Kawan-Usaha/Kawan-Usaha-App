@@ -106,10 +106,25 @@ class MainViewModel(
     }
     fun saveProfileChange(name: String, email: String) {
         viewModelScope.launch {
-            _status.value = dataRepository.updateProfile(
-                getToken(),
-                ProfileRequest(name = name, email = email)
-            )?.success ?: false
+            if (imageFile.value != Uri.parse("file://dev/null")) {
+                val file = getFileFromUri(application.applicationContext, imageFile.value) as File
+                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                    name = "image",
+                    filename = file.name,
+                    body = requestImageFile
+                )
+                _status.value = dataRepository.updateProfile(
+                    getToken(),
+                    imageMultipart,
+                    ProfileRequest(name = name, email = email)
+                )?.success ?: false
+            } else {
+                _status.value = dataRepository.updateProfile(
+                    getToken(), null,
+                    ProfileRequest(name = name, email = email)
+                )?.success ?: false
+            }
         }
     }
 
@@ -246,15 +261,13 @@ class MainViewModel(
         val mediaType = "application/json".toMediaType()
         val requestBody = jsonPayload.toRequestBody(mediaType)
 
-
         val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.MINUTES)
             .writeTimeout(10, TimeUnit.MINUTES)
             .build()
 
-
         val request = Request.Builder()
-            .url("http://$API_HOST/v1/chat/completions")
+            .url("http://$API_HOST/chat/completions")
             .header("Content-Type", "application/json")
             .addHeader("Accept", "text/event-stream")
             .post(requestBody)
@@ -386,7 +399,7 @@ class MainViewModel(
     companion object {
         private const val TOKEN = "TOKEN"
         private const val GENERATE_COUNTER = 6
-        private const val API_HOST = "34.74.45.133:8000"
+        private const val API_HOST = "34.170.183.54:5000"
     }
 }
 

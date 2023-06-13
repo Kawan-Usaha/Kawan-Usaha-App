@@ -30,8 +30,9 @@ import com.jetpack.kawanusaha.ui.pages.main.*
 // TODO Security Leak in passing password
 @Composable
 fun NavigationScreen(
-    loginViewModel: LoginViewModel, mainViewModel: MainViewModel,
-    likeViewModel: LikeViewModel, cameraViewModel: CameraViewModel
+    loginViewModel: LoginViewModel,
+    mainViewModel: MainViewModel,
+    likeViewModel: LikeViewModel
 ) {
     val navController = rememberNavController()
     val startDestination: String =

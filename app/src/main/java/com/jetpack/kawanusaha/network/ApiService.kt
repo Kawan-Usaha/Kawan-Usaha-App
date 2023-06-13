@@ -146,10 +146,12 @@ interface ApiService {
         @Header("Authorization") token: String
     ): Call<ProfileResponse>
 
+    @Multipart
     @PATCH("user/profile")
     fun updateProfile (
         @Header("Authorization") token: String,
-        @Body profileRequest: ProfileRequest
+        @Part image: MultipartBody.Part?,
+        @Part("user") profileRequest: ProfileRequest
     ): Call<DefaultResponse>
 
 

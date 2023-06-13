@@ -46,9 +46,9 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.getUser("Bearer $jwtToken").execute() }
     }
 
-    suspend fun updateProfile(jwtToken: String, profileRequest: ProfileRequest): DefaultResponse? {
+    suspend fun updateProfile(jwtToken: String, imageMultipart: MultipartBody.Part?, profileRequest: ProfileRequest): DefaultResponse? {
         return executeRequest {
-            apiService.updateProfile("Bearer $jwtToken", profileRequest).execute()
+            apiService.updateProfile("Bearer $jwtToken", imageMultipart, profileRequest).execute()
         }
     }
 

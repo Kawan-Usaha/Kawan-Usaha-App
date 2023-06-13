@@ -52,13 +52,11 @@ class MainActivity : ComponentActivity() {
                     val likeViewModel = ViewModelProvider(
                         this,
                         LikeViewModelFactory(this.application)
-                    )[LikeViewModel::class.java] // sementara
-                    val cameraViewModel = CameraViewModel()
+                    )[LikeViewModel::class.java]
                     NavigationScreen(
                         loginViewModel = loginViewModel,
                         mainViewModel = mainViewModel,
                         likeViewModel = likeViewModel,
-                        cameraViewModel = cameraViewModel
                     )
 
                 }

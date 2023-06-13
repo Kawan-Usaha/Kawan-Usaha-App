@@ -1,6 +1,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,13 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+<<<<<<< HEAD
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
+=======
+>>>>>>> d28fcb4f4ea307cc119314defb54f444c2b788ac
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -32,6 +35,8 @@ import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.SectionText
 import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.pages.main.utils.ArticleSection
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 import kotlinx.coroutines.launch
 
@@ -52,6 +57,8 @@ fun AboutScreen(
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
+    CallData(mainViewModel = mainViewModel)
+    val user by mainViewModel.userProfile.collectAsState(initial = null)
     val coroutineScope = rememberCoroutineScope()
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
@@ -195,6 +202,7 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
+<<<<<<< HEAD
                     CallData(mainViewModel = mainViewModel)
                     val user by mainViewModel.userProfile.collectAsState(initial = null)
                     if (user != null) {
@@ -207,6 +215,48 @@ fun AboutScreen(
                                 horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(16.dp)
+=======
+                    val showShimmer = remember { mutableStateOf(true) }
+                    val isError = remember { mutableStateOf(false) }
+                    if (!(isError.value)){
+                        AsyncImage(
+                            model = user?.data?.image ?: "",
+                            contentDescription = stringResource(R.string.profile_picture),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(200.dp)
+                                .padding(8.dp)
+                                .background(
+                                    shimmerBrush(
+                                        targetValue = 1300f,
+                                        showShimmer = showShimmer.value
+                                    )
+                                )
+                                .clip(CircleShape),
+                            onSuccess = { showShimmer.value = false },
+                            onError = { showShimmer.value = false; isError.value = true}
+                        )
+                    } else {
+                        Image(
+                            painterResource(id = R.drawable.profile),
+                            contentDescription = stringResource(R.string.profile_picture),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(200.dp)
+                                .padding(8.dp)
+                                .clip(CircleShape),
+                        )
+                    }
+                }
+                item {
+                    Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
+                        if (user != null) {
+                            Card(
+                                backgroundColor = MaterialTheme.colors.primary,
+                                elevation = 5.dp,
+                                modifier = Modifier.padding(10.dp),
+                                border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
+>>>>>>> d28fcb4f4ea307cc119314defb54f444c2b788ac
                             ) {
                                 AsyncImage(
                                     model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",

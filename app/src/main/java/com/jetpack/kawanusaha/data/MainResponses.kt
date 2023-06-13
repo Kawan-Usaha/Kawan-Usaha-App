@@ -18,6 +18,7 @@ data class ProfileData(
     var name: String,
     val verified: Boolean,
     val usaha: Any?,
+	val image: String?,
     val articles: Any?,
     val userId: String,
     val email: String,
