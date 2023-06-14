@@ -150,7 +150,7 @@ class MainViewModel(
         viewModelScope.launch {
             _status.value = dataRepository.createUsaha(
                 getToken(),
-                usahaRequest = UsahaRequest(usaha_name = usahaName, type = type, tags = tags)
+                usahaRequest = UsahaRequest(usahaname = usahaName, type = type, tags = tags)
             )?.success ?: false
         }
     }

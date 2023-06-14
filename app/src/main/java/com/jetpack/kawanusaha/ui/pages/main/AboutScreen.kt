@@ -193,6 +193,7 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 item {
+                    mainViewModel.getUser()
                     val user by mainViewModel.userProfile.collectAsState(initial = null)
                     Card(backgroundColor = MaterialTheme.colors.background, elevation = 0.dp) {
                         if (user != null) {
@@ -232,7 +233,7 @@ fun AboutScreen(
                                         verticalArrangement = Arrangement.spacedBy(10.dp),
                                         horizontalAlignment = Alignment.Start
                                     ) {
-                                        Row{
+                                        Row (verticalAlignment = Alignment.CenterVertically){
                                             Text(
                                                 text = user?.data?.name ?: "",
                                                 style = MaterialTheme.typography.h2,

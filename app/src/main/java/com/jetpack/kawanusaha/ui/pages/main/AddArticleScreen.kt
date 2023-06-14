@@ -2,14 +2,15 @@ package com.jetpack.kawanusaha.ui.pages.main
 
 import android.graphics.BitmapFactory
 import android.net.Uri
-import androidx.compose.foundation.Image
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -19,7 +20,6 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -28,7 +28,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -38,23 +37,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.data.CreateArticleRequest
 import com.jetpack.kawanusaha.main.MainViewModel
-import com.jetpack.kawanusaha.tools.getFileFromUri
+import com.jetpack.kawanusaha.ui.pages.BackPressHandler
 import java.io.File
 
 @Composable
 fun AddArticleScreen(
     mainViewModel: MainViewModel,
     navigateToMain: () -> Unit,
-    navToCamera: () -> Unit
+    navToCamera: () -> Unit,
+    navBack: () -> Unit
 ) {
-    val articleCache by mainViewModel.articleCache.collectAsState(initial = null)
-    var title by remember { mutableStateOf(TextFieldValue("")) }
-    var body by remember { mutableStateOf(TextFieldValue("")) }
-    var category by remember { mutableStateOf(TextFieldValue("1")) }
+    val articleCache by mainViewModel.articleCache.collectAsState()
+    var title by remember { mutableStateOf(TextFieldValue(articleCache?.article?.title ?: "")) }
+    var body by remember { mutableStateOf(TextFieldValue(articleCache?.article?.content ?: "")) }
+    var category by remember { mutableStateOf(articleCache?.category ?: 0) }
     val status by mainViewModel.status.collectAsState(initial = false)
     val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
     val context = LocalContext.current
+
 
     Surface(
         color = MaterialTheme.colors.primary,
@@ -73,7 +75,13 @@ fun AddArticleScreen(
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navigateToMain() }) {
+                        IconButton(onClick = {
+                            mainViewModel.saveArticleCache(
+                                title.text,
+                                body.text,
+                                category
+                            )
+                            navigateToMain() }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = stringResource(R.string.close_add_article),
@@ -84,16 +92,23 @@ fun AddArticleScreen(
                     actions = {
                         Button(
                             onClick = {
-                                mainViewModel.createArticle(
-                                    title = title.text,
-                                    content = body.text,
-                                    category = category.text.toInt()
-                                )
+                                if (category != 0){
+                                    mainViewModel.createArticle(
+                                        title = title.text,
+                                        content = body.text,
+                                        category = category
+                                    )
+                                } else {
+                                    Toast.makeText(context, "Please Select Category", Toast.LENGTH_SHORT).show()
+                                }
                             },
                             shape = RoundedCornerShape(20.dp),
                             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary),
                         ) {
-                            Text(text = stringResource(R.string.create), style = MaterialTheme.typography.body1)
+                            Text(
+                                text = stringResource(R.string.create),
+                                style = MaterialTheme.typography.body1
+                            )
                         }
                     },
                 )
@@ -103,7 +118,7 @@ fun AddArticleScreen(
                     mainViewModel.saveArticleCache(
                         title.text,
                         body.text,
-                        category.text.toInt()
+                        category
                     )
                     navToCamera()
                 }) {
@@ -114,9 +129,6 @@ fun AddArticleScreen(
                 }
             }
         ) { innerPadding ->
-            title = TextFieldValue(articleCache?.article?.title ?: "")
-            body = TextFieldValue(articleCache?.article?.content ?: "")
-            category = TextFieldValue((articleCache?.category ?: 1).toString())
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -134,9 +146,9 @@ fun AddArticleScreen(
                                 .fillMaxSize()
                                 .padding(start = 16.dp, end = 16.dp)
                         ) {
-                            var isClicked by remember{mutableStateOf(false)}
-                            var newCategory by remember{mutableStateOf("")}
-                            val icon = if (isClicked){
+                            var isClicked by remember { mutableStateOf(false) }
+                            var newCategory by remember { mutableStateOf("") }
+                            val icon = if (isClicked) {
                                 Icons.Default.Close
                             } else {
                                 Icons.Default.Add
@@ -146,7 +158,7 @@ fun AddArticleScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 modifier = Modifier
                                     .padding(start = 16.dp, end = 16.dp)
-                            ){
+                            ) {
                                 Text(
                                     text = stringResource(R.string.category),
                                     style = MaterialTheme.typography.h3
@@ -180,7 +192,7 @@ fun AddArticleScreen(
 //                                        )
 //                                    )
 //                                } else {
-                                DropDownMenu()
+                                category = DropDownMenu(mainViewModel, category)
 //                                }
 //                                IconButton(onClick = { isClicked = !isClicked }) {
 //                                    Icon(imageVector = icon,
@@ -239,17 +251,24 @@ fun AddArticleScreen(
                                 )
                             }
                             Spacer(modifier = Modifier.height(10.dp))
-                            Box(modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 16.dp)){
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 16.dp)
+                            ) {
                                 if (image != Uri.parse("file://dev/null")) {
                                     AsyncImage(
                                         model = image,
                                         contentDescription = stringResource(R.string.image_preview),
                                     )
-                                    IconButton(onClick = { mainViewModel.clearImage() },
-                                        modifier = Modifier.align(Alignment.TopEnd) )  {
-                                        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete_picture))
+                                    IconButton(
+                                        onClick = { mainViewModel.clearImage() },
+                                        modifier = Modifier.align(Alignment.TopEnd)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.Delete,
+                                            contentDescription = stringResource(R.string.delete_picture)
+                                        )
                                     }
                                 }
                             }
@@ -266,6 +285,17 @@ fun AddArticleScreen(
                 }
             }
         }
+
+        BackPressHandler(
+            onBackPressed = {
+                navBack()
+                mainViewModel.saveArticleCache(
+                    title.text,
+                    body.text,
+                    category
+                )
+            }
+        )
     }
 }
 
@@ -346,14 +376,22 @@ private fun loadImageBitmap(imageFile: File): ImageBitmap {
 
 @Composable
 fun DropDownMenu(
-) {
+    mainViewModel: MainViewModel,
+    category: Int
+) : Int {
     var expanded by remember { mutableStateOf(false) }
-    val list = listOf("test 1", "test 2", "test 3")
-    var selectedItem by remember { mutableStateOf("") }
-
+    val list by mainViewModel.categoryList.collectAsState()
+    var selectedIndex by remember { mutableStateOf(category) }
+    var initItem = ""
+    list?.data?.forEach {
+        if (it.id == selectedIndex){
+            initItem = it.title
+        }
+    }
+    var selectedItem by remember { mutableStateOf(initItem) }
     var textFilledSize by remember { mutableStateOf(Size.Zero) }
 
-    val icon = if (expanded){
+    val icon = if (expanded) {
         Icons.Filled.KeyboardArrowUp
     } else {
         Icons.Filled.KeyboardArrowDown
@@ -370,7 +408,7 @@ fun DropDownMenu(
                 .onGloballyPositioned { coordinates ->
                     textFilledSize = coordinates.size.toSize()
                 },
-            label = {Text(text = "Select Category")},
+            label = { Text(text = "Select Category") },
             trailingIcon = {
                 Icon(
                     imageVector = icon,
@@ -379,11 +417,11 @@ fun DropDownMenu(
                 )
             },
             readOnly = true,
-            interactionSource = remember{ MutableInteractionSource() }
+            interactionSource = remember { MutableInteractionSource() }
                 .also { interactionSource ->
-                    LaunchedEffect(interactionSource){
-                        interactionSource.interactions.collect{
-                            if (it is PressInteraction.Release){
+                    LaunchedEffect(interactionSource) {
+                        interactionSource.interactions.collect {
+                            if (it is PressInteraction.Release) {
                                 expanded = !expanded
                             }
                         }
@@ -404,16 +442,18 @@ fun DropDownMenu(
                 .width(with(LocalDensity.current) { textFilledSize.width.toDp() })
                 .background(MaterialTheme.colors.primary)
         ) {
-            list.forEach { label ->
+            list?.data?.forEach { label ->
                 DropdownMenuItem(onClick = {
-                    selectedItem = label
+                    selectedItem = label.title
+                    selectedIndex = label.id
                     expanded = false
                 }) {
-                    Text(text = label)
+                    Text(text = label.title)
                 }
             }
         }
     }
+    return selectedIndex
 }
 
 

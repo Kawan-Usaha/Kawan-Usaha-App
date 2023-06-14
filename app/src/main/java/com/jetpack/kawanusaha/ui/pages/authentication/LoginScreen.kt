@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -49,11 +50,19 @@ fun LoginScreen(
     var email by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
+    val lazyListState = rememberLazyListState()
+    val isKeyboardOpen by onKeyboardVisible()
 
     val mContext = LocalContext.current
 
     val secondaryColor = MaterialTheme.colors.secondary
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
+
+    LaunchedEffect(isKeyboardOpen) {
+        if (isKeyboardOpen) {
+            scrollToItem(lazyListState, 2)
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -62,7 +71,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        item{
+        item {
             Text(
                 text = buildAnnotatedString {
                     withStyle(
@@ -79,7 +88,7 @@ fun LoginScreen(
                 style = MaterialTheme.typography.h4
             )
         }
-        item{
+        item {
             Card(
                 shape = RoundedCornerShape(10.dp),
                 backgroundColor = MaterialTheme.colors.primary,
@@ -154,9 +163,10 @@ fun LoginScreen(
                                 painterResource(R.drawable.baseline_visibility_24) else
                                 painterResource(R.drawable.baseline_visibility_off_24)
 
-                            val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
-                                R.string.show_password
-                            )
+                            val description =
+                                if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                    R.string.show_password
+                                )
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(painter = image, contentDescription = description)
                             }
@@ -237,7 +247,7 @@ fun LoginScreen(
                 }
             }
         }
-        item{
+        item {
             Row(
                 horizontalArrangement = Arrangement.Center
             ) {

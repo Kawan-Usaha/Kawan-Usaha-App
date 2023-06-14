@@ -35,6 +35,7 @@ fun LikeScreen(
     viewModel: LikeViewModel,
     mainViewModel: MainViewModel,
 ){
+    mainViewModel.getFavourite()
     val list by mainViewModel.favouriteList.collectAsState()
     var search by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
@@ -47,46 +48,46 @@ fun LikeScreen(
                 .padding(innerPadding),
             verticalArrangement = Arrangement.Top
         ) {
-            Card(
-                backgroundColor = MaterialTheme.colors.primary,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .padding(horizontal = 65.dp),
-                shape = RoundedCornerShape(25.dp)
-            ){
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(25.dp)
-                ) {
-                    val user by mainViewModel.userProfile.collectAsState(initial = null)
-                    val showShimmer = remember { mutableStateOf(true) }
-                    AsyncImage(
-                        model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
-                        contentDescription = "Avatar User",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .background(
-                                shimmerBrush(
-                                    targetValue = 1300f,
-                                    showShimmer = showShimmer.value
-                                ),
-                            )
-                            .clip(CircleShape)
-                            .border(BorderStroke(0.5.dp, MaterialTheme.colors.secondary)),
-                        onSuccess = { showShimmer.value = false },
-                        onError = { showShimmer.value = false},
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-                    Text(
-                        text = user?.data?.name.toString(),
-                        style = MaterialTheme.typography.h2,
-                        fontWeight = FontWeight.Light
-                    )
-                }
-            }
+//            Card(
+//                backgroundColor = MaterialTheme.colors.primary,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(120.dp)
+//                    .padding(horizontal = 65.dp),
+//                shape = RoundedCornerShape(25.dp)
+//            ){
+//                Row(
+//                    verticalAlignment = Alignment.CenterVertically,
+//                    horizontalArrangement = Arrangement.Center,
+//                    modifier = Modifier.padding(25.dp)
+//                ) {
+//                    val user by mainViewModel.userProfile.collectAsState(initial = null)
+//                    val showShimmer = remember { mutableStateOf(true) }
+//                    AsyncImage(
+//                        model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
+//                        contentDescription = "Avatar User",
+//                        modifier = Modifier
+//                            .size(50.dp)
+//                            .background(
+//                                shimmerBrush(
+//                                    targetValue = 1300f,
+//                                    showShimmer = showShimmer.value
+//                                ),
+//                            )
+//                            .clip(CircleShape)
+//                            .border(BorderStroke(0.5.dp, MaterialTheme.colors.secondary)),
+//                        onSuccess = { showShimmer.value = false },
+//                        onError = { showShimmer.value = false},
+//                        contentScale = ContentScale.Crop
+//                    )
+//                    Spacer(modifier = Modifier.width(10.dp))
+//                    Text(
+//                        text = user?.data?.name.toString(),
+//                        style = MaterialTheme.typography.h2,
+//                        fontWeight = FontWeight.Light
+//                    )
+//                }
+//            }
             Spacer(modifier = Modifier.height(10.dp))
             LazyColumn(
                 modifier = Modifier
