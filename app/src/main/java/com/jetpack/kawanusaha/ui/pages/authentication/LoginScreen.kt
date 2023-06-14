@@ -1,6 +1,7 @@
 package com.jetpack.kawanusaha.ui.pages
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -48,11 +50,14 @@ fun LoginScreen(
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
 
+    val mContext = LocalContext.current
+
     val secondaryColor = MaterialTheme.colors.secondary
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .safeDrawingPadding()
             .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -118,6 +123,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
@@ -158,6 +164,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,

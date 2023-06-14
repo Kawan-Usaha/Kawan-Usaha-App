@@ -46,7 +46,7 @@ fun VerificationScreen(
     val isVerified by viewModel.isVerified.collectAsState(false)
     Generate(viewModel = viewModel, email = email)
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val white = MaterialTheme.colors.primary
@@ -149,6 +149,7 @@ fun VerificationScreen(
                         .clip(RoundedCornerShape(20.dp))
                         .fillMaxWidth()
                         .height(120.dp)
+                        .imePadding()
                         .padding(start = 50.dp, end = 50.dp),
                     textStyle = LocalTextStyle.current.copy(
                         textAlign = TextAlign.Center,

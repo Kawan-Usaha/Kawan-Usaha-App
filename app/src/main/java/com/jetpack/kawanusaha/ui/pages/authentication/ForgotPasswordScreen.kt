@@ -46,9 +46,12 @@ fun ForgotPasswordScreen(
     val white = MaterialTheme.colors.primary
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+            .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
 
         item{
@@ -118,6 +121,7 @@ fun ForgotPasswordScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
@@ -157,6 +161,7 @@ fun ForgotPasswordScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
@@ -205,6 +210,7 @@ fun ForgotPasswordScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,

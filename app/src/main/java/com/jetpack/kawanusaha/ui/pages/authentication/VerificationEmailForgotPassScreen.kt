@@ -41,7 +41,7 @@ fun VerificationEmailForgotPassScreen(
     val orange = MaterialTheme.colors.secondary
     val white = MaterialTheme.colors.primary
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -137,6 +137,7 @@ fun VerificationEmailForgotPassScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .fillMaxWidth()
+                        .imePadding()
                         .padding(5.dp),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         textColor = MaterialTheme.colors.onPrimary,

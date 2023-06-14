@@ -31,7 +31,7 @@ fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
     val secondaryColor = MaterialTheme.colors.secondary
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

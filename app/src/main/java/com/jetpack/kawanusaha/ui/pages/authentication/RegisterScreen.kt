@@ -56,6 +56,7 @@ fun RegisterScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
+            .safeDrawingPadding()
             .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -121,6 +122,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
@@ -151,6 +153,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
@@ -191,6 +194,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
@@ -233,6 +237,7 @@ fun RegisterScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
+                            .imePadding()
                             .padding(5.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             textColor = MaterialTheme.colors.onPrimary,
