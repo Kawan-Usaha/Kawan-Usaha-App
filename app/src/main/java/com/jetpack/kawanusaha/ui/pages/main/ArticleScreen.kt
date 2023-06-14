@@ -41,7 +41,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
     val removeFromFavorite = stringResource(R.string.removed_from_favorite)
     val shareVia = stringResource(R.string.share_via)
 
-    var isFavorite by rememberSaveable { mutableStateOf(false) }
+    var isFavorite by rememberSaveable { mutableStateOf(article?.favorite ?: false) }
     val getById by viewModel.getAllDataById(articleId).observeAsState()
 
         Scaffold(
@@ -69,22 +69,21 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                             onClick = {
                                 isFavorite = !isFavorite
                                 mainViewModel.setFavourite(id = articleId)
-                                if (getById?.isEmpty() == true) {
-                                        Icons.Default.Favorite
-                                        Toast.makeText(
-                                            context,
-                                            addToFavorite,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } else {
-                                        Icons.Default.FavoriteBorder
-                                        Toast.makeText(
-                                            context,
-                                            removeFromFavorite,
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                if (article?.favorite == true) {
+                                    Icons.Default.Favorite
+                                    Toast.makeText(
+                                        context,
+                                        addToFavorite,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Icons.Default.FavoriteBorder
+                                    Toast.makeText(
+                                        context,
+                                        removeFromFavorite,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-
                             }) {
                             Icon(
                                 imageVector = if(getById?.isNotEmpty() == true) Icons.Default.Favorite else Icons.Default.FavoriteBorder,

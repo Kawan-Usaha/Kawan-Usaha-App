@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -27,7 +28,8 @@ fun ArticleSection(articles: LazyPagingItems<ArticlesItem>, navToArticle: (Int) 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2) ,
         verticalArrangement = Arrangement.spacedBy(5.dp),
-        modifier = Modifier.height((screenHeight).dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp) ,
+        modifier = Modifier.height((screenHeight).dp).padding(horizontal = 10.dp),
         content = {
             items(articles.itemCount) { index ->
                 articles[index]?.let {
@@ -66,6 +68,7 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
                     .height(200.dp)
                     .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
                 onSuccess = { showShimmer.value = false },
+                contentScale = ContentScale.FillWidth,
                 onError = { showShimmer.value = false; isError = true }
             )
         }

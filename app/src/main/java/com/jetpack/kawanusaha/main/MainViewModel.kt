@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -81,8 +82,14 @@ class MainViewModel(
     private val _favouriteList = MutableStateFlow<List<ArticlesItem>?>(null)
     val favouriteList : StateFlow<List<ArticlesItem>?> = _favouriteList
 
+    private val _tagList = MutableStateFlow<List<TagItem>?>(null)
+    val tagList : StateFlow<List<TagItem>?> = _tagList
 
     init {
+        getTag()
+        tagList.value?.forEach {
+            Log.e("TAGS", it.name)
+        }
         getCategory()
         clearStatus()
     }
@@ -98,6 +105,12 @@ class MainViewModel(
 
     fun selectThisCategory(id: Int) {
         _selectedCategory.value = id
+    }
+
+    private fun getTag(){
+        viewModelScope.launch {
+            _tagList.value = dataRepository.getTag()?.data?.tag
+        }
     }
 
 

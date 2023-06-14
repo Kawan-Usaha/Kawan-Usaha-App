@@ -94,6 +94,9 @@ interface ApiService {
         @Query ("category") category: Int
     ) : ArticleResponse
 
+    @GET("tag")
+    fun getTag() : Call<TagResponse>
+
 
     // ALL ARTICLES
     @GET("article")
