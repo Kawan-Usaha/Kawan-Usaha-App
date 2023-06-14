@@ -9,6 +9,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -31,7 +33,6 @@ fun MainScreen(
     navToArticle: (Int) -> Unit,
     navToAddArticle: () -> Unit,
 ) {
-    val articles = mainViewModel.getAllArticles().collectAsLazyPagingItems() //nanti filter by is_published
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -46,7 +47,7 @@ fun MainScreen(
                 modifier = Modifier
                     .padding(innerPadding)
             ) {
-                MainArticleSection(mainViewModel, articles, navToArticle)
+                MainArticleSection(mainViewModel, navToArticle)
             }
         }
     }
@@ -55,10 +56,11 @@ fun MainScreen(
 @Composable
 fun MainArticleSection(
     mainViewModel: MainViewModel,
-    articles: LazyPagingItems<ArticlesItem>,
     navToArticle: (Int) -> Unit
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
+    val category by mainViewModel.selectedCategory.collectAsState()
+    val articles = mainViewModel.filterAllArticle("", category).collectAsLazyPagingItems()
     LazyColumn(
         modifier = Modifier
             .height((screenHeight).dp)
@@ -111,7 +113,6 @@ fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
             .padding(bottom = 30.dp, start = 16.dp, end = 16.dp)
     ) {
         val showShimmer = remember { mutableStateOf(true) }
-        Divider()
         if (!isError) {
             AsyncImage(
                 model = articlesItem.image,
@@ -119,6 +120,7 @@ fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                contentScale = ContentScale.FillWidth,
                 onSuccess = { showShimmer.value = false },
                 onError = { showShimmer.value = false; isError = true }
             )

@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -67,6 +68,7 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
                     .height(200.dp)
                     .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
                 onSuccess = { showShimmer.value = false },
+                contentScale = ContentScale.FillWidth,
                 onError = { showShimmer.value = false; isError = true }
             )
         }

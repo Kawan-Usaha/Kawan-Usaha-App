@@ -89,6 +89,26 @@ data class ArticlesItem(
 )
 
 
+data class TagResponse(
+	val data: TagData,
+	val success: Boolean,
+	val message: String
+)
+
+data class TagData(
+	val totalTags: Int,
+	val page: Int,
+	val tag: List<TagItem>,
+	val pageSize: Int
+)
+
+data class TagItem(
+	val updatedAt: String,
+	val name: String,
+	val createdAt: String,
+	val id: Int
+)
+
 data class FavResponse(
 	val data: FavList,
 	val success: Boolean,
@@ -109,6 +129,7 @@ data class ArticleDetail(
 	val updatedAt: String,
 	val isPublished: Boolean,
 	val createdAt: String,
+	val favorite: Boolean,
 	val image: String,
 	val id: Int,
 	val category: Category,

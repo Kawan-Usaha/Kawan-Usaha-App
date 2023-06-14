@@ -107,6 +107,10 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.getFavourite("Bearer $jwtToken").execute() }
     }
 
+    suspend fun getTag (): TagResponse? {
+        return executeRequest { apiService.getTag().execute() }
+    }
+
     suspend fun getArticleDetail(id: Int): ArticleDetailResponse? {
         return executeRequest { apiService.getArticleDetails(id).execute() }
     }

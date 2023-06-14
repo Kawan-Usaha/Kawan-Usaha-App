@@ -2,7 +2,6 @@
 
 package com.jetpack.kawanusaha.ui.pages.main
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -20,10 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.data.ArticlesItem
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.NavFabButton
 import com.jetpack.kawanusaha.ui.pages.main.utils.ArticleSection
@@ -66,7 +63,7 @@ fun ExploreScreen(
                         active = false
                     },
                     active = active,
-                    onActiveChange = { active = it; search = ""},
+                    onActiveChange = { active = it; search = "" },
                     colors = SearchBarDefaults.colors(MaterialTheme.colors.primary),
                     placeholder = { Text(stringResource(R.string.search)) },
                     leadingIcon = {
@@ -93,7 +90,7 @@ fun ExploreScreen(
                     },
                 ) {
                     items.forEach {
-                        if (it.isNotEmpty()){
+                        if (it.isNotEmpty()) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Start,
@@ -116,6 +113,8 @@ fun ExploreScreen(
                 
                 Spacer(modifier = Modifier.height(20.dp))
 
+                Spacer(modifier = Modifier.padding(5.dp))
+
                 // Category Section
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -132,6 +131,7 @@ fun ExploreScreen(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.padding(5.dp))
                 ArticleSection(article, navToArticle)
             }
         }
