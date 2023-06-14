@@ -60,7 +60,7 @@ fun ExploreScreen(
                 SearchBar(
                     query = search,
                     onQueryChange = { search = it },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier,
                     onSearch = {
                         items.add(search)
                         active = false
@@ -113,6 +113,8 @@ fun ExploreScreen(
                         }
                     }
                 }
+                
+                Spacer(modifier = Modifier.height(20.dp))
 
                 // Category Section
                 Column(
@@ -120,7 +122,7 @@ fun ExploreScreen(
                     horizontalAlignment = Alignment.Start,
                 ) {
                     Card(
-                        backgroundColor = MaterialTheme.colors.background,
+                        backgroundColor = MaterialTheme.colors.primary,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Column(

@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.db.fav.DbFav
@@ -116,28 +117,36 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
             },
             modifier = Modifier.safeDrawingPadding()
         ) { innerPadding ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(8.dp),
+            Box(
+                modifier = Modifier.fillMaxSize().background(MaterialTheme.colors.primary)
+            ){
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .padding(10.dp),
 
-                horizontalAlignment = Alignment.Start
-            ) {
-                item {
-                    Text(text = article?.title ?: "Title", style = MaterialTheme.typography.h1, modifier = Modifier.padding(8.dp))
-                }
-                item {
-                    AsyncImage(
-                        model = article?.image,
-                        contentDescription = "Article Picture",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    )
-                }
-                item {
-                    Text(text = article?.content ?: "Content", style = MaterialTheme.typography.body1 ,modifier = Modifier.padding(8.dp))
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    item {
+                        Text(text = article?.title ?: "Title", style = MaterialTheme.typography.h1, modifier = Modifier.padding(8.dp))
+                    }
+                    item {
+                        AsyncImage(
+                            model = article?.image,
+                            contentDescription = "Article Picture",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(8.dp)
+                        )
+                    }
+                    item {
+                        Text(
+                            text = article?.content ?: "Content",
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.padding(8.dp),
+                        )
+                    }
                 }
             }
         }
