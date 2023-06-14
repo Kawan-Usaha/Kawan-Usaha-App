@@ -1,22 +1,18 @@
 package com.jetpack.kawanusaha.`in`
 
-import android.app.Application
 import com.jetpack.kawanusaha.data.DataRepository
-import com.jetpack.kawanusaha.db.DbRepository
-import com.jetpack.kawanusaha.db.fav.DbFavoriteRepository
 import com.jetpack.kawanusaha.network.ApiConfig
 
+/**
+ * A dependency injection object for providing instances of DataRepository.
+ */
 object Injection {
+    /**
+     * Provides an instance of DataRepository.
+     * @return The DataRepository instance.
+     */
     fun provideRepository(): DataRepository {
         val apiService = ApiConfig.getApiService()
         return DataRepository(apiService)
-    }
-
-    fun provideRepository(application: Application): DbRepository {
-        return DbRepository(application)
-    }
-
-    fun provideFavRepository(application: Application): DbFavoriteRepository{
-        return DbFavoriteRepository(application)
     }
 }

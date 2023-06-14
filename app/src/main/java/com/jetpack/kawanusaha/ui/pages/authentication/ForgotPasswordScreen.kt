@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.pages.SectionText
 
-// TODO Security Leak in passing password
 @Composable
 fun ForgotPasswordScreen(
     navBack: () -> Unit,

@@ -46,25 +46,6 @@ data class UsahaData (
 	val updatedAt: String?
 )
 
-data class CreateUsahaData(
-	val usahaName: String,
-	val updatedAt: String,
-	val userId: String,
-	val createdAt: String,
-	val id: Int,
-	val type: Int,
-	val tags: List<UsahaTagsItem>
-)
-
-data class UsahaTagsItem(
-	val updatedAt: String,
-	val name: String,
-	val createdAt: String,
-	val usaha: Any,
-	val id: Int,
-	val category: Any
-)
-
 data class ArticleResponse (
 	val data: ArticleData,
 	val success: Boolean,
@@ -87,7 +68,6 @@ data class ArticlesItem(
 	val category: Category,
 	val title: String,
 )
-
 
 data class TagResponse(
 	val data: TagData,

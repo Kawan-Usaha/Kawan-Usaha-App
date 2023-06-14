@@ -176,10 +176,19 @@ class LoginViewModel(
     }
 }
 
-
+/**
+ * Factory class for creating instances of LoginViewModel.
+ * @property preferences The instance of SharedPreferences used for storing login preferences.
+ */
 class LoginViewModelFactory(
     private val preferences: SharedPreferences
 ) : ViewModelProvider.Factory {
+    /**
+     * Creates an instance of the specified ViewModel class.
+     * @param modelClass The class of the ViewModel to be created.
+     * @return An instance of the ViewModel.
+     * @throws IllegalArgumentException if the specified ViewModel class is unknown.
+     * */
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

@@ -15,8 +15,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.jetpack.kawanusaha.main.CameraViewModel
-import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
@@ -29,11 +27,10 @@ import com.jetpack.kawanusaha.ui.pages.main.*
 fun NavigationScreen(
     loginViewModel: LoginViewModel,
     mainViewModel: MainViewModel,
-    likeViewModel: LikeViewModel
 ) {
     val navController = rememberNavController()
-    val startDestination: String = "chat_screen"
-//        if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
+    val startDestination: String =
+        if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
     val bottomBarState = rememberSaveable { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val isKeyboardOpen by onKeyboardVisible()
@@ -66,7 +63,7 @@ fun NavigationScreen(
         "explore_screen" -> {
             bottomBarState.value = !isKeyboardOpen
         }
-        "article_screen/{id}" ->{
+        "article_screen/{id}" -> {
             bottomBarState.value = false
         }
         "change_about_screen" -> {
@@ -195,7 +192,7 @@ fun NavigationScreen(
             ) {
                 // Get Id From Argument
                 it.arguments?.getInt("id")?.let { id ->
-                    ArticleScreen(mainViewModel, likeViewModel, articleId = id) {
+                    ArticleScreen(mainViewModel, articleId = id) {
                         // Back to Previous Stack
                         navController.navigateUp()
                     }
@@ -228,14 +225,6 @@ fun NavigationScreen(
                 }
             }
 
-            composable(route = "usaha_screen") {
-                UsahaScreen(mainViewModel = mainViewModel, {
-                    navController.navigate("add_usaha_screen")
-                }, { id ->
-                    navController.navigate("usaha_detail_screen/$id")
-                })
-            }
-
             composable(route = "add_usaha_screen") {
                 AddUsahaScreen(mainViewModel = mainViewModel) {
                     navController.navigateUp()
@@ -247,7 +236,7 @@ fun NavigationScreen(
                     mainViewModel = mainViewModel,
                     navigateToMain = { navController.navigateUp() },
                     navToCamera = { navController.navigate("camera_screen") },
-                    navBack = {navController.navigateUp()}
+                    navBack = { navController.navigateUp() }
                 )
             }
 
@@ -255,7 +244,7 @@ fun NavigationScreen(
                 LikeScreen(
                     { param1 ->
                         navController.navigate("article_screen/$param1")
-                    }, viewModel = likeViewModel, mainViewModel = mainViewModel
+                    }, mainViewModel = mainViewModel
                 )
             }
 
@@ -280,7 +269,7 @@ fun NavigationScreen(
                     })
             }
 
-            composable(route = "camera_screen"){
+            composable(route = "camera_screen") {
                 CameraScreen(mainViewModel = mainViewModel, navBack = {
                     navController.navigateUp()
                 })

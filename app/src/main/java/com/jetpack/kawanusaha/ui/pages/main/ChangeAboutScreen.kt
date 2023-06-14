@@ -44,7 +44,6 @@ import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.MainActivity
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.authentication.mToast
 
