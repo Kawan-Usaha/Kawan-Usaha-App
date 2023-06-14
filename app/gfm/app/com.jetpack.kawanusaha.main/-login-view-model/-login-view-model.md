@@ -3,4 +3,4 @@
 # LoginViewModel
 
 [androidJvm]\
-constructor(dataRepository: [DataRepository](../../com.jetpack.kawanusaha.data/-data-repository/index.md))
+constructor(dataRepository: [DataRepository](../../com.jetpack.kawanusaha.data/-data-repository/index.md), preferences: [SharedPreferences](https://developer.android.com/reference/kotlin/android/content/SharedPreferences.html))

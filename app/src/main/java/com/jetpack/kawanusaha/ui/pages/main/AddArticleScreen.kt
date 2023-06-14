@@ -1,10 +1,7 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,26 +18,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.data.CreateArticleRequest
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.BackPressHandler
-import java.io.File
 
 @Composable
 fun AddArticleScreen(
@@ -81,7 +69,8 @@ fun AddArticleScreen(
                                 body.text,
                                 category
                             )
-                            navigateToMain() }) {
+                            navigateToMain()
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = stringResource(R.string.close_add_article),
@@ -92,14 +81,18 @@ fun AddArticleScreen(
                     actions = {
                         Button(
                             onClick = {
-                                if (category != 0){
+                                if (category != 0) {
                                     mainViewModel.createArticle(
                                         title = title.text,
                                         content = body.text,
                                         category = category
                                     )
                                 } else {
-                                    Toast.makeText(context, "Please Select Category", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "Please Select Category",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             },
                             shape = RoundedCornerShape(20.dp),
@@ -146,13 +139,6 @@ fun AddArticleScreen(
                                 .fillMaxSize()
                                 .padding(start = 16.dp, end = 16.dp)
                         ) {
-                            var isClicked by remember { mutableStateOf(false) }
-                            var newCategory by remember { mutableStateOf("") }
-                            val icon = if (isClicked) {
-                                Icons.Default.Close
-                            } else {
-                                Icons.Default.Add
-                            }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -299,92 +285,17 @@ fun AddArticleScreen(
     }
 }
 
-private fun loadImageBitmap(imageFile: File): ImageBitmap {
-    // Load the image file as a Bitmap using platform-specific APIs
-    // Here, you can use BitmapFactory.decodeFile or any other appropriate method
-    return BitmapFactory.decodeFile(imageFile.absolutePath)?.asImageBitmap()
-        ?: throw IllegalStateException("Failed to load bitmap from file: $imageFile")
-}
-
-//@Composable
-//fun BottomBarAddPage(
-//) {
-//    var isSelectedBold by remember { mutableStateOf(false) }
-//    var isSelectedItalic by rememberSaveable { mutableStateOf(false) }
-//    var isSelectedUnderline by remember { mutableStateOf(false) }
-//    BottomAppBar(
-//        backgroundColor = MaterialTheme.colors.primary,
-//        elevation = 5.dp,
-//    ) {
-//        Row(
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.spacedBy(5.dp),
-//            modifier = Modifier
-//                .fillMaxWidth()
-//        ) {
-//            IconButton(onClick = { isSelectedBold = !isSelectedBold}) {
-//                Icon(
-//                    painter = painterResource(R.drawable.ic_bold_grey),
-//                    contentDescription = "Bold",
-//                    tint = if(isSelectedBold){
-//                        MaterialTheme.colors.onPrimary
-//                    } else {
-//                        MaterialTheme.colors.surface
-//                    }
-//                )
-//            }
-//            IconButton(onClick = { isSelectedItalic = !isSelectedItalic }) {
-//                Icon(
-//                    painter = painterResource(R.drawable.baseline_format_italic_24),
-//                    contentDescription = "Italic",
-//                    tint = if(isSelectedItalic){
-//                        MaterialTheme.colors.onPrimary
-//                    } else {
-//                        MaterialTheme.colors.surface
-//                    }
-//                )
-//            }
-//            IconButton(onClick = { isSelectedUnderline = !isSelectedUnderline }) {
-//                Icon(
-//                    painter = painterResource(R.drawable.ic_underline_grey),
-//                    contentDescription = "Italic",
-//                    tint = if(isSelectedUnderline){
-//                        MaterialTheme.colors.onPrimary
-//                    } else {
-//                        MaterialTheme.colors.surface
-//                    }
-//                )
-//            }
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.End,
-//                modifier = Modifier.fillMaxWidth()
-//            ) {
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    Icon(
-//                        painter = painterResource(R.drawable.baseline_image_24),
-//                        contentDescription = "Image",
-//                        modifier = Modifier
-//                            .weight(1f)
-//                    )
-//                }
-//            }
-//
-//        }
-//    }
-//}
-
 @Composable
 fun DropDownMenu(
     mainViewModel: MainViewModel,
     category: Int
-) : Int {
+): Int {
     var expanded by remember { mutableStateOf(false) }
     val list by mainViewModel.categoryList.collectAsState()
     var selectedIndex by remember { mutableStateOf(category) }
     var initItem = ""
     list?.data?.forEach {
-        if (it.id == selectedIndex){
+        if (it.id == selectedIndex) {
             initItem = it.title
         }
     }
@@ -455,16 +366,5 @@ fun DropDownMenu(
     }
     return selectedIndex
 }
-
-
-data class FontEdit(
-    val title: String,
-    val icon: Painter,
-    val color: Color,
-    val isSelected: () -> Unit,
-    val fontWeight: FontWeight? = null,
-    val fontStyle: FontStyle? = null,
-    val spanStyle: SpanStyle? = null,
-)
 
 

@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
@@ -37,7 +36,6 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
     var tag2 by remember { mutableStateOf("") }
     var tag3 by remember { mutableStateOf("") }
     val status by mainViewModel.status.collectAsState()
-    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -123,9 +121,9 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                                 horizontalArrangement = Arrangement.SpaceEvenly,
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                tag1 = TagDropDown( mainViewModel = mainViewModel, tag2, tag3 )
-                                tag2 = TagDropDown( mainViewModel = mainViewModel, tag1, tag3 )
-                                tag3 = TagDropDown( mainViewModel = mainViewModel, tag1, tag2 )
+                                tag1 = TagDropDown(mainViewModel = mainViewModel, tag2, tag3)
+                                tag2 = TagDropDown(mainViewModel = mainViewModel, tag1, tag3)
+                                tag3 = TagDropDown(mainViewModel = mainViewModel, tag1, tag2)
                             }
                         }
                     }
@@ -147,7 +145,7 @@ fun TagDropDown(
     mainViewModel: MainViewModel,
     otherTag1: String,
     otherTag2: String
-) : String {
+): String {
     var expanded by remember { mutableStateOf(false) }
     val list by mainViewModel.tagList.collectAsState(null)
     var selectedItem by remember { mutableStateOf("-- None --") }
@@ -211,7 +209,7 @@ fun TagDropDown(
                 Text(text = "-- None --")
             }
             list?.forEach { tag ->
-                if (tag.name != otherTag1 && tag.name != otherTag2){
+                if (tag.name != otherTag1 && tag.name != otherTag2) {
                     DropdownMenuItem(onClick = {
                         selectedItem = tag.name
                         expanded = false

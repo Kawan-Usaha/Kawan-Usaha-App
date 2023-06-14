@@ -9,8 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +48,6 @@ fun UsahaItem(usaha_name: UsahaData, navToUsahaDetail: (Int) -> Unit) {
             modifier = Modifier
                 .padding(10.dp),
         ) {
-            val showShimmer = remember { mutableStateOf(true) }
             Text(text = title, style = Typography.body1, maxLines = 1, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis)
         }
     }

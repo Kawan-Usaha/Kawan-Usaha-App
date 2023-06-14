@@ -3,4 +3,4 @@
 # generate
 
 [androidJvm]\
-suspend fun [generate](generate.md)(): [GenerateVerificationResponse](../-generate-verification-response/index.md)?
+suspend fun [generate](generate.md)(jwtToken: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [GenerateVerificationResponse](../-generate-verification-response/index.md)?

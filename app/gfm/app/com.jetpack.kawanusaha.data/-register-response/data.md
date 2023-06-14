@@ -3,4 +3,4 @@
 # data
 
 [androidJvm]\
-val [data](data.md): [Any](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html)? = null
+val [data](data.md): [Data](../-data/index.md)? = null

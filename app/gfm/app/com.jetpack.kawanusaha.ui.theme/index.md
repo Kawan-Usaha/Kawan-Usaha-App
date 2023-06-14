@@ -19,12 +19,16 @@
 | Name | Summary |
 |---|---|
 | [Gradient1](-gradient1.md) | [androidJvm]<br>val [Gradient1](-gradient1.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
-| [Gradient2](-gradient2.md) | [androidJvm]<br>val [Gradient2](-gradient2.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
-| [Gradient3](-gradient3.md) | [androidJvm]<br>val [Gradient3](-gradient3.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
-| [Gradient4](-gradient4.md) | [androidJvm]<br>val [Gradient4](-gradient4.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
-| [Purple200](-purple200.md) | [androidJvm]<br>val [Purple200](-purple200.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
-| [Purple500](-purple500.md) | [androidJvm]<br>val [Purple500](-purple500.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
-| [Purple700](-purple700.md) | [androidJvm]<br>val [Purple700](-purple700.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [Grey](-grey.md) | [androidJvm]<br>val [Grey](-grey.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [OpenSans](-open-sans.md) | [androidJvm]<br>val [OpenSans](-open-sans.md): [FontFamily](https://developer.android.com/reference/kotlin/androidx/compose/ui/text/font/FontFamily.html) |
+| [OverLock](-over-lock.md) | [androidJvm]<br>val [OverLock](-over-lock.md): [FontFamily](https://developer.android.com/reference/kotlin/androidx/compose/ui/text/font/FontFamily.html) |
+| [PrimaryDay](-primary-day.md) | [androidJvm]<br>val [PrimaryDay](-primary-day.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [PrimaryNight](-primary-night.md) | [androidJvm]<br>val [PrimaryNight](-primary-night.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [PrimaryVariantDay](-primary-variant-day.md) | [androidJvm]<br>val [PrimaryVariantDay](-primary-variant-day.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [PrimaryVariantNight](-primary-variant-night.md) | [androidJvm]<br>val [PrimaryVariantNight](-primary-variant-night.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [SecondaryDay](-secondary-day.md) | [androidJvm]<br>val [SecondaryDay](-secondary-day.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [SecondaryNight](-secondary-night.md) | [androidJvm]<br>val [SecondaryNight](-secondary-night.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
 | [Shapes](-shapes.md) | [androidJvm]<br>val [Shapes](-shapes.md): [Shapes](https://developer.android.com/reference/kotlin/androidx/compose/material/Shapes.html) |
-| [Teal200](-teal200.md) | [androidJvm]<br>val [Teal200](-teal200.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [TextDayNBackgroundNight](-text-day-n-background-night.md) | [androidJvm]<br>val [TextDayNBackgroundNight](-text-day-n-background-night.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
+| [TextNightNBackgroundDay](-text-night-n-background-day.md) | [androidJvm]<br>val [TextNightNBackgroundDay](-text-night-n-background-day.md): [Color](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Color.html) |
 | [Typography](-typography.md) | [androidJvm]<br>val [Typography](-typography.md): [Typography](https://developer.android.com/reference/kotlin/androidx/compose/material/Typography.html) |
