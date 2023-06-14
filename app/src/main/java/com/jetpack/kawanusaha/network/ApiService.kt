@@ -155,7 +155,7 @@ interface ApiService {
     ): Call<DefaultResponse>
 
     // FAVORITE
-    @GET
+    @GET("user/favorite-articles")
     fun getFavourite(
         @Header("Authorization") token: String
     ): Call<FavResponse>
@@ -163,7 +163,7 @@ interface ApiService {
     @POST("/article/favorite")
     fun setFavourite(
         @Header("Authorization") token: String,
-        @Body id : Int
+        @Body id : IdRequest
     ): Call<DefaultResponse>
 
     // CHAT BOT

@@ -10,9 +10,13 @@ data class ProfileRequest(
 )
 
 data class UsahaRequest(
-    val usaha_name: String,
+    val usahaname: String,
     val type: Int,
     val tags: List<Tag>,
+)
+
+data class IdRequest (
+    val id: Int
 )
 
 data class Tag (

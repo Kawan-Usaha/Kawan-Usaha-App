@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.onKeyboardVisible
+import com.jetpack.kawanusaha.ui.pages.scrollToBottom
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,12 +40,9 @@ fun ChatScreen(mainViewModel: MainViewModel) {
     val lazyListState = rememberLazyListState()
     val isLoading = mainViewModel.isLoading.collectAsState(false)
 
-    suspend fun scrollToBottom() {
-        lazyListState.animateScrollToItem(lazyListState.layoutInfo.totalItemsCount)
-    }
 
     LaunchedEffect(msg.value){
-        scrollToBottom()
+        scrollToBottom(lazyListState)
     }
 
     Surface(
@@ -77,7 +75,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                         Spacer(modifier = Modifier.height(8.dp))
                         LaunchedEffect(isKeyboardOpen){
                             if(isKeyboardOpen){
-                                scrollToBottom()
+                                scrollToBottom(lazyListState)
                             }
                         }
                     }
@@ -89,6 +87,9 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                                 isOut = false,
                             )
                             Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        item {
+                            Spacer(modifier = Modifier)
                         }
                     }
                 }
@@ -123,7 +124,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                                             scope.launch {
                                                 mainViewModel.sendMsg(text.text)
                                                 text = TextFieldValue("")
-                                                scrollToBottom()
+                                                scrollToBottom(lazyListState)
                                             }
                                         }
                                     )
@@ -139,7 +140,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                                 .padding(10.dp)
                                 .clickable {
                                     scope.launch {
-                                        scrollToBottom()
+                                        scrollToBottom(lazyListState)
                                     }
                                 }
                         )

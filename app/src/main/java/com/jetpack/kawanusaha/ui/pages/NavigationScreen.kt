@@ -3,9 +3,7 @@ package com.jetpack.kawanusaha.ui.pages
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.ime
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -59,6 +57,9 @@ fun NavigationScreen(
         "add_article_screen" -> {
             bottomBarState.value = false
         }
+        "camera_screen" -> {
+            bottomBarState.value = false
+        }
         "chat_screen" -> {
             bottomBarState.value = !isKeyboardOpen
         }
@@ -76,7 +77,12 @@ fun NavigationScreen(
         }
     }
 
-    Scaffold(bottomBar = { BottomBar(navController, bottomBarState) }) { innerPadding ->
+    Scaffold(
+        bottomBar = { BottomBar(navController, bottomBarState) },
+        modifier = Modifier
+            .navigationBarsPadding()
+            .systemBarsPadding()
+    ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -231,16 +237,17 @@ fun NavigationScreen(
             }
 
             composable(route = "add_usaha_screen") {
-                AddUsahaScreen(mainViewModel = mainViewModel, {
+                AddUsahaScreen(mainViewModel = mainViewModel) {
                     navController.navigateUp()
-                })
+                }
             }
 
             composable(route = "add_article_screen") {
                 AddArticleScreen(
                     mainViewModel = mainViewModel,
                     navigateToMain = { navController.navigateUp() },
-                    navToCamera = { navController.navigate("camera_screen") }
+                    navToCamera = { navController.navigate("camera_screen") },
+                    navBack = {navController.navigateUp()}
                 )
             }
 

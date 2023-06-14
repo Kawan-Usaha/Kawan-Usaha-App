@@ -15,7 +15,9 @@ import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -29,6 +31,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -113,7 +117,7 @@ fun CameraScreen(
                         showGallerySelect = true
                     },
                     content = {
-                        Icon(Icons.Default.BrowseGallery, contentDescription = stringResource(R.string.gallery))
+                        Icon(Icons.Default.BrowseGallery, contentDescription = stringResource(R.string.gallery), tint = Color.White)
                     }
                 )
             }
@@ -178,7 +182,7 @@ fun CameraCapture(
                         }
                     },
                     content = {
-                        Icon(Icons.Default.PhotoCamera, contentDescription = stringResource(R.string.take_picture))
+                        Icon(Icons.Default.PhotoCamera, contentDescription = stringResource(R.string.take_picture), tint = Color.White)
                     }
                 )
                 IconButton(
@@ -193,7 +197,7 @@ fun CameraCapture(
                             CameraSelector.DEFAULT_FRONT_CAMERA
                         }
                     }, content = {
-                        Icon(Icons.Default.FlipCameraAndroid, contentDescription = stringResource(R.string.flip_camera))
+                        Icon(Icons.Default.FlipCameraAndroid, contentDescription = stringResource(R.string.flip_camera), tint = Color.White)
                     }
                 )
             }

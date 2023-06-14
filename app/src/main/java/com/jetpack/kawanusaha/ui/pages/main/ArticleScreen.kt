@@ -124,7 +124,7 @@ fun ArticleScreen(mainViewModel: MainViewModel, viewModel: LikeViewModel, articl
                 horizontalAlignment = Alignment.Start
             ) {
                 item {
-                    Text(text = article?.content ?: "Content", style = MaterialTheme.typography.h1, modifier = Modifier.padding(8.dp))
+                    Text(text = article?.title ?: "Title", style = MaterialTheme.typography.h1, modifier = Modifier.padding(8.dp))
                 }
                 item {
                     AsyncImage(
