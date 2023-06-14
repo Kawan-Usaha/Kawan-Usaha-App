@@ -27,9 +27,7 @@ import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.SectionText
 import com.jetpack.kawanusaha.ui.pages.TopBar
-import com.jetpack.kawanusaha.ui.pages.main.utils.ArticleSection
-import com.jetpack.kawanusaha.ui.pages.main.utils.CallUsahaLists
-import com.jetpack.kawanusaha.ui.pages.main.utils.UsahaSection
+import com.jetpack.kawanusaha.ui.pages.main.utils.*
 import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 import kotlinx.coroutines.launch
@@ -70,7 +68,7 @@ fun AboutScreen(
                         .height(55.dp)
                         .clickable { navToChangeAbout() },
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -89,7 +87,7 @@ fun AboutScreen(
                         .height(55.dp)
                         .clickable { navToAddUsaha() },
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -108,7 +106,7 @@ fun AboutScreen(
                         .height(55.dp)
                         .clickable { },
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -127,7 +125,7 @@ fun AboutScreen(
                         .height(55.dp)
                         .clickable { },
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -149,7 +147,7 @@ fun AboutScreen(
                             navToLanding()
                         },
                     contentAlignment = Alignment.CenterStart
-                ){
+                ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
@@ -233,7 +231,7 @@ fun AboutScreen(
                                         verticalArrangement = Arrangement.spacedBy(10.dp),
                                         horizontalAlignment = Alignment.Start
                                     ) {
-                                        Row (verticalAlignment = Alignment.CenterVertically){
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
                                             Text(
                                                 text = user?.data?.name ?: "",
                                                 style = MaterialTheme.typography.h2,
@@ -269,7 +267,7 @@ fun AboutScreen(
                                         verticalArrangement = Arrangement.Center,
                                         horizontalAlignment = Alignment.CenterHorizontally,
                                         modifier = Modifier.fillMaxWidth()
-                                    ){
+                                    ) {
                                         Button(
                                             onClick = { navToVerify() },
                                             colors = ButtonDefaults.buttonColors(MaterialTheme.colors.secondary)
@@ -297,7 +295,7 @@ fun AboutScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                    ){
+                    ) {
                         SectionText(
                             text = stringResource(R.string.usaha),
                             style = Typography.h3,
@@ -318,7 +316,7 @@ fun AboutScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
-                    ){
+                    ) {
                         SectionText(
                             text = stringResource(R.string.your_articles),
                             style = MaterialTheme.typography.h3,
@@ -326,9 +324,11 @@ fun AboutScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(5.dp))
-                    ArticleSection(articles, navToArticle)
+                    ArticleSection(articles, navToArticle, mainViewModel)
                 }
             }
         }
     }
 }
+
+

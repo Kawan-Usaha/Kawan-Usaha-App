@@ -75,6 +75,10 @@ class DataRepository(private val apiService: ApiService) {
         return executeRequest { apiService.createUsaha("Bearer $jwtToken", usahaRequest).execute() }
     }
 
+    suspend fun deleteUsaha(jwtToken: String, id: Int): DefaultResponse?{
+        return executeRequest { apiService.deleteUsaha("Bearer $jwtToken", IdRequest(id)).execute() }
+    }
+
 
     /**
      * Category & Tag Section
@@ -124,9 +128,11 @@ class DataRepository(private val apiService: ApiService) {
     }
 
     suspend fun createArticle( jwtToken: String, imageMultipart: MultipartBody.Part?, createArticleRequest: CreateArticleRequest ): DefaultResponse? {
-        return executeRequest {
-            apiService.createArticle("Bearer $jwtToken", imageMultipart , createArticleRequest).execute()
-        }
+        return executeRequest { apiService.createArticle("Bearer $jwtToken", imageMultipart , createArticleRequest).execute() }
+    }
+
+    suspend fun deleteArticle(jwtToken: String, id: Int): DefaultResponse? {
+        return executeRequest { apiService.deleteArticle("Bearer $jwtToken", IdRequest(id)).execute() }
     }
 
 
@@ -139,6 +145,10 @@ class DataRepository(private val apiService: ApiService) {
 
     suspend fun getFavourite (jwtToken: String): FavResponse? {
         return executeRequest { apiService.getFavourite("Bearer $jwtToken").execute() }
+    }
+
+    suspend fun deleteFavourite (jwtToken: String, id: Int): DefaultResponse?{
+        return executeRequest { apiService.deleteFavourite("Bearer $jwtToken", IdRequest(id)).execute() }
     }
 
 

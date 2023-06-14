@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "615101456715",
+    "project_id": "capstone-kawan-usaha",
+    "storage_bucket": "capstone-kawan-usaha.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615101456715:android:d4a7c314aa60473bf688ce",
+        "android_client_info": {
+          "package_name": "com.jetpack.kawanusaha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615101456715-sftbdh1d3k084vs2hi1071qjg0ukpo5b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jetpack.kawanusaha",
+            "certificate_hash": "8d7e8633e4e7ce55422ac7bcc4dc54971e50400e"
+          }
+        },
+        {
+          "client_id": "615101456715-i5mu6tu599egvsnh2vt0vu6lnoq4o4b9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRGHc_7MCGotsPoPYMoRXuwrBnMKOVcYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615101456715-i5mu6tu599egvsnh2vt0vu6lnoq4o4b9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

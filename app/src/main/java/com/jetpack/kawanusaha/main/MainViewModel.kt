@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -74,10 +73,10 @@ class MainViewModel(
     val selectedCategory: StateFlow<Int> = _selectedCategory
 
     private val _favouriteList = MutableStateFlow<List<ArticlesItem>?>(null)
-    val favouriteList : StateFlow<List<ArticlesItem>?> = _favouriteList
+    val favouriteList: StateFlow<List<ArticlesItem>?> = _favouriteList
 
     private val _tagList = MutableStateFlow<List<TagItem>?>(null)
-    val tagList : StateFlow<List<TagItem>?> = _tagList
+    val tagList: StateFlow<List<TagItem>?> = _tagList
 
     private val _llmResponse =
         MutableStateFlow(
@@ -148,13 +147,11 @@ class MainViewModel(
     /**
      * Retrieves the tag list from the data repository and updates the `_tagList` FlowState
      */
-    private fun getTag(){
+    private fun getTag() {
         viewModelScope.launch {
             _tagList.value = dataRepository.getTag()?.data?.tag
         }
     }
-
-
 
 
     // CATEGORY
@@ -174,8 +171,6 @@ class MainViewModel(
     fun selectThisCategory(id: Int) {
         _selectedCategory.value = id
     }
-
-
 
 
     // PROFILE
@@ -199,7 +194,8 @@ class MainViewModel(
             if (imageFile.value != Uri.parse("file://dev/null")) {
                 val file = getFileFromUri(application.applicationContext, imageFile.value) as File
                 val compressedFile = reduceFileImage(file)
-                val requestImageFile = compressedFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val requestImageFile =
+                    compressedFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                     name = "image",
                     filename = file.name,
@@ -220,12 +216,9 @@ class MainViewModel(
     }
 
 
-
-
-
     // USAHA
     /**
-     * Retrieves the list of businesses.
+     * Retrieves the list of Usaha.
      */
     fun getListUsaha() {
         getToken()
@@ -235,8 +228,8 @@ class MainViewModel(
     }
 
     /**
-     * Retrieves the details of a specific business.
-     * @param id The ID of the business.
+     * Retrieves the details of a specific Usaha.
+     * @param id The ID of the Usaha.
      */
     fun getUsahaDetail(id: Int) {
         viewModelScope.launch {
@@ -245,10 +238,10 @@ class MainViewModel(
     }
 
     /**
-     * Creates a new business.
-     * @param usahaName The name of the business.
-     * @param type The type of the business.
-     * @param tags The list of tags associated with the business.
+     * Creates a new Usaha.
+     * @param usahaName The name of the Usaha.
+     * @param type The type of the Usaha.
+     * @param tags The list of tags associated with the Usaha.
      */
     fun createUsaha(usahaName: String, type: Int, tags: List<Tag>) {
         viewModelScope.launch {
@@ -259,7 +252,18 @@ class MainViewModel(
         }
     }
 
-
+    /**
+     * Delete a specific Usaha.
+     * @param id The ID of the Usaha.
+     */
+    fun deleteUsaha(id: Int) {
+        viewModelScope.launch {
+            _status.value = dataRepository.deleteUsaha(
+                getToken(),
+                id
+            )?.success ?: false
+        }
+    }
 
 
     // Articles
@@ -350,7 +354,10 @@ class MainViewModel(
         }
     }
 
-    private fun createNewArticle (imageMultipart: MultipartBody.Part?,createArticleRequest: CreateArticleRequest){
+    private fun createNewArticle(
+        imageMultipart: MultipartBody.Part?,
+        createArticleRequest: CreateArticleRequest
+    ) {
         viewModelScope.launch {
             _status.value = dataRepository.createArticle(
                 getToken(),
@@ -360,7 +367,15 @@ class MainViewModel(
         }
     }
 
-
+    /**
+     * Remove the article of the specified ID.
+     * @param id The ID of the article.
+     */
+    fun deleteArticle(id: Int) {
+        viewModelScope.launch {
+            dataRepository.deleteArticle(getToken(), id)
+        }
+    }
 
 
     // FAVORITE
@@ -383,7 +398,15 @@ class MainViewModel(
         }
     }
 
-
+    /**
+     * Delete the specified article from favorite.
+     * @param id The ID of the article to remove from favorite.
+     */
+    fun deleteFavourite(id: Int) {
+        viewModelScope.launch {
+            dataRepository.deleteFavourite(getToken(), id)
+        }
+    }
 
 
     // CHAT BOT TEXT STREAM
@@ -430,7 +453,7 @@ class MainViewModel(
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        Log.e("DataRepository", "APi Call Success ${response}")
+                        Log.e("DataRepository", "APi Call Success $response")
                     }
                 })
             }
@@ -589,7 +612,7 @@ class MainViewModelFactory(
     private val preferences: SharedPreferences,
     private val application: Application
 ) : ViewModelProvider.Factory {
-     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(

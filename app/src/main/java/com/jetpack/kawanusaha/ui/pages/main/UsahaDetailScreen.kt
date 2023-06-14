@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +37,14 @@ fun UsahaDetailScreen(mainViewModel: MainViewModel, usahaId: Int, navBack: () ->
                 },
                 title = {
                     Text(text = usaha?.data?.usaha_name ?: "UsahaName")
+                },
+                actions = {
+                    IconButton(onClick = {
+                        mainViewModel.deleteUsaha(id = usahaId)
+                        navBack()
+                    }) {
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(id = R.string.delete))
+                    }
                 },
                 backgroundColor = MaterialTheme.colors.background,
                 elevation = 0.dp

@@ -82,6 +82,12 @@ interface ApiService {
         @Body usahaRequest : UsahaRequest,
     ) : Call <DefaultResponse>
 
+    @HTTP(method = "DELETE", path = "usaha/delete", hasBody = true)
+    fun deleteUsaha (
+        @Header("Authorization") token: String,
+        @Body id: IdRequest
+    ) : Call <DefaultResponse>
+
 
     // CATEGORY
     @GET("category")
@@ -142,6 +148,12 @@ interface ApiService {
         @Part("article") createArticleRequest: CreateArticleRequest
     ) : Call<DefaultResponse>
 
+    @HTTP(method = "DELETE", path = "article/delete", hasBody = true)
+    fun deleteArticle (
+        @Header("Authorization") token: String,
+        @Body id: IdRequest
+    ) : Call <DefaultResponse>
+
 
     // USER PROFILE
     @GET("user/profile")
@@ -157,17 +169,25 @@ interface ApiService {
         @Part("user") profileRequest: ProfileRequest
     ): Call<DefaultResponse>
 
+
     // FAVORITE
     @GET("user/favorite-articles")
     fun getFavourite(
         @Header("Authorization") token: String
     ): Call<FavResponse>
 
-    @POST("/article/favorite")
+    @POST("article/favorite")
     fun setFavourite(
         @Header("Authorization") token: String,
         @Body id : IdRequest
     ): Call<DefaultResponse>
+
+    @HTTP(method = "DELETE", path = "article/favorite", hasBody = true)
+    fun deleteFavourite(
+        @Header("Authorization") token: String,
+        @Body id : IdRequest
+    ): Call<DefaultResponse>
+
 
     // CHAT BOT
     @POST("v1/chat/completions")

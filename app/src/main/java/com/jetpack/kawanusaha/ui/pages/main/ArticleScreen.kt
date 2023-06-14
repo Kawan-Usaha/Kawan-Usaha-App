@@ -32,8 +32,12 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
     val removeFromFavorite = stringResource(R.string.removed_from_favorite)
     val shareVia = stringResource(R.string.share_via)
 
-    var isFavorite by rememberSaveable { mutableStateOf(article?.favorite ?: false) }
+    var isFavorite by remember { mutableStateOf(article?.favorite ?: false) }
 
+    LaunchedEffect( article?.favorite ){
+        isFavorite = article?.favorite ?: false
+    }
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -49,33 +53,31 @@ fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> U
                 actions = {
                     IconButton(
                         onClick = {
-                            isFavorite = !isFavorite
-                            mainViewModel.setFavourite(id = articleId)
-                            if (article?.favorite == true) {
-                                Icons.Default.Favorite
-                                Toast.makeText(
-                                    context,
-                                    addToFavorite,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            } else {
-                                Icons.Default.FavoriteBorder
+                            if (isFavorite) {
+                                mainViewModel.deleteFavourite(id = articleId)
                                 Toast.makeText(
                                     context,
                                     removeFromFavorite,
                                     Toast.LENGTH_SHORT
                                 ).show()
+                            } else {
+                                mainViewModel.setFavourite(id = articleId)
+                                Toast.makeText(
+                                    context,
+                                    addToFavorite,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+                            isFavorite = !isFavorite
                         }) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             tint = MaterialTheme.colors.secondary,
                             contentDescription = stringResource(R.string.like)
                         )
-
                     }
-                    val text = stringResource(R.string.share_text)
                     // Share Button
+                    val text = stringResource(R.string.coming_soon)
                     IconButton(
                         onClick = {
                             val intent = Intent(Intent.ACTION_SEND)

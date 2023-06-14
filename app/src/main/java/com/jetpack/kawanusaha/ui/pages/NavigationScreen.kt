@@ -17,10 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
-import com.jetpack.kawanusaha.ui.pages.authentication.ForgotPasswordScreen
-import com.jetpack.kawanusaha.ui.pages.authentication.LandingScreen
-import com.jetpack.kawanusaha.ui.pages.authentication.RegisterScreen
-import com.jetpack.kawanusaha.ui.pages.authentication.VerificationScreen
+import com.jetpack.kawanusaha.ui.pages.authentication.*
 import com.jetpack.kawanusaha.ui.pages.main.*
 
 @Composable
