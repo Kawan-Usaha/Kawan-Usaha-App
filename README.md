@@ -11,10 +11,10 @@ Our beginning step to make Kawan-Usaha-App is making the raw layout on sheets to
 First thing first before we make the layout on android studio, we make the framework design/mock design on figma. We make sure what layout design, the color, placement of the feature, font style, how many pages are needed, and the flow of the app. Here’s our design result on figma
 
 ## Implement to Android Studio Project
-After making the framework design in figma finish, next we move to implement all the framework to the android studio. We use jetpack Compose as our main toolkit to make an interface for our application. The reason we use jetpack Compose is because we feel that building ui is easier rather than using traditional XML.
+After making the framework design in figma finish, next we move to implement all the framework to the android studio. We use jetpack Compose as our main toolkit to make an interface for our application. The reason we use jetpack Compose is because we feel that building ui is easier rather than using traditional XML. We first make the ui for the entire screen, like login, register, main screen and etc based on design we've made on figma. After that, we implement business logic to connect app to API that made by Cloud Computing team, including LLM for chat bot from ML team. To get LLM data response, we implement on streaming the response by each words and display it on chat layout screen we made before.
 
 ## Connecting Android Studio Project to Github Organization Project.
-The next step is connecting our Android Studio Project to the Github Organization Project we made before. With this, it’s easier for us to communicate, work together, and storing data between backend to front end or for the same path.
+The next step is connecting our Android Studio Project to the Github Organization Project we made before. With this, it’s easier for us to communicate, work together, and storing data between backend to front end.
 
 ## Library on Kawan-Usaha-App
 Here’s some library we use to make this app working
