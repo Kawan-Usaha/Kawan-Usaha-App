@@ -15,7 +15,7 @@ import retrofit2.Response
  * A repository class for handling data operations.
  * @property apiService The instance of the ApiService used for making API requests.
  */
-class DataRepository(private val apiService: ApiService) {
+class DataRepository(private val apiService: ApiService, private val InternetApiService: ApiService) {
     /**
      *Authentication Section
      */
@@ -157,6 +157,22 @@ class DataRepository(private val apiService: ApiService) {
      */
     suspend fun chatResult(jwtToken: String, llmRequest: LLMRequest): LLMResponse? {
         return executeRequest { apiService.chatResponse("Bearer $jwtToken", llmRequest).execute() }
+    }
+
+
+    /**
+     * Search Internet : To Integrate More Update Information For The Chat Bot
+     */
+    suspend fun searchInternet(query: String): InternetSearchResponse? {
+        return executeRequest { InternetApiService.search(
+            token = "BSAoY1Yl866q5bbTDEJtKrNWHTf8x6q",
+            query = query,
+            country = "ID",
+            lang = "en",
+            safesearch = "off",
+            filter = "web",
+            snippets = "True"
+        ).execute() }
     }
 
 
