@@ -57,6 +57,6 @@ fun CategoryItem(mainViewModel: MainViewModel, category: Category) {
             onSuccess = { showShimmer.value = false }
         )
         Spacer(modifier = Modifier.height(5.dp))
-        Text(text = category.title, color = MaterialTheme.colors.onPrimary, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis, style = Typography.body2)
+        Text(text = category.title, color = MaterialTheme.colors.onPrimary, maxLines = 1, textAlign = TextAlign.Center, overflow = TextOverflow.Ellipsis, style = Typography.body2)
     }
 }

@@ -98,6 +98,7 @@ class MainViewModel(
         getTag()
         getCategory()
         clearStatus()
+        clearImage()
     }
 
     // DEFAULT GETTER & SETTER
