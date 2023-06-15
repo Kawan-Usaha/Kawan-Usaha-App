@@ -29,6 +29,12 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp
     ),
+    body2 = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Normal,
+        fontSize = 17.sp,
+        lineHeight = 24.sp,
+    ),
     h1 = TextStyle(
         fontFamily = OverLock,
         fontWeight = FontWeight.Bold,

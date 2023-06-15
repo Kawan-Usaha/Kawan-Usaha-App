@@ -36,12 +36,10 @@ fun ArticleSection(
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp * 3 / 4
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        columns = GridCells.Fixed(2) ,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier
-            .height((screenHeight).dp)
-            .padding(horizontal = 10.dp),
+        modifier = Modifier.height((screenHeight).dp).padding(horizontal = 10.dp, vertical = 5.dp),
         content = {
             items(articles.itemCount) { index ->
                 articles[index]?.let {

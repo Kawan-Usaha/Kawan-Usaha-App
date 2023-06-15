@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Kawan Usaha</string>
-    <string name="loremipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pretium risus nec malesuada vulputate. Sed a turpis interdum, feugiat ipsum a, ullamcorper mi. Fusce elementum pellentesque sem, id pellentesque est pharetra a. Quisque facilisis purus felis, sed consectetur turpis consectetur vel. Aliquam tincidunt orci sit amet felis posuere, id efficitur justo ultricies. Etiam tristique venenatis arcu, a luctus lectus dignissim a. Integer nec mauris in erat consectetur tempus id ut risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus bibendum dapibus ex, sed scelerisque est efficitur nec.
+    <string name="loremipsum" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pretium risus nec malesuada vulputate. Sed a turpis interdum, feugiat ipsum a, ullamcorper mi. Fusce elementum pellentesque sem, id pellentesque est pharetra a. Quisque facilisis purus felis, sed consectetur turpis consectetur vel. Aliquam tincidunt orci sit amet felis posuere, id efficitur justo ultricies. Etiam tristique venenatis arcu, a luctus lectus dignissim a. Integer nec mauris in erat consectetur tempus id ut risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus bibendum dapibus ex, sed scelerisque est efficitur nec.
 
 Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut faucibus tristique libero non volutpat. Nulla ac lectus nisi. Phasellus id tortor mauris. Fusce quis nisi eu tortor elementum ullamcorper ac a orci. Nam efficitur, purus eu accumsan dictum, erat sapien sollicitudin lorem, et tincidunt ligula odio id tellus. Cras a elit interdum, bibendum tellus at, venenatis risus. Aliquam congue varius ex, at dapibus tellus hendrerit et. Sed nec tincidunt sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pretium risus nec malesuada vulputate. Sed a turpis interdum, feugiat ipsum a, ullamcorper mi. Fusce elementum pellentesque sem, id pellentesque est pharetra a. Quisque facilisis purus felis, sed consectetur turpis consectetur vel. Aliquam tincidunt orci sit amet felis posuere, id efficitur justo ultricies. Etiam tristique venenatis arcu, a luctus lectus dignissim a. Integer nec mauris in erat consectetur tempus id ut risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus bibendum dapibus ex, sed scelerisque est efficitur nec.
@@ -9,7 +9,6 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pretium risus nec malesuada vulputate. Sed a turpis interdum, feugiat ipsum a, ullamcorper mi. Fusce elementum pellentesque sem, id pellentesque est pharetra a. Quisque facilisis purus felis, sed consectetur turpis consectetur vel. Aliquam tincidunt orci sit amet felis posuere, id efficitur justo ultricies. Etiam tristique venenatis arcu, a luctus lectus dignissim a. Integer nec mauris in erat consectetur tempus id ut risus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Phasellus bibendum dapibus ex, sed scelerisque est efficitur nec.
 
 Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Ut faucibus tristique libero non volutpat. Nulla ac lectus nisi. Phasellus id tortor mauris. Fusce quis nisi eu tortor elementum ullamcorper ac a orci. Nam efficitur, purus eu accumsan dictum, erat sapien sollicitudin lorem, et tincidunt ligula odio id tellus. Cras a elit interdum, bibendum tellus at, venenatis risus. Aliquam congue varius ex, at dapibus tellus hendrerit et. Sed nec tincidunt sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</string>
-    <string name="title_verify">VERIFICATION CODE</string>
     <string name="body_verify">Please enter code sent to %s</string>
     <string name="check_email">Check Your Email</string>
     <string name="enter_code">Enter Your Code</string>
@@ -110,7 +109,7 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="your_favorite_page">Your Favorite Page</string>
     <string name="image_account">Image Account</string>
     <string name="username">Username</string>
-    <string name="a_few_minutes_ago">a few minutes ago</string>
+    <string name="a_few_minutes_ago" translatable="false">a few minutes ago</string>
     <string name="category">Category</string>
     <string name="recommendation_articles">Recommendation Articles</string>
     <string name="chat_with_your_ai_mentor">Chat With Your AI Mentor!</string>
@@ -118,10 +117,25 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="articles">Articles</string>
     <string name="types">Types</string>
     <string name="delete">Delete</string>
-    <string name="coming_soon">Coming Soon... :D</string>
-
-
-    <string name="web_client_id">615101456715-i5mu6tu599egvsnh2vt0vu6lnoq4o4b9.apps.googleusercontent.com</string>
-
+    <string name="coming_soon">Coming Soon.. :D</string>
+    <string name="web_client_id" translatable = "false">615101456715-i5mu6tu599egvsnh2vt0vu6lnoq4o4b9.apps.googleusercontent.com</string>
     <string name="your_articles">Your Articles</string>
+    <string name="settings_screen">Settings Screen</string>
+    <string name="about_developer">About Developer</string>
+    <string name="title_verify">VERIFICATION CODE</string>
+    <string name="Feeds">Feeds</string>
+    <string name="Explore">Explore</string>
+    <string name="chat">Chat</string>
+    <string name="favorite">Favorite</string>
+    <string name="please_select_category">Please Select Category</string>
+    <string name="select_category">Select Category</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="add_usaha">Add Usaha</string>
+    <string name="settings">Settings</string>
+    <string name="More">More</string>
+    <string name="since">Since </string>
+
+    <string name="en" translatable="false">English</string>
+    <string name="indo" translatable="false">Indonesia</string>
+    <string name="language">Language</string>
 </resources>

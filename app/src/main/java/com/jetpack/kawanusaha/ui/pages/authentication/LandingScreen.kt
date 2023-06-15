@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,11 +31,26 @@ import com.jetpack.kawanusaha.ui.theme.*
 fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
     val secondaryColor = MaterialTheme.colors.secondary
+    val boxSize = with(LocalDensity.current) { 300.dp.toPx() }
     Column(
-        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+            .background(
+                brush = Brush.linearGradient(
+                    0.0f to Gradient1,
+                    0.33f to PrimaryDay,
+                    0.66f to PrimaryVariantDay,
+                    1.00f to PrimaryNight,
+                    start = Offset((0.3f) * boxSize, boxSize * (1.3f)),
+                    end = Offset(boxSize, 0f),
+                    tileMode = TileMode.Clamp
+                )
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         Image(
             painterResource(id = R.drawable.logo),
             contentDescription = null,
@@ -55,7 +71,29 @@ fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
             },
             style = MaterialTheme.typography.h4
         )
-        Gradient(navToLogin, navToRegister)
+        Button(
+            onClick = { navToLogin() },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(200.dp)
+                .padding(top = 50.dp),
+            colors = ButtonDefaults.buttonColors(
+                MaterialTheme.colors.secondary
+            )
+        ) {
+            Text(stringResource(R.string.login))
+        }
+        Button(
+            onClick = { navToRegister() },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(200.dp),
+            colors = ButtonDefaults.buttonColors(
+                MaterialTheme.colors.secondary
+            )
+        ) {
+            Text(stringResource(R.string.register))
+        }
     }
 
     val activity = (LocalContext.current as? Activity)
@@ -89,7 +127,10 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(200.dp)
-                    .padding(top = 150.dp)
+                    .padding(top = 150.dp),
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colors.secondary
+                )
             ) {
                 Text(stringResource(R.string.login))
             }
@@ -97,7 +138,10 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
                 onClick = { navToRegister() },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .width(200.dp)
+                    .width(200.dp),
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colors.secondary
+                )
             ) {
                 Text(stringResource(R.string.register))
             }

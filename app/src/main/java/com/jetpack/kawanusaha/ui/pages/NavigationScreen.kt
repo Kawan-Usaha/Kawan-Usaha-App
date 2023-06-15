@@ -68,6 +68,9 @@ fun NavigationScreen(
         "change_about_screen" -> {
             bottomBarState.value = false
         }
+        "about_developer_screen" -> {
+            bottomBarState.value = false
+        }
         else -> {
             bottomBarState.value = true
         }
@@ -216,6 +219,8 @@ fun NavigationScreen(
                         navController.navigate("usaha_detail_screen/$id")
                     }, {
                         navController.navigate("add_usaha_screen")
+                    }, {
+                        navController.navigate("about_developer_screen")
                     })
             }
 
@@ -275,6 +280,12 @@ fun NavigationScreen(
                 CameraScreen(mainViewModel = mainViewModel, navBack = {
                     navController.navigateUp()
                 })
+            }
+
+            composable(route = "about_developer_screen"){
+                AboutDeveloperScreen {
+                    navController.navigateUp()
+                }
             }
         }
     }

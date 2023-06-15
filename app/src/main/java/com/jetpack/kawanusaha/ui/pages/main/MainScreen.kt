@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -103,9 +104,11 @@ fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
         mutableStateOf(false)
     }
     Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable { navToArticle(id) }
-            .padding(vertical = 15.dp)
+            .padding(bottom = 30.dp, start = 16.dp, end = 16.dp)
     ) {
         val showShimmer = remember { mutableStateOf(true) }
         if (!isError) {
