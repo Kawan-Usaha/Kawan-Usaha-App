@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -104,151 +106,164 @@ fun RegisterScreen(
                         )
                     }
                     Spacer(Modifier.height(15.dp))
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = { Text(stringResource(R.string.name)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                        ),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.AccountCircle,
-                                contentDescription = stringResource(R.string.name_icon),
-                                tint = orange
+                    val customTextSelection = TextSelectionColors(
+                        handleColor = MaterialTheme.colors.secondary,
+                        backgroundColor = MaterialTheme.colors.background
+                    )
+                    // Title
+                    CompositionLocalProvider(LocalTextSelectionColors provides customTextSelection) {
+                        OutlinedTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            label = { Text(stringResource(R.string.name)) },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                            ),
+                            singleLine = true,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.AccountCircle,
+                                    contentDescription = stringResource(R.string.name_icon),
+                                    tint = orange
+                                )
+                            },
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .fillMaxWidth()
+                                .imePadding()
+                                .padding(5.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colors.onPrimary,
+                                cursorColor = MaterialTheme.colors.onPrimary,
+                                errorBorderColor = Color.Red,
+                                focusedBorderColor = MaterialTheme.colors.secondary,
+                                unfocusedBorderColor = MaterialTheme.colors.surface,
+                                focusedLabelColor = MaterialTheme.colors.secondary,
+                                unfocusedLabelColor = MaterialTheme.colors.surface
                             )
-                        },
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .fillMaxWidth()
-                            .imePadding()
-                            .padding(5.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                            errorBorderColor = Color.Red,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            unfocusedBorderColor = MaterialTheme.colors.surface,
-                            focusedLabelColor = MaterialTheme.colors.secondary,
-                            unfocusedLabelColor = MaterialTheme.colors.surface
                         )
-                    )
-                    Spacer(Modifier.height(15.dp))
-                    OutlinedTextField(
-                        value = email,
-                        onValueChange = { email = it },
-                        label = { Text(stringResource(R.string.email)) },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Email,
-                        ),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = stringResource(R.string.email_icon),
-                                tint = orange
-                            )
-                        },
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .fillMaxWidth()
-                            .imePadding()
-                            .padding(5.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                            errorBorderColor = Color.Red,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            unfocusedBorderColor = MaterialTheme.colors.surface,
-                            focusedLabelColor = MaterialTheme.colors.secondary,
-                            unfocusedLabelColor = MaterialTheme.colors.surface
-                        ),
-                    )
-                    Spacer(Modifier.height(15.dp))
-                    OutlinedTextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text(stringResource(R.string.password)) },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = stringResource(R.string.password_icon),
-                                tint = orange
-                            )
-                        },
-                        trailingIcon = {
-                            val image = if (passwordVisible)
-                                painterResource(R.drawable.baseline_visibility_24) else
-                                painterResource(R.drawable.baseline_visibility_off_24)
+                        Spacer(Modifier.height(15.dp))
+                        OutlinedTextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = { Text(stringResource(R.string.email)) },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Email,
+                            ),
+                            singleLine = true,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Email,
+                                    contentDescription = stringResource(R.string.email_icon),
+                                    tint = orange
+                                )
+                            },
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .fillMaxWidth()
+                                .imePadding()
+                                .padding(5.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colors.onPrimary,
+                                cursorColor = MaterialTheme.colors.onPrimary,
+                                errorBorderColor = Color.Red,
+                                focusedBorderColor = MaterialTheme.colors.secondary,
+                                unfocusedBorderColor = MaterialTheme.colors.surface,
+                                focusedLabelColor = MaterialTheme.colors.secondary,
+                                unfocusedLabelColor = MaterialTheme.colors.surface
+                            ),
+                        )
+                        Spacer(Modifier.height(15.dp))
+                        OutlinedTextField(
+                            value = password,
+                            onValueChange = { password = it },
+                            label = { Text(stringResource(R.string.password)) },
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = stringResource(R.string.password_icon),
+                                    tint = orange
+                                )
+                            },
+                            trailingIcon = {
+                                val image = if (passwordVisible)
+                                    painterResource(R.drawable.baseline_visibility_24) else
+                                    painterResource(R.drawable.baseline_visibility_off_24)
 
-                            val description = if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
-                                R.string.show_password
-                            )
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(painter = image, contentDescription = description)
-                            }
-                        },
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .fillMaxWidth()
-                            .imePadding()
-                            .padding(5.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                            errorBorderColor = MaterialTheme.colors.error,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            unfocusedBorderColor = MaterialTheme.colors.surface,
-                            focusedLabelColor = MaterialTheme.colors.secondary,
-                            unfocusedLabelColor = MaterialTheme.colors.surface
-                        ),
-                    )
-                    Spacer(Modifier.height(15.dp))
-                    OutlinedTextField(
-                        value = confirmPassword,
-                        onValueChange = { confirmPassword = it },
-                        label = { Text(stringResource(R.string.confirm_password)) },
-                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = stringResource(R.string.password_icon),
-                                tint = orange
-                            )
-                        },
-                        trailingIcon = {
-                            val image = if (passwordVisible)
-                                painterResource(R.drawable.baseline_visibility_24) else
-                                painterResource(R.drawable.baseline_visibility_off_24)
+                                val description =
+                                    if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                        R.string.show_password
+                                    )
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(painter = image, contentDescription = description)
+                                }
+                            },
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .fillMaxWidth()
+                                .imePadding()
+                                .padding(5.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colors.onPrimary,
+                                cursorColor = MaterialTheme.colors.onPrimary,
+                                errorBorderColor = MaterialTheme.colors.error,
+                                focusedBorderColor = MaterialTheme.colors.secondary,
+                                unfocusedBorderColor = MaterialTheme.colors.surface,
+                                focusedLabelColor = MaterialTheme.colors.secondary,
+                                unfocusedLabelColor = MaterialTheme.colors.surface
+                            ),
+                        )
+                        Spacer(Modifier.height(15.dp))
+                        OutlinedTextField(
+                            value = confirmPassword,
+                            onValueChange = { confirmPassword = it },
+                            label = { Text(stringResource(R.string.confirm_password)) },
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Lock,
+                                    contentDescription = stringResource(R.string.password_icon),
+                                    tint = orange
+                                )
+                            },
+                            trailingIcon = {
+                                val image = if (passwordVisible)
+                                    painterResource(R.drawable.baseline_visibility_24) else
+                                    painterResource(R.drawable.baseline_visibility_off_24)
 
-                            val description = if (passwordVisible) stringResource(R.string.hide_password) else
-                                stringResource(R.string.show_password)
-                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(painter = image, contentDescription = description)
-                            }
+                                val description =
+                                    if (passwordVisible) stringResource(R.string.hide_password) else
+                                        stringResource(R.string.show_password)
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(painter = image, contentDescription = description)
+                                }
 
-                            if (confirmPassword.text != password.text)
-                                Icon(Icons.Filled.Warning, stringResource(R.string.error), tint = MaterialTheme.colors.error)
-                        },
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(10.dp))
-                            .fillMaxWidth()
-                            .imePadding()
-                            .padding(5.dp),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = MaterialTheme.colors.onPrimary,
-                            cursorColor = MaterialTheme.colors.onPrimary,
-                            errorBorderColor = MaterialTheme.colors.error,
-                            focusedBorderColor = MaterialTheme.colors.secondary,
-                            unfocusedBorderColor = MaterialTheme.colors.surface,
-                            focusedLabelColor = MaterialTheme.colors.secondary,
-                            unfocusedLabelColor = MaterialTheme.colors.surface
-                        ),
-                    )
+                                if (confirmPassword.text != password.text)
+                                    Icon(
+                                        Icons.Filled.Warning,
+                                        stringResource(R.string.error),
+                                        tint = MaterialTheme.colors.error
+                                    )
+                            },
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .fillMaxWidth()
+                                .imePadding()
+                                .padding(5.dp),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                textColor = MaterialTheme.colors.onPrimary,
+                                cursorColor = MaterialTheme.colors.onPrimary,
+                                errorBorderColor = MaterialTheme.colors.error,
+                                focusedBorderColor = MaterialTheme.colors.secondary,
+                                unfocusedBorderColor = MaterialTheme.colors.surface,
+                                focusedLabelColor = MaterialTheme.colors.secondary,
+                                unfocusedLabelColor = MaterialTheme.colors.surface
+                            ),
+                        )
+                    }
                     Spacer(modifier = Modifier.height(50.dp))
                     Button(
                         onClick = {

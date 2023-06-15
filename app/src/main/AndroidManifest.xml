@@ -17,7 +17,6 @@
         android:theme="@style/Theme.KawanUsaha"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="tiramisu"
-
         android:usesCleartextTraffic="true">
 
 

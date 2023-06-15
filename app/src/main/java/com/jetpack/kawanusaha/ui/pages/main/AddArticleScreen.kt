@@ -99,7 +99,7 @@ fun AddArticleScreen(
                                         category = category
                                     )
                                 } else {
-                                    Toast.makeText(context, "Please Select Category", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, R.string.please_select_category, Toast.LENGTH_SHORT).show()
                                 }
                             },
                             shape = RoundedCornerShape(20.dp),
@@ -408,7 +408,7 @@ fun DropDownMenu(
                 .onGloballyPositioned { coordinates ->
                     textFilledSize = coordinates.size.toSize()
                 },
-            label = { Text(text = "Select Category") },
+            label = { Text(text = stringResource(R.string.select_category)) },
             trailingIcon = {
                 Icon(
                     imageVector = icon,

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -23,11 +24,13 @@ import com.jetpack.kawanusaha.main.*
 import com.jetpack.kawanusaha.ui.pages.NavigationScreen
 import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 import java.io.File
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 //https://developer.android.com/studio/write/app-link-indexing
 class MainActivity : ComponentActivity() {
+   
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val preferences: SharedPreferences =
@@ -62,6 +65,13 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        val config = resources.configuration
+        val locale = Locale("in")
+        Locale.setDefault(locale)
+        config.setLocale(locale)
+
+        createConfigurationContext(config)
+        resources.updateConfiguration(config, resources.displayMetrics)
 
     }
 }

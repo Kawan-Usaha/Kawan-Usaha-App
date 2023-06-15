@@ -94,6 +94,7 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                             .fillMaxSize()
                             .padding(start = 16.dp, end = 16.dp)
                     ) {
+                        Spacer(modifier = Modifier.height(5.dp))
                         val customTextSelection = TextSelectionColors(
                             handleColor = MaterialTheme.colors.secondary,
                             backgroundColor = MaterialTheme.colors.background
@@ -107,8 +108,8 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                                 colors = TextFieldDefaults.textFieldColors(
                                     backgroundColor = MaterialTheme.colors.primary,
                                     cursorColor = MaterialTheme.colors.onPrimary,
-                                    unfocusedIndicatorColor = MaterialTheme.colors.primary,
-                                    focusedIndicatorColor = MaterialTheme.colors.primary
+                                    unfocusedIndicatorColor = MaterialTheme.colors.surface,
+                                    focusedIndicatorColor = MaterialTheme.colors.secondary
                                 ),
                                 singleLine = true,
                                 placeholder = {
@@ -118,10 +119,10 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                                     )
                                 }
                             )
-                            Row(
+                            Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly,
-                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalAlignment = Alignment.Start,
+                                verticalArrangement = Arrangement.Top,
                             ) {
                                 tag1 = TagDropDown( mainViewModel = mainViewModel, tag2, tag3 )
                                 tag2 = TagDropDown( mainViewModel = mainViewModel, tag1, tag3 )
@@ -146,7 +147,7 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
 fun TagDropDown(
     mainViewModel: MainViewModel,
     otherTag1: String,
-    otherTag2: String
+    otherTag2: String,
 ) : String {
     var expanded by remember { mutableStateOf(false) }
     val list by mainViewModel.tagList.collectAsState(null)

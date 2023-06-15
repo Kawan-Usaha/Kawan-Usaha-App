@@ -32,8 +32,7 @@ fun NavigationScreen(
     likeViewModel: LikeViewModel
 ) {
     val navController = rememberNavController()
-    val startDestination: String = "chat_screen"
-//        if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
+    val startDestination = if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
     val bottomBarState = rememberSaveable { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val isKeyboardOpen by onKeyboardVisible()
@@ -70,6 +69,9 @@ fun NavigationScreen(
             bottomBarState.value = false
         }
         "change_about_screen" -> {
+            bottomBarState.value = false
+        }
+        "about_developer_screen" -> {
             bottomBarState.value = false
         }
         else -> {
@@ -217,6 +219,8 @@ fun NavigationScreen(
                         navController.navigate("usaha_detail_screen/$id")
                     }, {
                         navController.navigate("add_usaha_screen")
+                    }, {
+                        navController.navigate("about_developer_screen")
                     })
             }
 
@@ -284,6 +288,12 @@ fun NavigationScreen(
                 CameraScreen(mainViewModel = mainViewModel, navBack = {
                     navController.navigateUp()
                 })
+            }
+
+            composable(route = "about_developer_screen"){
+                AboutDeveloperScreen {
+                    navController.navigateUp()
+                }
             }
         }
     }

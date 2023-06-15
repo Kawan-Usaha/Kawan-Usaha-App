@@ -21,6 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -29,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.jetpack.kawanusaha.R
 
 @Composable
 fun LoadingScreen(isLoading: Boolean) {
@@ -88,27 +90,27 @@ fun BottomBar(
                 val currentRoute = navBackStackEntry?.destination?.route
                 val navigationItems = listOf(
                     NavigationItem(
-                        title = "Feeds", //change into string resource
+                        title = stringResource(R.string.Feeds), //change into string resource
                         icon = Icons.Default.List,
                         screen = Screen.Feeds
                     ),
                     NavigationItem(
-                        title = "Explore",
+                        title = stringResource(R.string.Explore),
                         icon = Icons.Default.Search,
                         screen = Screen.Explore
                     ),
                     NavigationItem(
-                        title = "Chat",
+                        title = stringResource(R.string.chat),
                         icon = Icons.Default.Info,
                         screen = Screen.Chat
                     ),
                     NavigationItem(
-                        title = "Favorite",
+                        title = stringResource(R.string.favorite),
                         icon = Icons.Default.Favorite,
                         screen = Screen.Like
                     ),
                     NavigationItem(
-                        title = "Profile",
+                        title = stringResource(R.string.profile),
                         icon = Icons.Default.AccountCircle,
                         screen = Screen.Profile
                     ),

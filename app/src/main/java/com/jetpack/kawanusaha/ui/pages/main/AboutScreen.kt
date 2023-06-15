@@ -44,7 +44,8 @@ fun AboutScreen(
     navToVerify: () -> Unit,
     navToChangeAbout: () -> Unit,
     navToUsahaDetail: (Int) -> Unit,
-    navToAddUsaha: () -> Unit
+    navToAddUsaha: () -> Unit,
+    navToAboutDeveloper: () -> Unit,
 ) {
     val articles: LazyPagingItems<ArticlesItem> =
         mainViewModel.getUserArticles().collectAsLazyPagingItems()
@@ -77,10 +78,10 @@ fun AboutScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Edit,
-                            contentDescription = "Edit Profile"
+                            contentDescription = stringResource(R.string.edit_profile)
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        Text(text = "Edit Profile", style = MaterialTheme.typography.h3)
+                        Text(text = stringResource(R.string.edit_profile), style = MaterialTheme.typography.h3)
                     }
                 }
                 Box(
@@ -96,17 +97,17 @@ fun AboutScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Add Usaha"
+                            contentDescription = stringResource(R.string.add_usaha)
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        Text(text = "Add Usaha", style = MaterialTheme.typography.h3)
+                        Text(text = stringResource(R.string.add_usaha), style = MaterialTheme.typography.h3)
                     }
                 }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
-                        .clickable { },
+                        .clickable { navToAboutDeveloper() },
                     contentAlignment = Alignment.CenterStart
                 ){
                     Row(
@@ -115,10 +116,10 @@ fun AboutScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.DeveloperBoard,
-                            contentDescription = "About Developer"
+                            contentDescription = stringResource(R.string.about_developer)
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        Text(text = "About Developer", style = MaterialTheme.typography.h3)
+                        Text(text = stringResource(R.string.about_developer), style = MaterialTheme.typography.h3)
                     }
                 }
                 Box(
@@ -134,10 +135,10 @@ fun AboutScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Settings,
-                            contentDescription = "Settings"
+                            contentDescription = stringResource(R.string.settings)
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        Text(text = "Settings", style = MaterialTheme.typography.h3)
+                        Text(text = stringResource(R.string.settings), style = MaterialTheme.typography.h3)
                     }
                 }
                 Box(
@@ -156,10 +157,10 @@ fun AboutScreen(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Logout,
-                            contentDescription = "Logout"
+                            contentDescription = stringResource(R.string.sign_out)
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        Text(text = "Logout", style = MaterialTheme.typography.h3)
+                        Text(text = stringResource(R.string.sign_out), style = MaterialTheme.typography.h3)
                     }
                 }
             }
@@ -179,7 +180,7 @@ fun AboutScreen(
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Menu,
-                            contentDescription = "More"
+                            contentDescription = stringResource(R.string.More),
                         )
                     }
                 }
@@ -254,7 +255,7 @@ fun AboutScreen(
                                         )
 
                                         Text(
-                                            text = "Since: " + user?.data?.createdAt?.slice(
+                                            text = stringResource(R.string.since) + ": " + user?.data?.createdAt?.slice(
                                                 0..9
                                             ),
                                             fontWeight = FontWeight.Normal,
