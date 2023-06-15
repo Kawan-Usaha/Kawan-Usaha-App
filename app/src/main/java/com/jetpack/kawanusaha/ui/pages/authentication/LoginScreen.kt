@@ -342,26 +342,24 @@ fun OAuthButton(
             )
     )
 
-    LaunchedEffect(key1 = state.isSignInSuccessful, viewModel.isLoggedIn()) {
+    LaunchedEffect(key1 = state.isSignInSuccessful) {
         if (state.isSignInSuccessful) {
             googleAuthUiClient.getFirebaseUser()!!.run {
+                viewModel.login(
+                    email = email!!,
+                    password = uid.slice(2..25),
+                )
                 viewModel.register(
                     name = displayName!!,
                     email = email!!,
                     password = uid.slice(2..25),
                     passwordConfirm = uid.slice(2..25),
                 )
-                viewModel.login(
-                    email = email!!,
-                    password = uid.slice(2..25)
-                )
             }
             viewModel.resetState()
-        }
-        if (viewModel.isLoggedIn()) {
             navToMain()
-            googleAuthUiClient.signOut()
         }
+        googleAuthUiClient.signOut()
     }
 }
 
