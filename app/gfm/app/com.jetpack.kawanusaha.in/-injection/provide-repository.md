@@ -3,4 +3,10 @@
 # provideRepository
 
 [androidJvm]\
-fun [provideRepository](provide-repository.md)(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html)): [DataRepository](../../com.jetpack.kawanusaha.data/-data-repository/index.md)
+fun [provideRepository](provide-repository.md)(): [DataRepository](../../com.jetpack.kawanusaha.data/-data-repository/index.md)
+
+Provides an instance of DataRepository.
+
+#### Return
+
+The DataRepository instance.

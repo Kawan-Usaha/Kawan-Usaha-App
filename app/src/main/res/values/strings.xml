@@ -116,7 +116,9 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="send_a_message">Send a Message</string>
     <string name="articles">Articles</string>
     <string name="types">Types</string>
-
+    <string name="delete">Delete</string>
+    <string name="coming_soon">Coming Soon.. :D</string>
+    <string name="web_client_id" translatable = "false">615101456715-i5mu6tu599egvsnh2vt0vu6lnoq4o4b9.apps.googleusercontent.com</string>
     <string name="your_articles">Your Articles</string>
     <string name="settings_screen">Settings Screen</string>
     <string name="about_developer">About Developer</string>

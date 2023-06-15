@@ -6,4 +6,4 @@
 
 | Name | Summary |
 |---|---|
-| [Injection](-injection/index.md) | [androidJvm]<br>object [Injection](-injection/index.md) |
+| [Injection](-injection/index.md) | [androidJvm]<br>object [Injection](-injection/index.md)<br>A dependency injection object for providing instances of DataRepository. |

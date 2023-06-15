@@ -9,6 +9,14 @@ import java.io.*
 
 private const val MAXIMAL_SIZE = 1000000
 
+/**
+ * Reduces the file size of the given [file] by compressing it.
+ * The compression is performed by adjusting the compress quality until the stream length is smaller than the [MAXIMAL_SIZE].
+ * The function modifies the given file in-place and returns it.
+ *
+ * @param file The file to be reduced in size.
+ * @return The modified file after compression.
+ */
 fun reduceFileImage(file: File): File {
     val bitmap = BitmapFactory.decodeFile(file.path)
     var compressQuality = 100
@@ -24,11 +32,18 @@ fun reduceFileImage(file: File): File {
     return file
 }
 
+/**
+ * Retrieves a file from the given [uri] using the provided [context].
+ *
+ * @param context The context used to access content resolver and file operations.
+ * @param uri The URI of the file to retrieve.
+ * @return The file retrieved from the URI, or null if an error occurred.
+ */
 fun getFileFromUri(context: Context, uri: Uri): File? {
     val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
     val outputFile: File = createTempFile(context)
 
-    if (inputStream != null && outputFile != null) {
+    if (inputStream != null) {
         try {
             val outputStream = FileOutputStream(outputFile)
             val buffer = ByteArray(4 * 1024)
@@ -52,10 +67,14 @@ fun getFileFromUri(context: Context, uri: Uri): File? {
     return null
 }
 
+/**
+ * Creates a temporary file with the "image" prefix and ".jpg" extension in the specified storage directory.
+ *
+ * @param context The context used to access the external files directory.
+ * @return The created temporary file.
+ * @throws IOException if an I/O error occurs while creating the file.
+ */
 fun createTempFile(context: Context): File {
     val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
     return File.createTempFile("image", ".jpg", storageDir)
 }
-
-
-

@@ -1,33 +1,27 @@
-
 package com.jetpack.kawanusaha.ui.pages.main
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.SearchBar
+import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.data.ArticlesItem
-import com.jetpack.kawanusaha.main.LikeViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.TopBar
 import com.jetpack.kawanusaha.ui.pages.shimmerBrush
@@ -35,21 +29,27 @@ import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 @Composable
 fun LikeScreen(
     navToArticle: (Int?) -> Unit,
-    viewModel: LikeViewModel,
     mainViewModel: MainViewModel,
-){
+) {
     mainViewModel.getFavourite()
     val list by mainViewModel.favouriteList.collectAsState()
-    Scaffold(topBar = { TopBar{} }, modifier = Modifier
-        .padding(15.dp)
-        .safeDrawingPadding()) { innerPadding ->
+    Scaffold(
+        topBar = { TopBar {} }, modifier = Modifier
+            .padding(15.dp)
+            .safeDrawingPadding()
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
             verticalArrangement = Arrangement.Top
         ) {
-            Text(text = "Your Favorite", style = MaterialTheme.typography.h1, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Text(
+                text = "Your Favorite",
+                style = MaterialTheme.typography.h1,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
             Spacer(modifier = Modifier.height(10.dp))
             LazyColumn(
                 modifier = Modifier
@@ -84,7 +84,7 @@ fun ArticleList(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier.padding(horizontal = 25.dp)
-        ){
+        ) {
             val showShimmer = remember { mutableStateOf(true) }
             AsyncImage(
                 model = article.image,

@@ -15,15 +15,12 @@ import androidx.camera.core.ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrowseGallery
-import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FlipCameraAndroid
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.Button
@@ -31,7 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -41,7 +37,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
@@ -62,7 +57,7 @@ val EMPTY_IMAGE_URI: Uri = Uri.parse("file://dev/null")
 fun CameraScreen(
     modifier: Modifier = Modifier,
     mainViewModel: MainViewModel,
-    navBack : () -> Unit
+    navBack: () -> Unit
 ) {
     val emptyImageUri = Uri.parse("file://dev/null")
     var imageUri by remember { mutableStateOf(emptyImageUri) }
@@ -117,7 +112,11 @@ fun CameraScreen(
                         showGallerySelect = true
                     },
                     content = {
-                        Icon(Icons.Default.BrowseGallery, contentDescription = stringResource(R.string.gallery), tint = Color.White)
+                        Icon(
+                            Icons.Default.BrowseGallery,
+                            contentDescription = stringResource(R.string.gallery),
+                            tint = Color.White
+                        )
                     }
                 )
             }
@@ -138,7 +137,10 @@ fun CameraCapture(
         rationale = stringResource(R.string.you_said_you_wanted_a_picture),
         permissionNotAvailableContent = {
             Box(modifier.fillMaxSize()) {
-                Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.align(Alignment.Center)){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = modifier.align(Alignment.Center)
+                ) {
                     Text(stringResource(R.string.no_permission_camera_granted))
                     Spacer(modifier = modifier.height(15.dp))
                     Button(
@@ -182,7 +184,11 @@ fun CameraCapture(
                         }
                     },
                     content = {
-                        Icon(Icons.Default.PhotoCamera, contentDescription = stringResource(R.string.take_picture), tint = Color.White)
+                        Icon(
+                            Icons.Default.PhotoCamera,
+                            contentDescription = stringResource(R.string.take_picture),
+                            tint = Color.White
+                        )
                     }
                 )
                 IconButton(
@@ -191,13 +197,18 @@ fun CameraCapture(
                         .padding(16.dp)
                         .align(Alignment.TopEnd),
                     onClick = {
-                        cameraSelector = if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA){
-                            CameraSelector.DEFAULT_BACK_CAMERA
-                        } else {
-                            CameraSelector.DEFAULT_FRONT_CAMERA
-                        }
+                        cameraSelector =
+                            if (cameraSelector == CameraSelector.DEFAULT_FRONT_CAMERA) {
+                                CameraSelector.DEFAULT_BACK_CAMERA
+                            } else {
+                                CameraSelector.DEFAULT_FRONT_CAMERA
+                            }
                     }, content = {
-                        Icon(Icons.Default.FlipCameraAndroid, contentDescription = stringResource(R.string.flip_camera), tint = Color.White)
+                        Icon(
+                            Icons.Default.FlipCameraAndroid,
+                            contentDescription = stringResource(R.string.flip_camera),
+                            tint = Color.White
+                        )
                     }
                 )
             }

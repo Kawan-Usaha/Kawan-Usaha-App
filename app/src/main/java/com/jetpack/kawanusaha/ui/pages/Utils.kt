@@ -4,10 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,7 +11,6 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -32,14 +27,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.jetpack.kawanusaha.R
 
-@Composable
-fun LoadingScreen(isLoading: Boolean) {
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    }
-}
 
 @Composable
 fun NavFabButton(navigation: () -> Unit) {
@@ -197,6 +184,7 @@ fun SectionText(text: String, style: TextStyle, modifier: Modifier = Modifier) {
         text = text,
         color = MaterialTheme.colors.onPrimary,
         style = style,
+        modifier = modifier
     )
 }
 
@@ -204,6 +192,6 @@ suspend fun scrollToItem(state: LazyListState, item: Int) {
     state.animateScrollToItem(item)
 }
 
-suspend fun scrollToBottom(state : LazyListState) {
+suspend fun scrollToBottom(state: LazyListState) {
     state.animateScrollToItem(state.layoutInfo.totalItemsCount)
 }

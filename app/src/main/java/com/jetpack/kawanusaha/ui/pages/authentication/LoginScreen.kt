@@ -1,7 +1,10 @@
-package com.jetpack.kawanusaha.ui.pages
+package com.jetpack.kawanusaha.ui.pages.authentication
 
-import android.util.Log
-import android.widget.Toast
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -37,8 +39,19 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
+import com.jetpack.kawanusaha.ui.pages.BackPressHandler
+import com.jetpack.kawanusaha.ui.pages.SectionText
+import com.jetpack.kawanusaha.ui.pages.onKeyboardVisible
+import com.jetpack.kawanusaha.ui.pages.scrollToItem
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -54,8 +67,6 @@ fun LoginScreen(
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val lazyListState = rememberLazyListState()
     val isKeyboardOpen by onKeyboardVisible()
-
-    val mContext = LocalContext.current
 
     val secondaryColor = MaterialTheme.colors.secondary
     val chocolateVariant = MaterialTheme.colors.secondaryVariant
@@ -252,7 +263,7 @@ fun LoginScreen(
                         )
                     }
                     Spacer(Modifier.height(15.dp))
-                    OAuthButton()
+                    OAuthButton(viewModel)
                 }
             }
         }
@@ -288,7 +299,35 @@ fun LoginScreen(
 }
 
 @Composable
-fun OAuthButton() {
+fun OAuthButton(viewModel: LoginViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    var text by remember { mutableStateOf<String?>(null) }
+    val signInRequestCode = 1
+
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
+            try {
+                val account = task?.getResult(ApiException::class.java)
+                if (account != null) {
+                    coroutineScope.launch {
+                        viewModel.register(
+                            name = account.displayName!!,
+                            email = account.email!!,
+                            password = account.idToken!!.slice(0..70),
+                            passwordConfirm = account.idToken!!.slice(0..70)
+                        )
+                        viewModel.login(
+                            email = account.email!!,
+                            password = account.idToken!!.slice(0..70)
+                        )
+                    }
+                } else {
+                    text = "Google sign in failed"
+                }
+            } catch (e: ApiException) {
+                text = "Google sign in failed"
+            }
+        }
     Image(
         painter = painterResource(R.drawable.google),
         contentDescription = "Google Logo",
@@ -297,12 +336,30 @@ fun OAuthButton() {
             .size(50.dp)
             .clickable(
                 enabled = true,
-                onClick = { oauth() },
+                onClick = { authResultLauncher.launch(signInRequestCode) },
                 onClickLabel = "Google Authentication"
             )
     )
 }
 
-fun oauth() {
-    Log.e("LoginScreen", "OAuth Function")
+fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.web_client_id))
+        .requestEmail()
+        .build()
+
+    return GoogleSignIn.getClient(context, signInOptions)
 }
+
+class AuthResultContract : ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
+    override fun createIntent(context: Context, input: Int): Intent =
+        getGoogleSignInClient(context).signInIntent.putExtra("input", input)
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
+        return when (resultCode) {
+            Activity.RESULT_OK -> GoogleSignIn.getSignedInAccountFromIntent(intent)
+            else -> null
+        }
+    }
+}
+

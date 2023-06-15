@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -12,6 +11,7 @@ import com.google.gson.Gson
 import com.jetpack.kawanusaha.data.*
 import com.jetpack.kawanusaha.`in`.Injection
 import com.jetpack.kawanusaha.tools.getFileFromUri
+import com.jetpack.kawanusaha.tools.reduceFileImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -28,6 +28,12 @@ import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
+/**
+ * ViewModel class for everything in the system.
+ * @property dataRepository The instance of DataRepository used for data operations.
+ * @property preferences The instance of SharedPreferences used for storing preferences.
+ * @property application The instance of Application representing the current application context.
+ */
 class MainViewModel(
     private val dataRepository: DataRepository,
     private val preferences: SharedPreferences,
@@ -54,19 +60,6 @@ class MainViewModel(
     private val _categoryList = MutableStateFlow<CategoryResponse?>(null)
     val categoryList: StateFlow<CategoryResponse?> = _categoryList
 
-    private val _llmResponse =
-        MutableStateFlow(
-            arrayListOf(
-                Message(
-                    "assistant",
-                    "Saya adalah AI asisten pembantu UMKM berbahasa Indonesia. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."
-                )
-            )
-        )
-
-    val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
-
-
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -80,52 +73,129 @@ class MainViewModel(
     val selectedCategory: StateFlow<Int> = _selectedCategory
 
     private val _favouriteList = MutableStateFlow<List<ArticlesItem>?>(null)
-    val favouriteList : StateFlow<List<ArticlesItem>?> = _favouriteList
+    val favouriteList: StateFlow<List<ArticlesItem>?> = _favouriteList
 
     private val _tagList = MutableStateFlow<List<TagItem>?>(null)
-    val tagList : StateFlow<List<TagItem>?> = _tagList
+    val tagList: StateFlow<List<TagItem>?> = _tagList
+
+    private val _llmResponse =
+        MutableStateFlow(
+            arrayListOf(
+                Message(
+                    "assistant",
+                    "Saya adalah AI asisten pembantu UMKM berbahasa Indonesia. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."
+                )
+            )
+        )
+
+    val llmResponse: StateFlow<ArrayList<Message>> = _llmResponse
 
     init {
         getTag()
-        tagList.value?.forEach {
-            Log.e("TAGS", it.name)
-        }
         getCategory()
         clearStatus()
     }
 
+    // DEFAULT GETTER & SETTER
+    /**
+     * Sets the image file with the provided URI.
+     * @param uri The URI of the image file to set.
+     */
+    fun setImage(uri: Uri) {
+        _imageFile.value = uri
+    }
+
+    /**
+     * Clears the image file value by setting it to a null Uri.
+     */
+    fun clearImage() {
+        _imageFile.value = Uri.parse("file://dev/null")
+    }
+
+    /**
+     * Clears the status value by setting it to false.
+     */
+    fun clearStatus() {
+        _status.value = false
+    }
+
+    /**
+     * Clears the LLM response cache by resetting it to the default initial message.
+     */
+    fun clearCache() {
+        _llmResponse.value = arrayListOf(
+            Message(
+                "assistant",
+                "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."
+            )
+        )
+    }
+
+    /**
+     * Clears the article cache by setting it to null.
+     */
+    fun clearArticleCache() {
+        _articleCache.value = null
+    }
+
+    /**
+     * Retrieves the token from the SharedPreferences.
+     * @return The token value as a String, or an empty string if the token is not found.
+     */
     private fun getToken(): String = preferences.getString(TOKEN, "").toString()
 
-    // Category
-    private fun getCategory() {
-        viewModelScope.launch {
-            _categoryList.value = dataRepository.getCategory()
-        }
-    }
-
-    fun selectThisCategory(id: Int) {
-        _selectedCategory.value = id
-    }
-
-    private fun getTag(){
+    /**
+     * Retrieves the tag list from the data repository and updates the `_tagList` FlowState
+     */
+    private fun getTag() {
         viewModelScope.launch {
             _tagList.value = dataRepository.getTag()?.data?.tag
         }
     }
 
 
-    // User Profile
+    // CATEGORY
+    /**
+     * Retrieves the category list from the data repository and updates the `_categoryList` FlowState.
+     */
+    private fun getCategory() {
+        viewModelScope.launch {
+            _categoryList.value = dataRepository.getCategory()
+        }
+    }
+
+    /**
+     * Sets the selected category.
+     * @param id The ID of the selected category.
+     */
+    fun selectThisCategory(id: Int) {
+        _selectedCategory.value = id
+    }
+
+
+    // PROFILE
+    /**
+     * Retrieves the user profile from the data repository and updates the `_userProfile` FlowState.
+     */
     fun getUser() {
         viewModelScope.launch {
             _userProfile.value = dataRepository.getUser(getToken())
         }
     }
 
+    /**
+     * Saves the profile changes by updating the user's name and email.
+     *
+     * @param name The new name for the user's profile.
+     * @param email The new email for the user's profile.
+     */
     fun saveProfileChange(name: String, email: String) {
         viewModelScope.launch {
             if (imageFile.value != Uri.parse("file://dev/null")) {
                 val file = getFileFromUri(application.applicationContext, imageFile.value) as File
-                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+                val compressedFile = reduceFileImage(file)
+                val requestImageFile =
+                    compressedFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                 val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                     name = "image",
                     filename = file.name,
@@ -145,7 +215,11 @@ class MainViewModel(
         }
     }
 
-    // Usaha
+
+    // USAHA
+    /**
+     * Retrieves the list of Usaha.
+     */
     fun getListUsaha() {
         getToken()
         viewModelScope.launch {
@@ -153,12 +227,22 @@ class MainViewModel(
         }
     }
 
+    /**
+     * Retrieves the details of a specific Usaha.
+     * @param id The ID of the Usaha.
+     */
     fun getUsahaDetail(id: Int) {
         viewModelScope.launch {
             _usahaDetail.value = dataRepository.getUsahaDetail(getToken(), id)
         }
     }
 
+    /**
+     * Creates a new Usaha.
+     * @param usahaName The name of the Usaha.
+     * @param type The type of the Usaha.
+     * @param tags The list of tags associated with the Usaha.
+     */
     fun createUsaha(usahaName: String, type: Int, tags: List<Tag>) {
         viewModelScope.launch {
             _status.value = dataRepository.createUsaha(
@@ -168,14 +252,36 @@ class MainViewModel(
         }
     }
 
+    /**
+     * Delete a specific Usaha.
+     * @param id The ID of the Usaha.
+     */
+    fun deleteUsaha(id: Int) {
+        viewModelScope.launch {
+            _status.value = dataRepository.deleteUsaha(
+                getToken(),
+                id
+            )?.success ?: false
+        }
+    }
+
 
     // Articles
-    fun getAllArticles(): Flow<PagingData<ArticlesItem>> =
-        dataRepository.getListArticle().cachedIn(viewModelScope)
-
+    /**
+     * Retrieves the user articles using a Flow of PagingData.
+     * @return A Flow of PagingData containing the user articles.
+     */
     fun getUserArticles(): Flow<PagingData<ArticlesItem>> =
         dataRepository.getUserArticle(getToken()).cachedIn(viewModelScope)
 
+    /**
+     * Filters articles based on the given text and category.
+     * If the category is 0, it searches all articles using the text.
+     * Otherwise, it filters articles based on the selected category.
+     * @param text The text to search for.
+     * @param category The category ID to filter by.
+     * @return A Flow of PagingData containing the filtered articles.
+     */
     fun filterAllArticle(text: String, category: Int): Flow<PagingData<ArticlesItem>> =
         if (category == 0) {
             dataRepository.searchAllArticle(text).cachedIn(viewModelScope)
@@ -183,15 +289,30 @@ class MainViewModel(
             filterCategory(selectedCategory.value)
         }
 
+    /**
+     * Filters articles based on the selected category.
+     * @param id The ID of the selected category.
+     * @return A Flow of PagingData containing the filtered articles.
+     */
     private fun filterCategory(id: Int): Flow<PagingData<ArticlesItem>> =
         dataRepository.getCategorizedArticles(id).cachedIn(viewModelScope)
 
+    /**
+     * Retrieves the article detail for the specified ID.
+     * @param id The ID of the article.
+     */
     fun getArticleDetail(id: Int) {
         viewModelScope.launch {
             _articleDetail.value = dataRepository.getArticleDetail(id)?.data
         }
     }
 
+    /**
+     * Saves the article cache with the provided title, description, and category.
+     * @param title The title of the article.
+     * @param description The description or content of the article.
+     * @param category The category of the article.
+     */
     fun saveArticleCache(title: String, description: String, category: Int) {
         _articleCache.value = CreateArticleRequest(
             ArticleRequest(
@@ -203,36 +324,11 @@ class MainViewModel(
         )
     }
 
-    fun setFavourite(id : Int){
-        viewModelScope.launch {
-            dataRepository.setFavourite(getToken(), id)
-        }
-    }
-
-    fun getFavourite(){
-        viewModelScope.launch {
-            _favouriteList.value = dataRepository.getFavourite(getToken())?.data?.articles
-        }
-    }
-
-    fun clearArticleCache() {
-        _articleCache.value = null
-    }
-
-    fun setImage(uri: Uri) {
-        _imageFile.value = uri
-    }
-
-    private fun createNewArticle (imageMultipart: MultipartBody.Part?,createArticleRequest: CreateArticleRequest){
-        viewModelScope.launch {
-            _status.value = dataRepository.createArticle(
-                getToken(),
-                imageMultipart,
-                createArticleRequest
-            )?.success ?: false
-        }
-    }
-
+    /**
+     * Creates a new article with the provided title, content, and category.
+     * If an image file is specified, it is included in the multipart request.
+     * If no image file is specified, the article is created without an image.
+     */
     fun createArticle(title: String, content: String, category: Int) {
         viewModelScope.launch {
             val articleRequest = CreateArticleRequest(
@@ -258,23 +354,67 @@ class MainViewModel(
         }
     }
 
-    fun clearImage() {
-        _imageFile.value = Uri.parse("file://dev/null")
+    private fun createNewArticle(
+        imageMultipart: MultipartBody.Part?,
+        createArticleRequest: CreateArticleRequest
+    ) {
+        viewModelScope.launch {
+            _status.value = dataRepository.createArticle(
+                getToken(),
+                imageMultipart,
+                createArticleRequest
+            )?.success ?: false
+        }
     }
 
-    fun clearStatus() {
-        _status.value = false
+    /**
+     * Remove the article of the specified ID.
+     * @param id The ID of the article.
+     */
+    fun deleteArticle(id: Int) {
+        viewModelScope.launch {
+            dataRepository.deleteArticle(getToken(), id)
+        }
     }
 
-    fun clearCache() {
-        _llmResponse.value = arrayListOf(
-            Message(
-                "assistant",
-                "Saya adalah AI asisten pembantu UMKM. Tugas Saya adalah menjadi mentor virtual untuk UMKM. Silahkan bertanya apapun dan saya akan menjawabnya."
-            )
-        )
+
+    // FAVORITE
+    /**
+     * Sets the specified article as favorite.
+     * @param id The ID of the article to set as favorite.
+     */
+    fun setFavourite(id: Int) {
+        viewModelScope.launch {
+            dataRepository.setFavourite(getToken(), id)
+        }
     }
 
+    /**
+     * Retrieves the list of favorite articles.
+     */
+    fun getFavourite() {
+        viewModelScope.launch {
+            _favouriteList.value = dataRepository.getFavourite(getToken())?.data?.articles
+        }
+    }
+
+    /**
+     * Delete the specified article from favorite.
+     * @param id The ID of the article to remove from favorite.
+     */
+    fun deleteFavourite(id: Int) {
+        viewModelScope.launch {
+            dataRepository.deleteFavourite(getToken(), id)
+        }
+    }
+
+
+    // CHAT BOT TEXT STREAM
+    /**
+     * Sends the chat messages to the stream and handles the response.
+     *
+     * @param message The list of messages to send.
+     */
     private fun sendStreamChat(message: List<Message>) {
         _isLoading.value = true
         val llmRequest = LLMRequest(
@@ -313,84 +453,26 @@ class MainViewModel(
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        Log.e("DataRepository", "APi Call Success ${response}")
+                        Log.e("DataRepository", "APi Call Success $response")
                     }
                 })
             }
         }
     }
 
+    /**
+     * Sends a message from the user to the chat stream.
+     *
+     * @param message The message to send.
+     */
     fun sendMsg(message: String) {
         _llmResponse.value.add(Message("user", message))
-//        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
-//            viewModelScope.launch {
-//                generateAIArticle()
-//            }
-//        }
         sendStreamChat(llmResponse.value)
     }
 
-
-//    private var topic: String = ""
-//    private var articleText: String = ""
-//    private suspend fun generateAIArticle() {
-//        val message = llmResponse.value
-//        message.add(Message("user", "Apa topik dari percakapan diatas?"))
-//        topic = dataRepository.chatResult(
-//            jwtToken = getToken(),
-//            llmRequest = LLMRequest(
-//                model = "Kawan-Usaha",
-//                stream = false,
-//                messages = message,
-//                max_tokens = 512,
-//                temperature = 0.5,
-//                top_p = 1.0
-//            )
-//        )?.choices?.get(0)?.message?.content ?: "No Topic"
-//        if (topic == "No Topic") {
-//            Log.e("Generate Article", "Cannot get topic")
-//        } else {
-//            message.add(
-//                Message(
-//                    "user",
-//                    "Buatkan artikel untuk mengedukasi saya mengenai topik tersebut. Buat dengan selengkap lengkapnya"
-//                )
-//            )
-//            generateAIArticle2(message)
-//        }
-//    }
-
-//    private suspend fun generateAIArticle2(message: ArrayList<Message>) {
-//        val response = dataRepository.chatResult(
-//            jwtToken = getToken(),
-//            llmRequest = LLMRequest(
-//                model = "Kawan-Usaha",
-//                stream = false,
-//                messages = message,
-//                max_tokens = 512,
-//                temperature = 0.5,
-//                top_p = 1.0
-//            )
-//        )
-//        articleText += response?.choices?.get(0)?.message?.content ?: ""
-//        if (response != null && response.choices[0].finish_reason != "stop") {
-//            message.add(Message("user", "Lanjutkan dari pesan terakhir anda"))
-//            generateAIArticle2(message)
-//        }
-//        if (response != null && response.choices[0].finish_reason == "stop"){
-//             createNewArticle(
-//                 imageMultipart = null,
-//                 createArticleRequest = CreateArticleRequest(
-//                    article = ArticleRequest(
-//                        title = topic,
-//                        content = articleText,
-//                        is_published = false
-//                    ), category = 2
-//                )
-//             )
-//        }
-//    }
-
+    /**
+     * EventSourceListener implementation used for handling events from EventSource.
+     */
     private val eventSourceListener = object : EventSourceListener() {
         override fun onOpen(eventSource: EventSource, response: Response) {
             super.onOpen(eventSource, response)
@@ -429,18 +511,108 @@ class MainViewModel(
         }
     }
 
+//    /**
+//     * Sends a message by adding it to the response list and performing additional actions if necessary.
+//     *
+//     * @param message The message to be sent.
+//     */
+//    fun sendMsg(message: String) {
+//        _llmResponse.value.add(Message("user", message))
+//        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
+//            viewModelScope.launch {
+//                generateAIArticle()
+//            }
+//        }
+//        sendStreamChat(llmResponse.value)
+//    }
+//
+//
+//    private var topic: String = ""
+//    private var articleText: String = ""
+//    /**
+//     * Generates an AI article based on the conversation and identified topic.
+//     */
+//    private suspend fun generateAIArticle() {
+//        val message = llmResponse.value
+//        message.add(Message("user", "Apa topik dari percakapan diatas?"))
+//        topic = dataRepository.chatResult(
+//            jwtToken = getToken(),
+//            llmRequest = LLMRequest(
+//                model = "Kawan-Usaha",
+//                stream = false,
+//                messages = message,
+//                max_tokens = 512,
+//                temperature = 0.5,
+//                top_p = 1.0
+//            )
+//        )?.choices?.get(0)?.message?.content ?: "No Topic"
+//        if (topic == "No Topic") {
+//            Log.e("Generate Article", "Cannot get topic")
+//        } else {
+//            message.add(
+//                Message(
+//                    "user",
+//                    "Buatkan artikel untuk mengedukasi saya mengenai topik tersebut. Buat dengan selengkap lengkapnya"
+//                )
+//            )
+//            generateAIArticle2(message)
+//        }
+//    }
+//
+//    /**
+//     * Generates an AI article continuation based on the conversation and appends it to the article text.
+//     *
+//     * @param message The list of messages in the conversation.
+//     */
+//    private suspend fun generateAIArticle2(message: ArrayList<Message>) {
+//        val response = dataRepository.chatResult(
+//            jwtToken = getToken(),
+//            llmRequest = LLMRequest(
+//                model = "Kawan-Usaha",
+//                stream = false,
+//                messages = message,
+//                max_tokens = 512,
+//                temperature = 0.5,
+//                top_p = 1.0
+//            )
+//        )
+//        articleText += response?.choices?.get(0)?.message?.content ?: ""
+//        if (response != null && response.choices[0].finish_reason != "stop") {
+//            message.add(Message("user", "Lanjutkan dari pesan terakhir anda"))
+//            generateAIArticle2(message)
+//        }
+//        if (response != null && response.choices[0].finish_reason == "stop"){
+//             createNewArticle(
+//                 imageMultipart = null,
+//                 createArticleRequest = CreateArticleRequest(
+//                    article = ArticleRequest(
+//                        title = topic,
+//                        content = articleText,
+//                        is_published = false
+//                    ), category = 2
+//                )
+//             )
+//        }
+//    }
+
     companion object {
         private const val TOKEN = "TOKEN"
-        private const val GENERATE_COUNTER = 6
         private const val API_HOST = "https://api.kawan-usaha.com/"
+//        private const val GENERATE_COUNTER = 6
     }
 }
 
+/**
+ * Factory class for creating instances of MainViewModel.
+ *
+ * @param preferences The SharedPreferences instance for accessing preferences.
+ * @param application The Application instance.
+ */
 class MainViewModelFactory(
     private val preferences: SharedPreferences,
     private val application: Application
 ) : ViewModelProvider.Factory {
-     override fun <T : ViewModel> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
             return MainViewModel(

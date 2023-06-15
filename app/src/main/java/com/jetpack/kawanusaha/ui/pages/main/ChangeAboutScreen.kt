@@ -1,22 +1,13 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
-import android.app.Activity
-import android.content.Context
-import android.graphics.*
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
-import android.util.Log
-import androidx.activity.compose.ManagedActivityResultLauncher
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
@@ -30,23 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
-import com.jetpack.kawanusaha.MainActivity
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.main.CameraViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
-import com.jetpack.kawanusaha.ui.pages.authentication.mToast
 
 @Composable
 fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, navBack: () -> Unit) {
@@ -86,7 +69,8 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
             item {
                 Column {
                     Box(
-                        contentAlignment = Alignment.Center, modifier = Modifier.clickable { navToCamera() }
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.clickable { navToCamera() }
                     ) {
                         if (image != Uri.parse("file://dev/null")) {
                             AsyncImage(
@@ -213,7 +197,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             onValueChange = {
                                                 newName = it
                                             },
-                                            placeholder = { Text(text = userData.name)},
+                                            placeholder = { Text(text = userData.name) },
                                             colors = TextFieldDefaults.textFieldColors(
                                                 backgroundColor = MaterialTheme.colors.primary,
                                                 disabledIndicatorColor = MaterialTheme.colors.primary,
@@ -243,7 +227,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             onValueChange = {
                                                 newEmail = it
                                             },
-                                            placeholder = { Text(text = userData.email)},
+                                            placeholder = { Text(text = userData.email) },
                                             colors = TextFieldDefaults.textFieldColors(
                                                 backgroundColor = MaterialTheme.colors.primary,
                                                 disabledIndicatorColor = MaterialTheme.colors.primary,

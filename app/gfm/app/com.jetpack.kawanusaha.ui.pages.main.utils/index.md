@@ -1,0 +1,15 @@
+//[app](../../index.md)/[com.jetpack.kawanusaha.ui.pages.main.utils](index.md)
+
+# Package-level declarations
+
+## Functions
+
+| Name | Summary |
+|---|---|
+| [ArticleItem](-article-item.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [ArticleItem](-article-item.md)(articlesItem: [ArticlesItem](../com.jetpack.kawanusaha.data/-articles-item/index.md), navToArticle: ([Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
+| [ArticleSection](-article-section.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [ArticleSection](-article-section.md)(articles: [LazyPagingItems](https://developer.android.com/reference/kotlin/androidx/paging/compose/LazyPagingItems.html)&lt;[ArticlesItem](../com.jetpack.kawanusaha.data/-articles-item/index.md)&gt;, navToArticle: ([Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
+| [CallUsahaLists](-call-usaha-lists.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [CallUsahaLists](-call-usaha-lists.md)(mainViewModel: [MainViewModel](../com.jetpack.kawanusaha.main/-main-view-model/index.md)) |
+| [CategoryItem](-category-item.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [CategoryItem](-category-item.md)(mainViewModel: [MainViewModel](../com.jetpack.kawanusaha.main/-main-view-model/index.md), category: [Category](../com.jetpack.kawanusaha.data/-category/index.md)) |
+| [CategorySection](-category-section.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [CategorySection](-category-section.md)(mainViewModel: [MainViewModel](../com.jetpack.kawanusaha.main/-main-view-model/index.md)) |
+| [UsahaItem](-usaha-item.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [UsahaItem](-usaha-item.md)(usaha_name: [UsahaData](../com.jetpack.kawanusaha.data/-usaha-data/index.md), navToUsahaDetail: ([Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
+| [UsahaSection](-usaha-section.md) | [androidJvm]<br>@[Composable](https://developer.android.com/reference/kotlin/androidx/compose/runtime/Composable.html)<br>fun [UsahaSection](-usaha-section.md)(response: [UsahaResponse](../com.jetpack.kawanusaha.data/-usaha-response/index.md)?, navToUsahaDetail: ([Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
