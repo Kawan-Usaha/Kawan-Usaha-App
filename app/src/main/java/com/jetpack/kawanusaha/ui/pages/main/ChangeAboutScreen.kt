@@ -37,6 +37,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
     var newEmail by remember { mutableStateOf(TextFieldValue("")) }
     val status by mainViewModel.status.collectAsState(initial = false)
 
+    val user by mainViewModel.userProfile.collectAsState(initial = null)
     val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
     var newImage by remember { mutableStateOf<Uri?>(image) }
 
@@ -46,7 +47,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navBack() }) {
+                    IconButton(onClick = { mainViewModel.clearImage(); navBack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = stringResource(R.string.back)
@@ -133,7 +134,6 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                     modifier = Modifier.padding(10.dp),
                     border = BorderStroke(width = 1.dp, MaterialTheme.colors.secondary)
                 ) {
-                    val user by mainViewModel.userProfile.collectAsState(initial = null)
                     val customTextSelection = TextSelectionColors(
                         handleColor = MaterialTheme.colors.secondary,
                         backgroundColor = MaterialTheme.colors.background
@@ -178,7 +178,6 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                             ),
                                             modifier = Modifier.weight(0.7f)
                                         )
-
                                     }
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
@@ -245,14 +244,12 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                     Button(
                                         onClick = {
                                             mainViewModel.saveProfileChange(
-                                                newName.text,
-                                                newEmail.text
+                                                newName.text.ifEmpty { userData.name },
+                                                newEmail.text.ifEmpty { userData.email }
                                             )
                                         },
                                         //TODO pake regex
-                                        enabled =
-                                        (newName.text != userData.name || newEmail.text != userData.email || newImage?.toString() != userData.image) &&
-                                                (newName.text != "" || newEmail.text != ""),
+                                        enabled = newEmail.text.matches(Regex("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]+\$")) || newEmail.text.isEmpty() || newName.text.isEmpty() || image != Uri.parse("file://dev/null"),
                                         colors = ButtonDefaults.buttonColors(
                                             backgroundColor = MaterialTheme.colors.secondary,
                                             disabledBackgroundColor = MaterialTheme.colors.surface,
@@ -262,6 +259,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                         LaunchedEffect(status) {
                                             if (status) {
                                                 mainViewModel.clearStatus()
+                                                mainViewModel.clearImage()
                                                 navBack()
                                             }
                                         }

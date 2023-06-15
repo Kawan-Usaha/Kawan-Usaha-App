@@ -183,6 +183,13 @@ interface ApiService {
     ): Call<LLMResponse>
 
 
+    @POST("v1/generate-article")
+    fun generateArticle(
+        @Header("Authorization") token: String,
+        @Body request: LLMRequest
+    ): Call<DefaultResponse>
+
+
     // FOR INTERNET SEARCH
     @GET("search")
     fun search(

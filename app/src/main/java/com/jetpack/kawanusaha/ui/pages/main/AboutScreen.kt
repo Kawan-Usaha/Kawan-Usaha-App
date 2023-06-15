@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -207,26 +208,41 @@ fun AboutScreen(
                                     modifier = Modifier.padding(16.dp)
                                 ) {
                                     val showShimmer = remember { mutableStateOf(true) }
-                                    AsyncImage(
-                                        model = user?.data?.image ?: "",
-                                        contentDescription = stringResource(R.string.profile_picture),
-                                        placeholder = painterResource(id = R.drawable.profile),
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(120.dp)
-                                            .padding(8.dp)
-                                            .clip(CircleShape)
-                                            .background(
-                                                shimmerBrush(
-                                                    targetValue = 1300f,
-                                                    showShimmer = showShimmer.value
-                                                )
-                                            ),
-                                        onSuccess = { showShimmer.value = false },
-                                        onError = {
-                                            showShimmer.value = true
-                                        }
-                                    )
+                                    val isError = remember { mutableStateOf(false) }
+                                    if (isError.value){
+                                        Image(
+                                            painter = painterResource(id = R.drawable.profile),
+                                            contentDescription = stringResource(R.string.profile_picture),
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .size(120.dp)
+                                                .padding(8.dp)
+                                                .clip(CircleShape)
+
+                                        )
+                                    } else {
+                                        AsyncImage(
+                                            model = user?.data?.image ?: "",
+                                            contentDescription = stringResource(R.string.profile_picture),
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier
+                                                .size(120.dp)
+                                                .padding(8.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    shimmerBrush(
+                                                        targetValue = 1300f,
+                                                        showShimmer = showShimmer.value
+                                                    )
+                                                ),
+                                            onSuccess = { showShimmer.value = false },
+                                            onError = {
+                                                showShimmer.value = false
+                                                isError.value = true
+                                            }
+                                        )
+                                    }
+
                                     Spacer(modifier = Modifier.width(10.dp))
                                     Column(
                                         verticalArrangement = Arrangement.spacedBy(10.dp),

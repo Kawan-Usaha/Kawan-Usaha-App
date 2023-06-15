@@ -153,6 +153,13 @@ class DataRepository(private val apiService: ApiService, private val InternetApi
 
 
     /**
+     * The api will generate a new article
+     */
+    suspend fun generateArticle (jwtToken: String, llmRequest: LLMRequest): DefaultResponse?{
+        return executeRequest { apiService.generateArticle("Bearer $jwtToken", llmRequest).execute() }
+    }
+
+    /**
      * Chat Section : Batch (Currently unused)
      */
     suspend fun chatResult(jwtToken: String, llmRequest: LLMRequest): LLMResponse? {
