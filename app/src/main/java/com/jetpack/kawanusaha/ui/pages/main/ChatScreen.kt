@@ -17,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -167,14 +168,14 @@ fun TopBarSection() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                imageVector = Icons.Default.AccountCircle,
+                painter = painterResource(R.drawable.bot),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(42.dp)
+                    .size(32.dp)
                     .clip(CircleShape)
             )
  
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(text = stringResource(R.string.bot), fontWeight = FontWeight.SemiBold)
                 Text(

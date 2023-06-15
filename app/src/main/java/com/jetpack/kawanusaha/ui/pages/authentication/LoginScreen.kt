@@ -172,6 +172,7 @@ fun LoginScreen(
                                     tint = secondaryColor
                                 )
                             },
+                            singleLine = true,
                             trailingIcon = {
                                 val image = if (passwordVisible)
                                     painterResource(R.drawable.baseline_visibility_24) else

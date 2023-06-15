@@ -138,4 +138,5 @@ Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac tu
     <string name="en" translatable="false">English</string>
     <string name="indo" translatable="false">Indonesia</string>
     <string name="language">Language</string>
+    <string name="insert_tag">Insert Tag</string>
 </resources>

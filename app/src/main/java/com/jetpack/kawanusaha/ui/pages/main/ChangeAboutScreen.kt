@@ -39,6 +39,9 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
 
     val user by mainViewModel.userProfile.collectAsState(initial = null)
     val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
+    var newImage by remember { mutableStateOf<Uri?>(image) }
+
+    val uriString: String = newImage?.toString() ?: ""
 
     Scaffold(
         topBar = {
@@ -75,7 +78,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                     ) {
                         if (image != Uri.parse("file://dev/null")) {
                             AsyncImage(
-                                model = image,
+                                model = newImage,
                                 contentDescription = stringResource(R.string.image_preview),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -245,7 +248,8 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                                 newEmail.text.ifEmpty { userData.email }
                                             )
                                         },
-                                        enabled = newEmail.text.matches(Regex("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]+\$")) || newEmail.text.isEmpty(),
+                                        //TODO pake regex
+                                        enabled = newEmail.text.matches(Regex("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]+\$")) || newEmail.text.isEmpty() || newName.text.isEmpty() || image != Uri.parse("file://dev/null"),
                                         colors = ButtonDefaults.buttonColors(
                                             backgroundColor = MaterialTheme.colors.secondary,
                                             disabledBackgroundColor = MaterialTheme.colors.surface,
