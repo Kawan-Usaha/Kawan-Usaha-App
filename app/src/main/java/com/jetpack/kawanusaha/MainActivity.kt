@@ -5,16 +5,14 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.identity.Identity
+import com.jetpack.kawanusaha.data.GoogleAuthUiClient
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.LoginViewModelFactory
 import com.jetpack.kawanusaha.main.MainViewModel
@@ -24,7 +22,13 @@ import com.jetpack.kawanusaha.ui.theme.KawanUsahaTheme
 
 //https://developer.android.com/studio/write/app-link-indexing
 class MainActivity : ComponentActivity() {
-   
+    private val googleAuthUiClient by lazy {
+        GoogleAuthUiClient(
+            context = applicationContext,
+            oneTapClient = Identity.getSignInClient(applicationContext)
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val preferences: SharedPreferences =
@@ -32,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
-
             KawanUsahaTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -46,11 +49,12 @@ class MainActivity : ComponentActivity() {
                         this,
                         MainViewModelFactory(preferences, this.application)
                     )[MainViewModel::class.java]
+
                     NavigationScreen(
                         loginViewModel = loginViewModel,
                         mainViewModel = mainViewModel,
+                        googleAuthUiClient = googleAuthUiClient
                     )
-
                 }
             }
         }

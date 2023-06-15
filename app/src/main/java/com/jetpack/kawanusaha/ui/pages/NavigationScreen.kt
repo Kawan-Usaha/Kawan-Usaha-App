@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.jetpack.kawanusaha.data.GoogleAuthUiClient
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.main.MainViewModel
 import com.jetpack.kawanusaha.ui.pages.authentication.*
@@ -24,6 +25,7 @@ import com.jetpack.kawanusaha.ui.pages.main.*
 fun NavigationScreen(
     loginViewModel: LoginViewModel,
     mainViewModel: MainViewModel,
+    googleAuthUiClient: GoogleAuthUiClient
 ) {
     val navController = rememberNavController()
     val startDestination: String =
@@ -100,7 +102,10 @@ fun NavigationScreen(
 
             // LoginScreen Navigation
             composable(route = "login_screen") {
-                LoginScreen(viewModel = loginViewModel, {
+                LoginScreen(
+                    viewModel = loginViewModel,
+                    googleAuthUiClient = googleAuthUiClient,
+                    {
                     // LoginScreen to RegisterScreen
                     navController.navigate("register_screen")
                 }, {

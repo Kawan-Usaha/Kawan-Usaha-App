@@ -3,7 +3,9 @@ package com.jetpack.kawanusaha.main
 import android.app.Application
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -26,6 +28,7 @@ import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 import java.io.File
 import java.io.IOException
+import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
 /**
@@ -337,8 +340,7 @@ class MainViewModel(
                     content = content,
                     is_published = true
                 ),
-                category
-            )
+                category            )
             if (imageFile.value != Uri.parse("file://dev/null")) {
                 val file = getFileFromUri(application.applicationContext, imageFile.value) as File
                 val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
@@ -411,6 +413,63 @@ class MainViewModel(
 
     // CHAT BOT TEXT STREAM
     /**
+     * Sends a message from the user to the chat stream.
+     *
+     * @param message The message to send.
+     */
+    suspend fun sendMsg(message: String) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val dummyResponse: ArrayList<Message> = arrayListOf()
+            llmResponse.value.forEach {
+                dummyResponse.add(it)
+            }
+            dummyResponse.add(Message("user", enhancePrompt(message, 5)))
+            _llmResponse.value.add(Message("user", message))
+
+//            Log.e("LLM RESPONSE", llmResponse.value.toString())
+//            Log.e("DUMMY RESPONSE", dummyResponse.toString())
+            sendStreamChat(dummyResponse)
+        } else {
+            _llmResponse.value.add(Message("user", message))
+            sendStreamChat(_llmResponse.value)
+        }
+
+
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    suspend fun enhancePrompt(message: String, webCount: Int): String {
+        return withContext(Dispatchers.IO) {
+            var enhancedPrompt: String = "Saya akan memberi Anda pertanyaan atau instruksi. " +
+                    "Tujuan Anda sebagai seorang ahli Usaha Mikro Kecil Menengah adalah untuk menjawab pertanyaan saya atau memenuhi instruksi saya.\n" +
+                    "Pertanyaan atau instruksi saya adalah: $message. \n" +
+                    "Untuk referensi Anda, tanggal hari ini adalah ${LocalTime.now()}.\n" +
+                    "Pertanyaan atau instruksi, atau hanya sebagian saja, mungkin memerlukan informasi yang relevan dari internet untuk memberikan " +
+                    "jawaban yang memuaskan. Oleh karena itu, di bawah ini adalah informasi yang diperlukan yang diperoleh dari internet, yang menentukan " +
+                    "konteks untuk menjawab pertanyaan atau memenuhi instruksi. Anda akan menulis balasan komprehensif untuk pertanyaan atau instruksi yang " +
+                    "diberikan. Pastikan untuk mengutip hasil menggunakan notasi [[NOMOR](URL)] setelah referensi."
+            val text = dataRepository.searchInternet(message)
+            var iterator = 0
+            text?.web?.results?.forEach { content ->
+                if (content.extraSnippets != null && iterator < webCount){
+                    if (content.extraSnippets[0] != "null"){
+                        iterator ++
+                        enhancedPrompt +=
+                            "NOMOR $iterator \n" +
+                            "URL : ${content.url}\n" +
+                            "JUDUL : ${content.title}\n" +
+                            "CONTENT : ${if(content.extraSnippets[0].length>200) content.extraSnippets[0].slice(0..200) else content.extraSnippets[0]}\n"
+                    }
+                }
+            }
+            enhancedPrompt
+        }
+    }
+
+
+    /**
      * Sends the chat messages to the stream and handles the response.
      *
      * @param message The list of messages to send.
@@ -423,7 +482,7 @@ class MainViewModel(
             messages = message,
             max_tokens = 512,
             temperature = 0.5,
-            top_p = 1.0
+            top_p = 0.5
         )
 
         val jsonPayload = Gson().toJson(llmRequest)
@@ -449,25 +508,15 @@ class MainViewModel(
             withContext(Dispatchers.IO) {
                 client.newCall(request).enqueue(responseCallback = object : Callback {
                     override fun onFailure(call: Call, e: IOException) {
-                        Log.e("DataRepository", "API Call Failure ${e.localizedMessage}")
+                        Log.e("MainViewModel", "API Call Failure ${e.localizedMessage}")
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        Log.e("DataRepository", "APi Call Success $response")
+                        Log.e("MainViewModel", "APi Call Success ${response.body?.string()!!}")
                     }
                 })
             }
         }
-    }
-
-    /**
-     * Sends a message from the user to the chat stream.
-     *
-     * @param message The message to send.
-     */
-    fun sendMsg(message: String) {
-        _llmResponse.value.add(Message("user", message))
-        sendStreamChat(llmResponse.value)
     }
 
     /**

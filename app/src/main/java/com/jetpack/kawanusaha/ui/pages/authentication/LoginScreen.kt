@@ -1,10 +1,9 @@
 package com.jetpack.kawanusaha.ui.pages.authentication
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
+import android.app.Activity.RESULT_OK
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,13 +38,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.data.GoogleAuthUiClient
 import com.jetpack.kawanusaha.main.LoginViewModel
 import com.jetpack.kawanusaha.ui.pages.BackPressHandler
 import com.jetpack.kawanusaha.ui.pages.SectionText
@@ -56,6 +50,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
+    googleAuthUiClient: GoogleAuthUiClient,
     navToRegister: () -> Unit,
     navToLanding: () -> Unit,
     navToMain: () -> Unit,
@@ -263,7 +258,7 @@ fun LoginScreen(
                         )
                     }
                     Spacer(Modifier.height(15.dp))
-                    OAuthButton(viewModel)
+                    OAuthButton(viewModel, googleAuthUiClient, navToMain)
                 }
             }
         }
@@ -299,35 +294,29 @@ fun LoginScreen(
 }
 
 @Composable
-fun OAuthButton(viewModel: LoginViewModel) {
+fun OAuthButton(
+    viewModel: LoginViewModel,
+    googleAuthUiClient: GoogleAuthUiClient,
+    navToMain: () -> Unit
+) {
     val coroutineScope = rememberCoroutineScope()
-    var text by remember { mutableStateOf<String?>(null) }
-    val signInRequestCode = 1
+    val state by viewModel.state.collectAsState()
 
-    val authResultLauncher =
-        rememberLauncherForActivityResult(contract = AuthResultContract()) { task ->
-            try {
-                val account = task?.getResult(ApiException::class.java)
-                if (account != null) {
-                    coroutineScope.launch {
-                        viewModel.register(
-                            name = account.displayName!!,
-                            email = account.email!!,
-                            password = account.idToken!!.slice(0..70),
-                            passwordConfirm = account.idToken!!.slice(0..70)
-                        )
-                        viewModel.login(
-                            email = account.email!!,
-                            password = account.idToken!!.slice(0..70)
-                        )
-                    }
-                } else {
-                    text = "Google sign in failed"
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult(),
+        onResult = { result ->
+            if (result.resultCode == RESULT_OK) {
+                coroutineScope.launch {
+                    val signInResult = googleAuthUiClient.signInWithIntent(
+                        intent = result.data ?: return@launch
+                    )
+                    viewModel.onSignInResult(signInResult)
                 }
-            } catch (e: ApiException) {
-                text = "Google sign in failed"
             }
         }
+    )
+
     Image(
         painter = painterResource(R.drawable.google),
         contentDescription = "Google Logo",
@@ -336,30 +325,43 @@ fun OAuthButton(viewModel: LoginViewModel) {
             .size(50.dp)
             .clickable(
                 enabled = true,
-                onClick = { authResultLauncher.launch(signInRequestCode) },
+                onClick = {
+                    coroutineScope.launch {
+                        val signInIntentSender = googleAuthUiClient.signIn()
+                        launcher.launch(
+                            IntentSenderRequest
+                                .Builder(
+                                    signInIntentSender ?: return@launch
+                                )
+                                .build()
+                        )
+                    }
+                },
                 onClickLabel = "Google Authentication"
             )
     )
-}
 
-fun getGoogleSignInClient(context: Context): GoogleSignInClient {
-    val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestIdToken(context.getString(R.string.web_client_id))
-        .requestEmail()
-        .build()
-
-    return GoogleSignIn.getClient(context, signInOptions)
-}
-
-class AuthResultContract : ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
-    override fun createIntent(context: Context, input: Int): Intent =
-        getGoogleSignInClient(context).signInIntent.putExtra("input", input)
-
-    override fun parseResult(resultCode: Int, intent: Intent?): Task<GoogleSignInAccount>? {
-        return when (resultCode) {
-            Activity.RESULT_OK -> GoogleSignIn.getSignedInAccountFromIntent(intent)
-            else -> null
+    LaunchedEffect(key1 = state.isSignInSuccessful, viewModel.isLoggedIn()) {
+        if (state.isSignInSuccessful) {
+            googleAuthUiClient.getFirebaseUser()!!.run {
+                viewModel.register(
+                    name = displayName!!,
+                    email = email!!,
+                    password = uid.slice(2..25),
+                    passwordConfirm = uid.slice(2..25),
+                )
+                viewModel.login(
+                    email = email!!,
+                    password = uid.slice(2..25)
+                )
+            }
+            viewModel.resetState()
+        }
+        if (viewModel.isLoggedIn()) {
+            navToMain()
+            googleAuthUiClient.signOut()
         }
     }
 }
+
 
