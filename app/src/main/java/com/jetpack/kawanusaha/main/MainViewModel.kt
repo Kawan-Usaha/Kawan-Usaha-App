@@ -28,6 +28,7 @@ import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 import java.io.File
 import java.io.IOException
+import java.time.LocalDate
 import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
@@ -418,34 +419,50 @@ class MainViewModel(
      * @param message The message to send.
      */
     suspend fun sendMsg(message: String) {
-
+        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
+            viewModelScope.launch {
+                val llmRequest = LLMRequest(
+                    model = "Kawan-Usaha",
+                    stream = false,
+                    messages = llmResponse.value,
+                    max_tokens = 512,
+                    temperature = 0.5,
+                    top_p = 0.5
+                )
+                dataRepository.generateArticle(getToken(), llmRequest)
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val dummyResponse: ArrayList<Message> = arrayListOf()
             llmResponse.value.forEach {
                 dummyResponse.add(it)
             }
-            dummyResponse.add(Message("user", enhancePrompt(message, 5)))
             _llmResponse.value.add(Message("user", message))
+            dummyResponse.add(Message("user", enhancePrompt(message)))
 
-//            Log.e("LLM RESPONSE", llmResponse.value.toString())
-//            Log.e("DUMMY RESPONSE", dummyResponse.toString())
+            Log.e("LLM RESPONSE", llmResponse.value.toString())
+            Log.e("DUMMY RESPONSE", dummyResponse.toString())
             sendStreamChat(dummyResponse)
         } else {
             _llmResponse.value.add(Message("user", message))
             sendStreamChat(_llmResponse.value)
         }
-
-
-
     }
 
+
+    /**
+     * Enhances the prompt by adding information from the internet.
+     *
+     * @param message The message or instruction to be enhanced.
+     * @return The enhanced prompt with information from the internet.
+     */
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun enhancePrompt(message: String, webCount: Int): String {
+    suspend fun enhancePrompt(message: String): String {
         return withContext(Dispatchers.IO) {
             var enhancedPrompt: String = "Saya akan memberi Anda pertanyaan atau instruksi. " +
                     "Tujuan Anda sebagai seorang ahli Usaha Mikro Kecil Menengah adalah untuk menjawab pertanyaan saya atau memenuhi instruksi saya.\n" +
                     "Pertanyaan atau instruksi saya adalah: $message. \n" +
-                    "Untuk referensi Anda, tanggal hari ini adalah ${LocalTime.now()}.\n" +
+                    "Untuk referensi Anda, tanggal hari ini adalah ${LocalDate.now()}.\n" +
                     "Pertanyaan atau instruksi, atau hanya sebagian saja, mungkin memerlukan informasi yang relevan dari internet untuk memberikan " +
                     "jawaban yang memuaskan. Oleh karena itu, di bawah ini adalah informasi yang diperlukan yang diperoleh dari internet, yang menentukan " +
                     "konteks untuk menjawab pertanyaan atau memenuhi instruksi. Anda akan menulis balasan komprehensif untuk pertanyaan atau instruksi yang " +
@@ -453,7 +470,7 @@ class MainViewModel(
             val text = dataRepository.searchInternet(message)
             var iterator = 0
             text?.web?.results?.forEach { content ->
-                if (content.extraSnippets != null && iterator < webCount){
+                if (content.extraSnippets != null && iterator < WEB_COUNT){
                     if (content.extraSnippets[0] != "null"){
                         iterator ++
                         enhancedPrompt +=
@@ -512,7 +529,7 @@ class MainViewModel(
                     }
 
                     override fun onResponse(call: Call, response: Response) {
-                        Log.e("MainViewModel", "APi Call Success ${response.body?.string()!!}")
+                        Log.e("MainViewModel", "APi Call Success $response")
                     }
                 })
             }
@@ -542,6 +559,7 @@ class MainViewModel(
         ) {
             super.onEvent(eventSource, id, type, data)
             val gson = Gson().fromJson(data, LLMResponse::class.java)
+            Log.e("DATA", gson.toString())
             gson.choices[0].delta.content.toString().let {
                 _stringResponse.value += if (it == "null") "" else it
             }
@@ -560,94 +578,11 @@ class MainViewModel(
         }
     }
 
-//    /**
-//     * Sends a message by adding it to the response list and performing additional actions if necessary.
-//     *
-//     * @param message The message to be sent.
-//     */
-//    fun sendMsg(message: String) {
-//        _llmResponse.value.add(Message("user", message))
-//        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
-//            viewModelScope.launch {
-//                generateAIArticle()
-//            }
-//        }
-//        sendStreamChat(llmResponse.value)
-//    }
-//
-//
-//    private var topic: String = ""
-//    private var articleText: String = ""
-//    /**
-//     * Generates an AI article based on the conversation and identified topic.
-//     */
-//    private suspend fun generateAIArticle() {
-//        val message = llmResponse.value
-//        message.add(Message("user", "Apa topik dari percakapan diatas?"))
-//        topic = dataRepository.chatResult(
-//            jwtToken = getToken(),
-//            llmRequest = LLMRequest(
-//                model = "Kawan-Usaha",
-//                stream = false,
-//                messages = message,
-//                max_tokens = 512,
-//                temperature = 0.5,
-//                top_p = 1.0
-//            )
-//        )?.choices?.get(0)?.message?.content ?: "No Topic"
-//        if (topic == "No Topic") {
-//            Log.e("Generate Article", "Cannot get topic")
-//        } else {
-//            message.add(
-//                Message(
-//                    "user",
-//                    "Buatkan artikel untuk mengedukasi saya mengenai topik tersebut. Buat dengan selengkap lengkapnya"
-//                )
-//            )
-//            generateAIArticle2(message)
-//        }
-//    }
-//
-//    /**
-//     * Generates an AI article continuation based on the conversation and appends it to the article text.
-//     *
-//     * @param message The list of messages in the conversation.
-//     */
-//    private suspend fun generateAIArticle2(message: ArrayList<Message>) {
-//        val response = dataRepository.chatResult(
-//            jwtToken = getToken(),
-//            llmRequest = LLMRequest(
-//                model = "Kawan-Usaha",
-//                stream = false,
-//                messages = message,
-//                max_tokens = 512,
-//                temperature = 0.5,
-//                top_p = 1.0
-//            )
-//        )
-//        articleText += response?.choices?.get(0)?.message?.content ?: ""
-//        if (response != null && response.choices[0].finish_reason != "stop") {
-//            message.add(Message("user", "Lanjutkan dari pesan terakhir anda"))
-//            generateAIArticle2(message)
-//        }
-//        if (response != null && response.choices[0].finish_reason == "stop"){
-//             createNewArticle(
-//                 imageMultipart = null,
-//                 createArticleRequest = CreateArticleRequest(
-//                    article = ArticleRequest(
-//                        title = topic,
-//                        content = articleText,
-//                        is_published = false
-//                    ), category = 2
-//                )
-//             )
-//        }
-//    }
-
     companion object {
         private const val TOKEN = "TOKEN"
         private const val API_HOST = "https://api.kawan-usaha.com/"
-//        private const val GENERATE_COUNTER = 6
+        private const val GENERATE_COUNTER = 7
+        private const val WEB_COUNT = 3
     }
 }
 
