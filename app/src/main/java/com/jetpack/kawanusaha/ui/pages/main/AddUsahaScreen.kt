@@ -122,9 +122,56 @@ fun AddUsahaScreen(mainViewModel: MainViewModel, navBack: () -> Unit) {
                                 horizontalAlignment = Alignment.Start,
                                 verticalArrangement = Arrangement.Top,
                             ) {
-                                tag1 = TagDropDown(mainViewModel = mainViewModel, tag2, tag3)
-                                tag2 = TagDropDown(mainViewModel = mainViewModel, tag1, tag3)
-                                tag3 = TagDropDown(mainViewModel = mainViewModel, tag1, tag2)
+                                var textFilledSize by remember { mutableStateOf(Size.Zero) }
+                                OutlinedTextField(
+                                    value = tag1,
+                                    onValueChange = { tag1 = it },
+                                    modifier = Modifier
+                                        .padding(vertical = 16.dp)
+                                        .onGloballyPositioned { coordinates ->
+                                            textFilledSize = coordinates.size.toSize()
+                                        },
+                                    label = { Text(text = stringResource(R.string.insert_tag)) },
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        unfocusedBorderColor = MaterialTheme.colors.secondary,
+                                        focusedBorderColor = MaterialTheme.colors.secondary,
+                                        unfocusedLabelColor = MaterialTheme.colors.surface,
+                                        focusedLabelColor = MaterialTheme.colors.secondary
+                                    )
+                                )
+
+                                OutlinedTextField(
+                                    value = tag2,
+                                    onValueChange = { tag2 = it },
+                                    modifier = Modifier
+                                        .padding(vertical = 16.dp)
+                                        .onGloballyPositioned { coordinates ->
+                                            textFilledSize = coordinates.size.toSize()
+                                        },
+                                    label = { Text(text = stringResource(R.string.insert_tag)) },
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        unfocusedBorderColor = MaterialTheme.colors.secondary,
+                                        focusedBorderColor = MaterialTheme.colors.secondary,
+                                        unfocusedLabelColor = MaterialTheme.colors.surface,
+                                        focusedLabelColor = MaterialTheme.colors.secondary
+                                    )
+                                )
+                                OutlinedTextField(
+                                    value = tag3,
+                                    onValueChange = { tag3 = it },
+                                    modifier = Modifier
+                                        .padding(vertical = 16.dp)
+                                        .onGloballyPositioned { coordinates ->
+                                            textFilledSize = coordinates.size.toSize()
+                                        },
+                                    label = { Text(text = stringResource(R.string.insert_tag)) },
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        unfocusedBorderColor = MaterialTheme.colors.secondary,
+                                        focusedBorderColor = MaterialTheme.colors.secondary,
+                                        unfocusedLabelColor = MaterialTheme.colors.surface,
+                                        focusedLabelColor = MaterialTheme.colors.secondary
+                                    )
+                                )
                             }
                         }
                     }
@@ -169,25 +216,7 @@ fun TagDropDown(
                 .onGloballyPositioned { coordinates ->
                     textFilledSize = coordinates.size.toSize()
                 },
-            label = { Text(text = "Select Tag") },
-            trailingIcon = {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "",
-                    modifier = Modifier.clickable { expanded = !expanded }
-                )
-            },
-            readOnly = true,
-            interactionSource = remember { MutableInteractionSource() }
-                .also { interactionSource ->
-                    LaunchedEffect(interactionSource) {
-                        interactionSource.interactions.collect {
-                            if (it is PressInteraction.Release) {
-                                expanded = !expanded
-                            }
-                        }
-                    }
-                },
+            label = { Text(text = "Insert Tag") },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.colors.secondary,
                 focusedBorderColor = MaterialTheme.colors.secondary,

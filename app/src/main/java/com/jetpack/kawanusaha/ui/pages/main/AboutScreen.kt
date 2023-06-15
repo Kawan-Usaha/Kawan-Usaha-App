@@ -185,6 +185,12 @@ fun AboutScreen(
                 }
             },
         ) { innerPadding ->
+            var isEdit by remember {mutableStateOf(false)}
+            val icon = if(isEdit){
+                Icons.Default.Close
+            } else {
+                Icons.Default.Edit
+            }
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -318,12 +324,18 @@ fun AboutScreen(
                             style = Typography.h3,
                             modifier = Modifier
                         )
+                        IconButton(onClick = { isEdit = !isEdit }) {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = ""
+                            )
+                        }
                     }
                 }
                 item {
                     CallUsahaLists(mainViewModel = mainViewModel)
                     val data by mainViewModel.listUsaha.collectAsState(null)
-                    UsahaSection(response = data, navToUsahaDetail = navToUsahaDetail)
+                    UsahaSection(response = data, navToUsahaDetail = navToUsahaDetail, isEdit)
                 }
                 item {
                     Spacer(modifier = Modifier.height(20.dp))
