@@ -38,6 +38,9 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
     val status by mainViewModel.status.collectAsState(initial = false)
 
     val image by mainViewModel.imageFile.collectAsState(initial = Uri.parse("file://dev/null"))
+    var newImage by remember { mutableStateOf<Uri?>(image) }
+
+    val uriString: String = newImage?.toString() ?: ""
 
     Scaffold(
         topBar = {
@@ -74,7 +77,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                     ) {
                         if (image != Uri.parse("file://dev/null")) {
                             AsyncImage(
-                                model = image,
+                                model = newImage,
                                 contentDescription = stringResource(R.string.image_preview),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -248,7 +251,7 @@ fun ChangeAboutScreen(mainViewModel: MainViewModel, navToCamera: () -> Unit, nav
                                         },
                                         //TODO pake regex
                                         enabled =
-                                        (newName.text != userData.name || newEmail.text != userData.email) &&
+                                        (newName.text != userData.name || newEmail.text != userData.email || newImage?.toString() != userData.image) &&
                                                 (newName.text != "" || newEmail.text != ""),
                                         colors = ButtonDefaults.buttonColors(
                                             backgroundColor = MaterialTheme.colors.secondary,

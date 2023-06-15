@@ -144,6 +144,7 @@ fun NavigationScreen(
             ) {
                 VerificationScreen(
                     viewModel = loginViewModel,
+                    mainViewModel = mainViewModel,
                     email = it.arguments?.getString("email"),
                     password = it.arguments?.getString("password"),
                     passwordConfirm = it.arguments?.getString("passwordConfirm")
@@ -156,9 +157,10 @@ fun NavigationScreen(
             composable(route = "verification_screen") {
                 VerificationScreen(
                     viewModel = loginViewModel,
+                    mainViewModel = mainViewModel,
                     email = null,
                     password = null,
-                    passwordConfirm = null
+                    passwordConfirm = null,
                 ) {
                     navController.navigate("main_screen")
                 }
