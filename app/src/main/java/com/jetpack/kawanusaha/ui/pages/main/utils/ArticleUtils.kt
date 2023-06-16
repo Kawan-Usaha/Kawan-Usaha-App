@@ -6,18 +6,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
@@ -39,7 +36,9 @@ fun ArticleSection(
         columns = GridCells.Fixed(2) ,
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        modifier = Modifier.height((screenHeight).dp).padding(horizontal = 10.dp, vertical = 5.dp),
+        modifier = Modifier
+            .height((screenHeight).dp)
+            .padding(horizontal = 10.dp, vertical = 5.dp),
         content = {
             items(articles.itemCount) { index ->
                 articles[index]?.let {
@@ -65,6 +64,7 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
     var isError by remember {
         mutableStateOf(false)
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -105,50 +105,107 @@ fun UserArticleItem(
     var isError by remember {
         mutableStateOf(false)
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clickable { navToArticle(id) }
-            .padding(bottom = 10.dp)
-    ) {
-        val showShimmer = remember { mutableStateOf(true) }
-        if (isError) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Failed to get Image",
-                modifier = Modifier.height(200.dp)
-            )
-        } else {
-            AsyncImage(
-                model = articlesItem.image,
-                contentDescription = "Articles",
+    val deleted by remember { mutableStateOf(false) }
+
+    if(!deleted){
+        Box{
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .height(200.dp)
-                    .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-                onSuccess = { showShimmer.value = false },
-                contentScale = ContentScale.FillWidth,
-                onError = { showShimmer.value = false; isError = true }
-            )
-        }
-        Row {
-            Text(
-                text = title,
-                style = Typography.h6,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(
-                onClick = {
-                    mainViewModel.deleteArticle(id)
-                }
+                    .clickable { navToArticle(id) }
+                    .padding(bottom = 10.dp)
             ) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.delete)
-                )
+                val showShimmer = remember { mutableStateOf(true) }
+                if (isError) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Failed to get Image",
+                        modifier = Modifier.height(200.dp)
+                    )
+                } else {
+                    AsyncImage(
+                        model = articlesItem.image,
+                        contentDescription = "Articles",
+                        modifier = Modifier
+                            .height(200.dp)
+                            .background(
+                                shimmerBrush(
+                                    targetValue = 1300f,
+                                    showShimmer = showShimmer.value
+                                )
+                            ),
+                        onSuccess = { showShimmer.value = false },
+                        contentScale = ContentScale.FillWidth,
+                        onError = { showShimmer.value = false; isError = true }
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = title,
+                        style = Typography.h6,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+//                    IconButton(
+//                        onClick = {
+//                            mainViewModel.deleteArticle(id)
+//                            deleted
+//                        }
+//                    ) {
+//                        Icon(
+//                            Icons.Default.Delete,
+//                            contentDescription = stringResource(id = R.string.delete)
+//                        )
+//                    }
+                    DropDownArticle(mainViewModel = mainViewModel, id = id )
+                }
+
             }
         }
+    }
+}
+
+@Composable
+fun DropDownArticle(mainViewModel: MainViewModel, id:Int) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = Modifier
+        .wrapContentSize(Alignment.BottomEnd)
+
+    ) {
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "More"
+
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(MaterialTheme.colors.primary)
+        ) {
+            DropdownMenuItem(onClick = {
+                mainViewModel.deleteArticle(id)
+            }) {
+                Text(text = "Delete")
+            }
+            DropdownMenuItem(
+                onClick = {}
+            ) {
+                Text(text = "Publish")
+
+            }
+            DropdownMenuItem(
+                onClick = {}
+            ) {
+                Text(text = "UnPublish")
+            }
+        }
+
 
     }
 }

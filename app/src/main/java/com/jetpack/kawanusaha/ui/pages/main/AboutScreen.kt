@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +53,7 @@ fun AboutScreen(
     val modalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden
     )
+    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     ModalBottomSheetLayout(
         sheetState = modalBottomSheetState,
@@ -68,7 +71,14 @@ fun AboutScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
-                        .clickable { navToChangeAbout() },
+                        .clickable {
+                            navToChangeAbout()
+                            coroutineScope.launch {
+                                if (modalBottomSheetState.isVisible) {
+                                    modalBottomSheetState.hide()
+                                }
+                            }
+                        },
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(
@@ -87,7 +97,14 @@ fun AboutScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
-                        .clickable { navToAddUsaha() },
+                        .clickable {
+                            navToAddUsaha()
+                            coroutineScope.launch {
+                                if (modalBottomSheetState.isVisible) {
+                                    modalBottomSheetState.hide()
+                                }
+                            }
+                                   },
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(
@@ -106,7 +123,14 @@ fun AboutScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
-                        .clickable { navToAboutDeveloper() },
+                        .clickable {
+                            navToAboutDeveloper()
+                            coroutineScope.launch {
+                                if (modalBottomSheetState.isVisible) {
+                                    modalBottomSheetState.hide()
+                                }
+                            }
+                                   },
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(
@@ -125,7 +149,7 @@ fun AboutScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(55.dp)
-                        .clickable { },
+                        .clickable { Toast.makeText(context,R.string.coming_soon, Toast.LENGTH_SHORT).show()},
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Row(
@@ -315,6 +339,7 @@ fun AboutScreen(
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
                         horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
@@ -335,7 +360,7 @@ fun AboutScreen(
                 item {
                     CallUsahaLists(mainViewModel = mainViewModel)
                     val data by mainViewModel.listUsaha.collectAsState(null)
-                    UsahaSection(response = data, navToUsahaDetail = navToUsahaDetail, isEdit)
+                    UsahaSection(response = data, navToUsahaDetail = navToUsahaDetail, isEdit, mainViewModel)
                 }
                 item {
                     Spacer(modifier = Modifier.height(20.dp))
