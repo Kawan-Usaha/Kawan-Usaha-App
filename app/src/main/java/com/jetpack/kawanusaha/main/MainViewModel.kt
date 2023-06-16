@@ -29,7 +29,6 @@ import okhttp3.sse.EventSources
 import java.io.File
 import java.io.IOException
 import java.time.LocalDate
-import java.time.LocalTime
 import java.util.concurrent.TimeUnit
 
 /**
@@ -81,6 +80,9 @@ class MainViewModel(
 
     private val _tagList = MutableStateFlow<List<TagItem>?>(null)
     val tagList: StateFlow<List<TagItem>?> = _tagList
+
+    private val _stopReason = MutableStateFlow<String?>("")
+    val stopReason: StateFlow<String?> = _stopReason
 
     private val _llmResponse =
         MutableStateFlow(
@@ -209,11 +211,13 @@ class MainViewModel(
                 _status.value = dataRepository.updateProfile(
                     getToken(),
                     imageMultipart,
+                    imageChanged = "true",
                     ProfileRequest(name = name, email = email)
                 )?.success ?: false
             } else {
                 _status.value = dataRepository.updateProfile(
                     getToken(), null,
+                    imageChanged = "false",
                     ProfileRequest(name = name, email = email)
                 )?.success ?: false
             }
@@ -342,7 +346,8 @@ class MainViewModel(
                     content = content,
                     is_published = true
                 ),
-                category            )
+                category
+            )
             if (imageFile.value != Uri.parse("file://dev/null")) {
                 val file = getFileFromUri(application.applicationContext, imageFile.value) as File
                 val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
@@ -471,14 +476,18 @@ class MainViewModel(
             val text = dataRepository.searchInternet(message)
             var iterator = 0
             text?.web?.results?.forEach { content ->
-                if (content.extraSnippets != null && iterator < WEB_COUNT){
-                    if (content.extraSnippets[0] != "null"){
-                        iterator ++
+                if (content.extraSnippets != null && iterator < WEB_COUNT) {
+                    if (content.extraSnippets[0] != "null") {
+                        iterator++
                         enhancedPrompt +=
                             "NOMOR $iterator \n" +
-                            "URL : ${content.url}\n" +
-                            "JUDUL : ${content.title}\n" +
-                            "CONTENT : ${if(content.extraSnippets[0].length>200) content.extraSnippets[0].slice(0..200) else content.extraSnippets[0]}\n"
+                                    "URL : ${content.url}\n" +
+                                    "JUDUL : ${content.title}\n" +
+                                    "CONTENT : ${
+                                        if (content.extraSnippets[0].length > 200) content.extraSnippets[0].slice(
+                                            0..200
+                                        ) else content.extraSnippets[0]
+                                    }\n"
                     }
                 }
             }
@@ -537,6 +546,52 @@ class MainViewModel(
         }
     }
 
+    fun continueGenerate() {
+        val message = llmResponse.value.last().content
+        _isLoading.value = true
+        val llmRequest = LLMContinueChat(
+            model = "Kawan-Usaha",
+            stream = true,
+            prompt = message,
+            max_tokens = 512,
+            temperature = 0.5,
+            top_p = 0.5
+        )
+
+        val jsonPayload = Gson().toJson(llmRequest)
+        val mediaType = "application/json".toMediaType()
+        val requestBody = jsonPayload.toRequestBody(mediaType)
+
+        val client = OkHttpClient.Builder().connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.MINUTES)
+            .writeTimeout(10, TimeUnit.MINUTES)
+            .build()
+
+        val request = Request.Builder()
+            .url("${API_HOST}v1/completions")
+            .header("Content-Type", "application/json")
+            .addHeader("Authorization", "Bearer " + getToken())
+            .addHeader("Accept", "text/event-stream")
+            .post(requestBody)
+            .build()
+
+        EventSources.createFactory(client)
+            .newEventSource(request = request, listener = eventSourceListener)
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                client.newCall(request).enqueue(responseCallback = object : Callback {
+                    override fun onFailure(call: Call, e: IOException) {
+                        Log.e("ContinueGenerate", "API Call Failure ${e.localizedMessage}")
+                    }
+
+                    override fun onResponse(call: Call, response: Response) {
+                        Log.e("ContinueGenerate", "APi Call Success $response")
+                    }
+                })
+            }
+        }
+    }
+
     /**
      * EventSourceListener implementation used for handling events from EventSource.
      */
@@ -564,7 +619,8 @@ class MainViewModel(
             gson.choices[0].delta.content.toString().let {
                 _stringResponse.value += if (it == "null") "" else it
             }
-            if (gson.choices[0].finish_reason == "stop") eventSource.cancel()
+            _stopReason.value = gson.choices[0].finish_reason.toString()
+            if (stopReason.value == "stop" || stopReason.value == "length") eventSource.cancel()
         }
 
         override fun onFailure(eventSource: EventSource, t: Throwable?, response: Response?) {

@@ -38,3 +38,12 @@ data class LLMRequest(
     val temperature: Double,
     val top_p : Double
 )
+
+data class LLMContinueChat (
+    val stream: Boolean,
+    val prompt: String,
+    val model: String,
+    val max_tokens: Int,
+    val temperature: Double,
+    val top_p : Double
+)
