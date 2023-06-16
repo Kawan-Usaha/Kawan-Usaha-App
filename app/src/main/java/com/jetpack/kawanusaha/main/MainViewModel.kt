@@ -425,12 +425,16 @@ class MainViewModel(
      * @param message The message to send.
      */
     suspend fun sendMsg(message: String) {
-        if (llmResponse.value.size % GENERATE_COUNTER == 0) {
+        if (llmResponse.value.size % GENERATE_COUNTER == 0 || llmResponse.value.size % GENERATE_COUNTER == 1) {
             viewModelScope.launch {
                 val llmRequest = LLMRequest(
                     model = "Kawan-Usaha",
                     stream = false,
-                    messages = llmResponse.value,
+                    messages = if (llmResponse.value.size > 1){
+                                listOf(llmResponse.value[llmResponse.value.lastIndex-1], llmResponse.value.last())
+                            } else {
+                                   llmResponse.value
+                            },
                     max_tokens = 512,
                     temperature = 0.5,
                     top_p = 0.5
@@ -440,9 +444,7 @@ class MainViewModel(
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val dummyResponse: ArrayList<Message> = arrayListOf()
-            llmResponse.value.forEach {
-                dummyResponse.add(it)
-            }
+            dummyResponse.add(Message(llmResponse.value.last().role, llmResponse.value.last().content.slice(0..200)))
             _llmResponse.value.add(Message("user", message))
             dummyResponse.add(Message("user", enhancePrompt(message)))
 
@@ -506,7 +508,11 @@ class MainViewModel(
         val llmRequest = LLMRequest(
             model = "Kawan-Usaha",
             stream = true,
-            messages = message,
+            messages = if (message.lastIndex > 1){
+                        listOf(message[message.lastIndex - 1], message.last())
+                    } else {
+                           message
+                   },
             max_tokens = 512,
             temperature = 0.5,
             top_p = 0.5
@@ -548,6 +554,7 @@ class MainViewModel(
 
     fun continueGenerate() {
         val message = llmResponse.value.last().content
+        Log.e("tag", message.toString())
         _isLoading.value = true
         val llmRequest = LLMContinueChat(
             model = "Kawan-Usaha",

@@ -95,7 +95,7 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                         }
                     }
                     val stopResponse = mainViewModel.stopReason.collectAsState().value
-                    if (stopResponse != "stop" && stopResponse != ""){
+                    if (stopResponse == "length"){
                         Button(onClick = { mainViewModel.continueGenerate() }, modifier = Modifier.align(
                             Alignment.BottomCenter)) {
                             Text(text = "Continue Generate")
