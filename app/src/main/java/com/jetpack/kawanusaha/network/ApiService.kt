@@ -152,6 +152,7 @@ interface ApiService {
     fun updateProfile(
         @Header("Authorization") token: String,
         @Part image: MultipartBody.Part?,
+        @Part image_changed: String,
         @Part("user") profileRequest: ProfileRequest
     ): Call<DefaultResponse>
 

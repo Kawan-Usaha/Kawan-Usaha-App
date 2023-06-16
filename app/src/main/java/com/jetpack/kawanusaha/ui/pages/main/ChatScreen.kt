@@ -59,38 +59,46 @@ fun ChatScreen(mainViewModel: MainViewModel) {
                 verticalArrangement = Arrangement.Top
             ) {
                 val isKeyboardOpen by onKeyboardVisible()
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                        .weight(1f)
-                        .imePadding(),
-                    state = lazyListState
-                ) {
-                    items(msg.value.size) { id ->
-                        MessageItem(
-                            messageText = msg.value[id].content,
-                            time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),
-                            isOut = msg.value[id].role == "user",
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        LaunchedEffect(isKeyboardOpen){
-                            if(isKeyboardOpen){
-                                scrollToBottom(lazyListState)
+                Box (modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .weight(1f)
+                    .imePadding(),){
+                    LazyColumn(
+                        state = lazyListState
+                    ) {
+                        items(msg.value.size) { id ->
+                            MessageItem(
+                                messageText = msg.value[id].content,
+                                time = simpleDateFormat.format(Calendar.getInstance().timeInMillis),
+                                isOut = msg.value[id].role == "user",
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            LaunchedEffect(isKeyboardOpen) {
+                                if (isKeyboardOpen) {
+                                    scrollToBottom(lazyListState)
+                                }
+                            }
+                        }
+                        if (isLoading.value) {
+                            item {
+                                MessageItem(
+                                    messageText = if (newMsg == "") stringResource(R.string.connecting) else newMsg,
+                                    time = "",
+                                    isOut = false,
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                            item {
+                                Spacer(modifier = Modifier)
                             }
                         }
                     }
-                    if (isLoading.value) {
-                        item {
-                            MessageItem(
-                                messageText = if(newMsg == "") stringResource(R.string.connecting) else newMsg,
-                                time = "",
-                                isOut = false,
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-                        item {
-                            Spacer(modifier = Modifier)
+                    val stopResponse = mainViewModel.stopReason.collectAsState().value
+                    if (stopResponse != "stop" && stopResponse != ""){
+                        Button(onClick = { mainViewModel.continueGenerate() }, modifier = Modifier.align(
+                            Alignment.BottomCenter)) {
+                            Text(text = "Continue Generate")
                         }
                     }
                 }
