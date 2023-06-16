@@ -1,16 +1,20 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -111,14 +115,25 @@ fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
             .padding(bottom = 30.dp, start = 16.dp, end = 16.dp)
     ) {
         val showShimmer = remember { mutableStateOf(true) }
-        if (!isError) {
+        if (isError) {
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "Failed to get Image",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(350.dp)
+
+            )
+        } else {
             AsyncImage(
                 model = articlesItem.image,
                 contentDescription = "Articles",
                 modifier = Modifier
                     .fillMaxWidth()
+                    .size(350.dp)
                     .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Fit,
                 onSuccess = { showShimmer.value = false },
                 onError = { showShimmer.value = false; isError = true }
             )
