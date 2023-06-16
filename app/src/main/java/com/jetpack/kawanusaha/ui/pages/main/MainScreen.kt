@@ -1,177 +1,144 @@
-@file:OptIn(ExperimentalMaterialApi::class)
+package com.jetpack.kawanusaha.ui.pages.main
 
-package com.jetpack.kawanusaha.ui.pages
-
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Send
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.data.ArticlesItem
+import com.jetpack.kawanusaha.main.MainViewModel
+import com.jetpack.kawanusaha.ui.pages.NavFabButton
+import com.jetpack.kawanusaha.ui.pages.SectionText
+import com.jetpack.kawanusaha.ui.pages.TopBar
+import com.jetpack.kawanusaha.ui.pages.main.utils.CategorySection
+import com.jetpack.kawanusaha.ui.pages.shimmerBrush
 import com.jetpack.kawanusaha.ui.theme.Typography
 
 @Composable
-fun MainScreen(navToChat: () -> Unit, navToArticle: (String) -> Unit, navToAbout: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.app_name))
-                },
-                actions = {
-                    IconButton(onClick = { navToAbout() }) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Account"
-                        )
-                    }
-                },
-                backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-        ) {
-            ChatBox(navToChat)
-
-            Card(
-                shape = RoundedCornerShape(10.dp),
-                backgroundColor = MaterialTheme.colors.onBackground,
-            ) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    // Category Section
-                    SectionText(text = "Category")
-                    CategorySection()
-
-                    // Recommendation Articles Section
-                    SectionText(text = "Recommendation Articles")
-                    ArticleSection(navToArticle)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ChatBox(navToChat: () -> Unit) {
-    Card(
-        backgroundColor = MaterialTheme.colors.background,
-        border = BorderStroke(2.dp, MaterialTheme.colors.primary),
-        modifier = Modifier.padding(20.dp)
-    ) {
-        Column(
-            Modifier.padding(20.dp)
-        ) {
-            Text("Chat With Your AI Mentor", Modifier.padding(10.dp))
-            Card(
-                onClick = navToChat,
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(2.dp, color = MaterialTheme.colors.primary),
-                backgroundColor = MaterialTheme.colors.background,
-
-                ) {
-                Row(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .height(30.dp), verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(text = "Send a Message", Modifier.weight(1f))
-                    Icon(
-                        imageVector = Icons.Default.Send,
-                        contentDescription = "Send"
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun CategorySection() {
-    LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-    ) {
-        items(20) {
-            CategoryItem()
-        }
-    }
-}
-
-@Composable
-fun CategoryItem() {
-    //TODO: Change This
-    Column {
-        Image(
-            painter = painterResource(id = R.drawable.google),
-            contentDescription = null,
-            modifier = Modifier
-                .size(50.dp)
-                .clip(shape = CircleShape),
-        )
-        Text(text = "Google", color = MaterialTheme.colors.background)
-    }
-}
-
-@Composable
-fun SectionText(text: String) {
-    Text(
-        text = text,
+fun MainScreen(
+    mainViewModel: MainViewModel,
+    navToArticle: (Int) -> Unit,
+    navToAddArticle: () -> Unit,
+) {
+    Surface(
         color = MaterialTheme.colors.background,
-        style = Typography.h3,
-        modifier = Modifier.padding(10.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+    ) {
+        Scaffold(
+            topBar = { TopBar {} },
+            floatingActionButton = { NavFabButton(navToAddArticle) }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
+                MainArticleSection(mainViewModel, navToArticle)
+            }
+        }
+    }
+}
+
+@Composable
+fun MainArticleSection(
+    mainViewModel: MainViewModel,
+    navToArticle: (Int) -> Unit
+) {
+    val screenHeight = LocalConfiguration.current.screenHeightDp
+    val category by mainViewModel.selectedCategory.collectAsState()
+    val articles = mainViewModel.filterAllArticle("", category).collectAsLazyPagingItems()
+    LazyColumn(
+        modifier = Modifier
+            .height((screenHeight).dp)
+            .fillMaxWidth(),
+        content = {
+            item {
+                Card(
+                    shape = RoundedCornerShape(10.dp),
+                    backgroundColor = MaterialTheme.colors.primary,
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        // Category Section
+                        SectionText(
+                            text = stringResource(R.string.category),
+                            style = MaterialTheme.typography.h3,
+                            modifier = Modifier.padding(15.dp)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        CategorySection(mainViewModel)
+                    }
+                }
+                Spacer(Modifier.height(20.dp))
+            }
+            items(articles.itemCount) { index ->
+                articles[index]?.let {
+                    MainArticleItem(it, navToArticle)
+                }
+            }
+        }
     )
 }
 
-@Composable
-fun ArticleSection(navToArticle: (String) -> Unit) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 300.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-    ) {
-        items(50) {
-            ArticleItem(navToArticle)
-        }
-    }
-}
 
 @Composable
-fun ArticleItem(navToArticle: (String) -> Unit) {
-    val title = "Title"
-    Card {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable { navToArticle(title) }
-                .padding(20.dp),
-        ) {
+fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
+    val title = articlesItem.title
+    val id = articlesItem.id
+    var isError by remember {
+        mutableStateOf(false)
+    }
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .clickable { navToArticle(id) }
+            .padding(bottom = 30.dp, start = 16.dp, end = 16.dp)
+    ) {
+        val showShimmer = remember { mutableStateOf(true) }
+        if (isError) {
             Image(
                 painter = painterResource(id = R.drawable.logo),
-                contentDescription = null,
-                modifier = Modifier.height(300.dp)
-            )
-            Text(text = title, modifier = Modifier.height(100.dp), style = Typography.h5)
-        }
-    }
+                contentDescription = "Failed to get Image",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(350.dp)
 
+            )
+        } else {
+            AsyncImage(
+                model = articlesItem.image,
+                contentDescription = "Articles",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .size(350.dp)
+                    .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                contentScale = ContentScale.Crop,
+                onSuccess = { showShimmer.value = false },
+                onError = { showShimmer.value = false; isError = true }
+            )
+        }
+        Text(text = title, modifier = Modifier.padding(vertical = 5.dp), style = Typography.h6)
+
+    }
 }

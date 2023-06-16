@@ -1,27 +1,44 @@
 package com.jetpack.kawanusaha.ui.pages.main
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import android.widget.Toast
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.jetpack.kawanusaha.R
+import com.jetpack.kawanusaha.main.MainViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun ArticleScreen(articleTitle: String, navBack: () -> Unit) {
+fun ArticleScreen(mainViewModel: MainViewModel, articleId: Int, navBack: () -> Unit) {
+    LaunchedEffect(mainViewModel) {
+        mainViewModel.getArticleDetail(id = articleId)
+    }
+    val article by mainViewModel.articleDetail.collectAsState(null)
     val context = LocalContext.current
-    var text = "Share Text"
+    val addToFavorite = stringResource(R.string.added_to_favorite)
+    val removeFromFavorite = stringResource(R.string.removed_from_favorite)
+    val shareVia = stringResource(R.string.share_via)
+
+    var isFavorite by remember { mutableStateOf(article?.favorite ?: false) }
+
+    LaunchedEffect( article?.favorite ){
+        isFavorite = article?.favorite ?: false
+    }
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -29,69 +46,91 @@ fun ArticleScreen(articleTitle: String, navBack: () -> Unit) {
                     IconButton(onClick = { navBack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
-                title = {
-                    Text(text = articleTitle)
-                },
+                title = { Text(text = "") },
                 actions = {
-                    // Like Button
-                    var likeButton = Icons.Default.FavoriteBorder
                     IconButton(
                         onClick = {
-                            likeButton = if (likeButton == Icons.Default.FavoriteBorder) {
-                                Icons.Default.Favorite
-                                // TODO add item to favourite
+                            if (isFavorite) {
+                                mainViewModel.deleteFavourite(id = articleId)
+                                Toast.makeText(
+                                    context,
+                                    removeFromFavorite,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             } else {
-                                Icons.Default.FavoriteBorder
-                                // TODO remove item from favourite
+                                mainViewModel.setFavourite(id = articleId)
+                                Toast.makeText(
+                                    context,
+                                    addToFavorite,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
+                            isFavorite = !isFavorite
                         }) {
                         Icon(
-                            imageVector = likeButton,
-                            contentDescription = "Like"
+                            imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            tint = MaterialTheme.colors.secondary,
+                            contentDescription = stringResource(R.string.like)
                         )
                     }
                     // Share Button
+                    val text = stringResource(R.string.coming_soon)
                     IconButton(
                         onClick = {
                             val intent = Intent(Intent.ACTION_SEND)
                             intent.type = "text/plain"
                             intent.putExtra(Intent.EXTRA_TEXT, text)
-                            val chooserIntent = Intent.createChooser(intent, "Share via")
+                            val chooserIntent = Intent.createChooser(intent, shareVia)
                             context.startActivity(chooserIntent)
                         }) {
                         Icon(
                             imageVector = Icons.Default.Share,
-                            contentDescription = "Share"
+                            tint = MaterialTheme.colors.secondary,
+                            contentDescription = stringResource(R.string.share)
                         )
                     }
                 },
                 backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp
+                elevation = 0.dp,
+                modifier = Modifier.padding(8.dp),
             )
-        }
+        },
+        modifier = Modifier.safeDrawingPadding()
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
+                .padding(8.dp),
+
+            horizontalAlignment = Alignment.Start
         ) {
             item {
+                Text(
+                    text = article?.title ?: "Title",
+                    style = MaterialTheme.typography.h1,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+            item {
                 AsyncImage(
-                    model = "https://www.asiamediajournal.com/wp-content/uploads/2022/11/Default-PFP-1200x1200.jpg",
+                    model = article?.image,
                     contentDescription = "Article Picture",
-                    placeholder = painterResource(id = R.drawable.profile),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(500.dp)
+                        .fillMaxWidth()
                         .padding(8.dp)
                 )
             }
             item {
-                Text(text = stringResource(id = R.string.loremipsum))
+                Text(
+                    text = article?.content ?: "Content",
+                    style = MaterialTheme.typography.body1,
+                    modifier = Modifier.padding(8.dp)
+                )
             }
         }
     }
