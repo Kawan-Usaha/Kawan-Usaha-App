@@ -183,7 +183,7 @@ fun DropDownArticle(mainViewModel: MainViewModel, id:Int) {
 
             )
         }
-        DropdownMenu(dd
+        DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier.background(MaterialTheme.colors.primary)
