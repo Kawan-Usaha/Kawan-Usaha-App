@@ -1,5 +1,6 @@
 package com.jetpack.kawanusaha.ui.pages.main.utils
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -100,8 +102,6 @@ fun UserArticleItem(
     navToArticle: (Int) -> Unit,
     mainViewModel: MainViewModel
 ) {
-    val title = articlesItem.title
-    val id = articlesItem.id
     var isError by remember {
         mutableStateOf(false)
     }
@@ -112,7 +112,7 @@ fun UserArticleItem(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .clickable { navToArticle(id) }
+                    .clickable { navToArticle(articlesItem.id) }
                     .padding(bottom = 10.dp)
             ) {
                 val showShimmer = remember { mutableStateOf(true) }
@@ -144,24 +144,13 @@ fun UserArticleItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = title,
+                        text = articlesItem.title,
                         style = Typography.h6,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f)
                     )
-//                    IconButton(
-//                        onClick = {
-//                            mainViewModel.deleteArticle(id)
-//                            deleted
-//                        }
-//                    ) {
-//                        Icon(
-//                            Icons.Default.Delete,
-//                            contentDescription = stringResource(id = R.string.delete)
-//                        )
-//                    }
-                    DropDownArticle(mainViewModel = mainViewModel, id = id )
+                    DropDownArticle(mainViewModel = mainViewModel, articlesItem = articlesItem )
                 }
 
             }
@@ -170,17 +159,19 @@ fun UserArticleItem(
 }
 
 @Composable
-fun DropDownArticle(mainViewModel: MainViewModel, id:Int) {
+fun DropDownArticle(mainViewModel: MainViewModel, articlesItem: ArticlesItem) {
     var expanded by remember { mutableStateOf(false) }
+    val isPublished = mainViewModel.articleDetail.collectAsState()
     Box(modifier = Modifier
         .wrapContentSize(Alignment.BottomEnd)
-
     ) {
-        IconButton(onClick = { expanded = !expanded }) {
+        IconButton(onClick = {
+            expanded = !expanded
+            mainViewModel.getArticleDetail(id = articlesItem.id)
+        }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "More"
-
             )
         }
         DropdownMenu(
@@ -188,24 +179,37 @@ fun DropDownArticle(mainViewModel: MainViewModel, id:Int) {
             onDismissRequest = { expanded = false },
             modifier = Modifier.background(MaterialTheme.colors.primary)
         ) {
-            DropdownMenuItem(onClick = {
-                mainViewModel.deleteArticle(id)
+            val mContext = LocalContext.current
+            DropdownMenuItem(
+                onClick = {
+                    mainViewModel.deleteArticle(articlesItem.id)
+                    Toast.makeText(mContext, "Article Deleted", Toast.LENGTH_SHORT).show()
+                    expanded = false
             }) {
                 Text(text = "Delete")
             }
-            DropdownMenuItem(
-                onClick = {}
-            ) {
-                Text(text = "Publish")
+            if (isPublished.value?.is_published == true){
+                DropdownMenuItem(
+                    onClick = {
+                        mainViewModel.unpublishArticle(articlesItem.id)
+                        Toast.makeText(mContext, "Article Unpublished", Toast.LENGTH_SHORT).show()
+                        expanded = false
+                    }
+                ) {
+                    Text(text = "Unpublish")
+                }
+            } else {
+                DropdownMenuItem(
+                    onClick = {
+                        mainViewModel.publishArticle(articlesItem.id)
+                        Toast.makeText(mContext, "Article Published", Toast.LENGTH_SHORT).show()
+                        expanded = false
+                    }
+                ) {
+                    Text(text = "Publish")
 
-            }
-            DropdownMenuItem(
-                onClick = {}
-            ) {
-                Text(text = "UnPublish")
+                }
             }
         }
-
-
     }
 }

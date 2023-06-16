@@ -135,6 +135,14 @@ class DataRepository(private val apiService: ApiService, private val InternetApi
         return executeRequest { apiService.deleteArticle("Bearer $jwtToken", IdRequest(id)).execute() }
     }
 
+    suspend fun publishArticle(jwtToken: String, id: Int): DefaultResponse?{
+        return executeRequest { apiService.publishArticle("Bearer $jwtToken", IdRequest(id)).execute() }
+    }
+
+    suspend fun unpublishArticle(jwtToken: String, id: Int): DefaultResponse?{
+        return executeRequest { apiService.unpublishArticle("Bearer $jwtToken", IdRequest(id)).execute() }
+    }
+
 
     /**
      * Favourite Article Section

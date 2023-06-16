@@ -140,6 +140,18 @@ interface ApiService {
         @Body id: IdRequest
     ): Call<DefaultResponse>
 
+    @PATCH("article/publish")
+    fun publishArticle(
+        @Header("Authorization") token: String,
+        @Body id: IdRequest
+    ): Call<DefaultResponse>
+
+    @PATCH("article/unpublish")
+    fun unpublishArticle(
+        @Header("Authorization") token: String,
+        @Body id: IdRequest
+    ): Call<DefaultResponse>
+
 
     // USER PROFILE
     @GET("user/profile")
@@ -152,7 +164,7 @@ interface ApiService {
     fun updateProfile(
         @Header("Authorization") token: String,
         @Part image: MultipartBody.Part?,
-        @Part image_changed: String,
+        @Part("image_changed") image_changed: String,
         @Part("user") profileRequest: ProfileRequest
     ): Call<DefaultResponse>
 

@@ -417,6 +417,18 @@ class MainViewModel(
         }
     }
 
+    fun publishArticle(id: Int){
+        viewModelScope.launch {
+            dataRepository.publishArticle(getToken(), id)
+        }
+    }
+
+    fun unpublishArticle(id: Int){
+        viewModelScope.launch{
+            dataRepository.unpublishArticle(getToken(), id)
+        }
+    }
+
 
     // CHAT BOT TEXT STREAM
     /**
@@ -444,7 +456,12 @@ class MainViewModel(
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val dummyResponse: ArrayList<Message> = arrayListOf()
-            dummyResponse.add(Message(llmResponse.value.last().role, llmResponse.value.last().content.slice(0..200)))
+            dummyResponse.add(Message(llmResponse.value.last().role,
+                if(llmResponse.value.last().content.length > 200){
+                    llmResponse.value.last().content.slice(0..200)
+                } else {
+                    llmResponse.value.last().content
+                }))
             _llmResponse.value.add(Message("user", message))
             dummyResponse.add(Message("user", enhancePrompt(message)))
 
@@ -559,7 +576,7 @@ class MainViewModel(
         val llmRequest = LLMContinueChat(
             model = "Kawan-Usaha",
             stream = true,
-            prompt = message,
+            prompt = message.replace("\\r", "\n"),
             max_tokens = 512,
             temperature = 0.5,
             top_p = 0.5

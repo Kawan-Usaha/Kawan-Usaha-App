@@ -61,7 +61,7 @@ data class ArticleData(
 
 data class ArticlesItem(
 	val updatedAt: String,
-	val isPublished: Boolean,
+	val is_published: Boolean,
 	val createdAt: String,
 	val image: String,
 	val id: Int,
@@ -107,7 +107,7 @@ data class ArticleDetailResponse(
 
 data class ArticleDetail(
 	val updatedAt: String,
-	val isPublished: Boolean,
+	val is_published: Boolean,
 	val createdAt: String,
 	val favorite: Boolean,
 	val image: String,
