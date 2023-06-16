@@ -133,7 +133,7 @@ fun MainArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
                     .fillMaxWidth()
                     .size(350.dp)
                     .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
                 onSuccess = { showShimmer.value = false },
                 onError = { showShimmer.value = false; isError = true }
             )
