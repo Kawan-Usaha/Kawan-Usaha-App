@@ -48,7 +48,7 @@ fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
                 )
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.height(20.dp))
         Image(

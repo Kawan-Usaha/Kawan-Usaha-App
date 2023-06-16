@@ -65,6 +65,7 @@ fun ArticleItem(articlesItem: ArticlesItem, navToArticle: (Int) -> Unit) {
     var isError by remember {
         mutableStateOf(false)
     }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -105,50 +106,60 @@ fun UserArticleItem(
     var isError by remember {
         mutableStateOf(false)
     }
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clickable { navToArticle(id) }
-            .padding(bottom = 10.dp)
-    ) {
-        val showShimmer = remember { mutableStateOf(true) }
-        if (isError) {
-            Image(
-                painter = painterResource(id = R.drawable.logo),
-                contentDescription = "Failed to get Image",
-                modifier = Modifier.height(200.dp)
-            )
-        } else {
-            AsyncImage(
-                model = articlesItem.image,
-                contentDescription = "Articles",
+    val deleted = remember { mutableStateOf(false) }
+
+    if(!deleted.value){
+        Box{
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .height(200.dp)
-                    .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
-                onSuccess = { showShimmer.value = false },
-                contentScale = ContentScale.FillWidth,
-                onError = { showShimmer.value = false; isError = true }
-            )
-        }
-        Row {
-            Text(
-                text = title,
-                style = Typography.h6,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
-            )
-            IconButton(
-                onClick = {
-                    mainViewModel.deleteArticle(id)
-                }
+                    .clickable { navToArticle(id) }
+                    .padding(bottom = 10.dp)
             ) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.delete)
-                )
+                val showShimmer = remember { mutableStateOf(true) }
+                if (isError) {
+                    Image(
+                        painter = painterResource(id = R.drawable.logo),
+                        contentDescription = "Failed to get Image",
+                        modifier = Modifier.height(200.dp)
+                    )
+                } else {
+                    AsyncImage(
+                        model = articlesItem.image,
+                        contentDescription = "Articles",
+                        modifier = Modifier
+                            .height(200.dp)
+                            .background(shimmerBrush(targetValue = 1300f, showShimmer = showShimmer.value)),
+                        onSuccess = { showShimmer.value = false },
+                        contentScale = ContentScale.FillWidth,
+                        onError = { showShimmer.value = false; isError = true }
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = title,
+                        style = Typography.h6,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(
+                        onClick = {
+                            mainViewModel.deleteArticle(id)
+                            deleted.value = true
+                        }
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = stringResource(id = R.string.delete)
+                        )
+                    }
+                }
+
             }
         }
-
     }
 }

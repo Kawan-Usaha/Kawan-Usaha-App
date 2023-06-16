@@ -28,8 +28,8 @@ fun NavigationScreen(
     googleAuthUiClient: GoogleAuthUiClient
 ) {
     val navController = rememberNavController()
-    val startDestination: String = "chat_screen"
-//        if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
+    val startDestination: String =
+        if (loginViewModel.isLoggedIn()) "chat_screen" else "landing_screen"
     val bottomBarState = rememberSaveable { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val isKeyboardOpen by onKeyboardVisible()
