@@ -27,32 +27,38 @@ val Typography = Typography(
     body1 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
+        fontSize = 14.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Normal,
+        fontSize = 17.sp,
+        lineHeight = 24.sp,
     ),
     h1 = TextStyle(
         fontFamily = OverLock,
         fontWeight = FontWeight.Bold,
-        fontSize = 35.sp
+        fontSize = 28.sp
     ),
     h2 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
-        fontSize = 28.sp
+        fontSize = 23.sp
     ),
     h3 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp
+        fontSize = 19.sp
     ),
     h4 = TextStyle(
         fontFamily = OverLock,
         fontWeight = FontWeight.Bold,
-        fontSize = 57.sp
+        fontSize = 50.sp
     ),
     h5 = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
-        fontSize = 45.sp
+        fontSize = 38.sp
     )
 
     /* Other default text styles to override

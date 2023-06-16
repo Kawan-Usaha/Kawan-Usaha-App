@@ -3,4 +3,4 @@
 # LoginViewModelFactory
 
 [androidJvm]\
-constructor(context: [Context](https://developer.android.com/reference/kotlin/android/content/Context.html))
+constructor(preferences: [SharedPreferences](https://developer.android.com/reference/kotlin/android/content/SharedPreferences.html))

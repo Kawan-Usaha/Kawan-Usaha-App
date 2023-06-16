@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.camera.any" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,13 +17,13 @@
         android:theme="@style/Theme.KawanUsaha"
         android:enableOnBackInvokedCallback="true"
         tools:targetApi="tiramisu"
-
         android:usesCleartextTraffic="true">
 
 
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.KawanUsaha">
             <intent-filter>

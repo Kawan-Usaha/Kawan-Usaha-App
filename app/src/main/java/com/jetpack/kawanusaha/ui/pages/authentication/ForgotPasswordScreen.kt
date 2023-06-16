@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,10 +29,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
-import com.jetpack.kawanusaha.main.LoginViewModel
-import com.jetpack.kawanusaha.ui.pages.main.SectionText
+import com.jetpack.kawanusaha.ui.pages.SectionText
 
-// TODO Security Leak in passing password
 @Composable
 fun ForgotPasswordScreen(
     navBack: () -> Unit,
@@ -44,216 +44,230 @@ fun ForgotPasswordScreen(
     val orange = MaterialTheme.colors.secondary
     val white = MaterialTheme.colors.primary
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+            .padding(top = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Spacer(modifier = Modifier.height(50.dp))
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            Canvas(
-                modifier = Modifier
-                    .size(190.dp),
+
+        item{
+            Box(
+                contentAlignment = Alignment.Center
             ) {
-                drawCircle(
-                    color = orange,
-                    style = Stroke(width = 4.dp.toPx()),
-                )
-                drawCircle(
-                    color = white
+                Canvas(
+                    modifier = Modifier
+                        .size(170.dp),
+                ) {
+                    drawCircle(
+                        color = orange,
+                        style = Stroke(width = 4.dp.toPx()),
+                    )
+                    drawCircle(
+                        color = white
+                    )
+                }
+                Image(
+                    painter = painterResource(R.drawable.baseline_key_day),
+                    contentDescription = stringResource(R.string.key_icon),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(100.dp)
                 )
             }
-            Image(
-                painter = painterResource(R.drawable.baseline_key_day),
-                contentDescription = "key",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(120.dp)
-            )
         }
-        Card(
-            shape = RoundedCornerShape(10.dp),
-            backgroundColor = MaterialTheme.colors.primary,
-            border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
-                .offset(y = 15.dp)
-        ) {
-            Column(
-                modifier = Modifier.padding(25.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+
+        item{
+            Card(
+                shape = RoundedCornerShape(10.dp),
+                backgroundColor = MaterialTheme.colors.primary,
+                border = BorderStroke(1.dp, MaterialTheme.colors.secondary),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
+                    .offset(y = 15.dp)
             ) {
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.CenterStart
+                Column(
+                    modifier = Modifier.padding(25.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    SectionText(
-                        text = "RESET PASSWORD",
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier
-                            .padding(5.dp)
-                    )
-                }
-                Spacer(Modifier.height(15.dp))
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Email") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Email,
-                            contentDescription = "Email Icon",
-                            tint = orange
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.CenterStart
+                    ) {
+                        SectionText(
+                            text = stringResource(R.string.reset_password),
+                            style = MaterialTheme.typography.h5,
+                            modifier = Modifier
+                                .padding(5.dp)
                         )
-                    },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onPrimary,
-                        cursorColor = MaterialTheme.colors.onPrimary,
-                        errorBorderColor = MaterialTheme.colors.error,
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = MaterialTheme.colors.surface
-                    ),
-                )
-                OutlinedTextField(
-                    value = newPass,
-                    onValueChange = { newPass = it },
-                    label = { Text("New Password") },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Password Icon",
-                            tint = orange
-                        )
-                    },
-                    trailingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(R.drawable.baseline_visibility_24) else
-                            painterResource(R.drawable.baseline_visibility_off_24)
-
-                        val description =
-                            if (passwordVisible) "Hide Password" else "Show Password"
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(painter = image, contentDescription = description)
-                        }
-                    },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onPrimary,
-                        cursorColor = MaterialTheme.colors.onPrimary,
-                        errorBorderColor = MaterialTheme.colors.error,
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = MaterialTheme.colors.surface
-                    ),
-                )
-                Spacer(Modifier.height(15.dp))
-                OutlinedTextField(
-                    value = confPass,
-                    onValueChange = { confPass = it },
-                    label = { Text("Confirm Password") },
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Lock,
-                            contentDescription = "Password Icon",
-                            tint = orange
-                        )
-                    },
-                    trailingIcon = {
-                        val image = if (passwordVisible)
-                            painterResource(R.drawable.baseline_visibility_24) else
-                            painterResource(R.drawable.baseline_visibility_off_24)
-
-                        val description =
-                            if (passwordVisible) "Hide Password" else "Show Password"
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(painter = image, contentDescription = description)
-                        }
-
-                        if (newPass.text != confPass.text)
+                    }
+                    Spacer(Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text(stringResource(R.string.email)) },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        leadingIcon = {
                             Icon(
-                                Icons.Filled.Warning,
-                                "error",
-                                tint = MaterialTheme.colors.error
+                                imageVector = Icons.Default.Email,
+                                contentDescription = stringResource(R.string.email_icon),
+                                tint = orange
                             )
-                    },
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onPrimary,
-                        cursorColor = MaterialTheme.colors.onPrimary,
-                        errorBorderColor = MaterialTheme.colors.error,
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = MaterialTheme.colors.surface
-                    ),
-                )
-                Spacer(modifier = Modifier.height(50.dp))
-                Button(
-                    onClick = {
-                        navToVerification(email.text, newPass.text, confPass.text)
-                    },
-                    enabled = (email.text != "" && newPass.text.length >= 8 && confPass.text.length >= 8),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.secondary,
-                        contentColor = MaterialTheme.colors.onPrimary
-                    ),
-                    modifier = Modifier
-                        .height(45.dp),
-                ) {
-                    Text(
-                        text = "CHANGE PASSWORD",
-                        style = MaterialTheme.typography.h3,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colors.onPrimary,
+                        },
                         modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center)
+                            .imePadding()
+                            .padding(5.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = MaterialTheme.colors.error,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        ),
                     )
-                }
-                Spacer(modifier = Modifier.height(15.dp))
-                Button(
-                    onClick = {
-                        navBack()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.background,
-                        contentColor = MaterialTheme.colors.onPrimary
-                    ),
-                    modifier = Modifier
-                        .height(45.dp),
-                ) {
-                    Text(
-                        text = "Cancel",
-                        style = MaterialTheme.typography.h3,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 18.sp,
-                        color = MaterialTheme.colors.onPrimary,
+                    OutlinedTextField(
+                        value = newPass,
+                        onValueChange = { newPass = it },
+                        label = { Text(stringResource(R.string.new_password)) },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = stringResource(R.string.password_icon),
+                                tint = orange
+                            )
+                        },
+                        trailingIcon = {
+                            val image = if (passwordVisible)
+                                painterResource(R.drawable.baseline_visibility_24) else
+                                painterResource(R.drawable.baseline_visibility_off_24)
+
+                            val description =
+                                if (passwordVisible) stringResource(R.string.hide_password) else
+                                    stringResource(R.string.show_password)
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(painter = image, contentDescription = description)
+                            }
+                        },
                         modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
                             .fillMaxWidth()
-                            .wrapContentSize(Alignment.Center)
+                            .imePadding()
+                            .padding(5.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = MaterialTheme.colors.error,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        ),
                     )
+                    Spacer(Modifier.height(15.dp))
+                    OutlinedTextField(
+                        value = confPass,
+                        onValueChange = { confPass = it },
+                        label = { Text(stringResource(R.string.confirm_password)) },
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.Lock,
+                                contentDescription = stringResource(R.string.password_icon),
+                                tint = orange
+                            )
+                        },
+                        trailingIcon = {
+                            val image = if (passwordVisible)
+                                painterResource(R.drawable.baseline_visibility_24) else
+                                painterResource(R.drawable.baseline_visibility_off_24)
+
+                            val description =
+                                if (passwordVisible) stringResource(R.string.hide_password) else stringResource(
+                                    R.string.show_password
+                                )
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(painter = image, contentDescription = description)
+                            }
+
+                            if (newPass.text != confPass.text)
+                                Icon(
+                                    Icons.Filled.Warning,
+                                    stringResource(R.string.error),
+                                    tint = MaterialTheme.colors.error
+                                )
+                        },
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .fillMaxWidth()
+                            .imePadding()
+                            .padding(5.dp),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = MaterialTheme.colors.error,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        ),
+                    )
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Button(
+                        onClick = {
+                            navToVerification(email.text, newPass.text, confPass.text)
+                        },
+                        enabled = (email.text != "" && newPass.text.length >= 8 && confPass.text.length >= 8),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colors.secondary,
+                            contentColor = MaterialTheme.colors.onPrimary
+                        ),
+                        modifier = Modifier
+                            .height(45.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.change_password),
+                            style = MaterialTheme.typography.h3,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colors.onPrimary,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Button(
+                        onClick = {
+                            navBack()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = MaterialTheme.colors.background,
+                            contentColor = MaterialTheme.colors.onPrimary
+                        ),
+                        modifier = Modifier
+                            .height(45.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.cancel),
+                            style = MaterialTheme.typography.h3,
+                            fontWeight = FontWeight.Normal,
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colors.onPrimary,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentSize(Alignment.Center)
+                        )
+                    }
                 }
             }
         }

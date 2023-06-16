@@ -1,35 +1,32 @@
 package com.jetpack.kawanusaha.ui.pages
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.jetpack.kawanusaha.R
 
-@Composable
-fun LoadingScreen(isLoading: Boolean) {
-    if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    }
-}
 
 @Composable
 fun NavFabButton(navigation: () -> Unit) {
@@ -80,27 +77,27 @@ fun BottomBar(
                 val currentRoute = navBackStackEntry?.destination?.route
                 val navigationItems = listOf(
                     NavigationItem(
-                        title = "Feeds", //change into string resource
+                        title = stringResource(R.string.Feeds), //change into string resource
                         icon = Icons.Default.List,
                         screen = Screen.Feeds
                     ),
                     NavigationItem(
-                        title = "Explore",
+                        title = stringResource(R.string.Explore),
                         icon = Icons.Default.Search,
                         screen = Screen.Explore
                     ),
                     NavigationItem(
-                        title = "Chat",
+                        title = stringResource(R.string.chat),
                         icon = Icons.Default.Info,
                         screen = Screen.Chat
                     ),
                     NavigationItem(
-                        title = "Favorite",
+                        title = stringResource(R.string.favorite),
                         icon = Icons.Default.Favorite,
                         screen = Screen.Like
                     ),
                     NavigationItem(
-                        title = "Profile",
+                        title = stringResource(R.string.profile),
                         icon = Icons.Default.AccountCircle,
                         screen = Screen.Profile
                     ),
@@ -148,4 +145,53 @@ sealed class Screen(val route: String) {
     object Chat : Screen("chat_screen")
     object Like : Screen("like_screen")
     object Profile : Screen("about_screen")
+}
+
+@Composable
+fun shimmerBrush(showShimmer: Boolean = true, targetValue: Float = 1000f): Brush {
+    return if (showShimmer) {
+        val shimmerColors = listOf(
+            Color.LightGray.copy(alpha = 0.6f),
+            Color.LightGray.copy(alpha = 0.2f),
+            Color.LightGray.copy(alpha = 0.6f),
+        )
+
+        val transition = rememberInfiniteTransition()
+        val translateAnimation = transition.animateFloat(
+            initialValue = 0f,
+            targetValue = targetValue,
+            animationSpec = infiniteRepeatable(
+                animation = tween(800), repeatMode = RepeatMode.Reverse
+            )
+        )
+        Brush.linearGradient(
+            colors = shimmerColors,
+            start = Offset.Zero,
+            end = Offset(x = translateAnimation.value, y = translateAnimation.value)
+        )
+    } else {
+        Brush.linearGradient(
+            colors = listOf(Color.Transparent, Color.Transparent),
+            start = Offset.Zero,
+            end = Offset.Zero
+        )
+    }
+}
+
+@Composable
+fun SectionText(text: String, style: TextStyle, modifier: Modifier = Modifier) {
+    Text(
+        text = text,
+        color = MaterialTheme.colors.onPrimary,
+        style = style,
+        modifier = modifier
+    )
+}
+
+suspend fun scrollToItem(state: LazyListState, item: Int) {
+    state.animateScrollToItem(item)
+}
+
+suspend fun scrollToBottom(state: LazyListState) {
+    state.animateScrollToItem(state.layoutInfo.totalItemsCount)
 }

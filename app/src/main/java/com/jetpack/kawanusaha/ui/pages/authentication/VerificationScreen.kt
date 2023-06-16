@@ -6,6 +6,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -32,175 +33,184 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.main.LoginViewModel
+import com.jetpack.kawanusaha.main.MainViewModel
 
 @Composable
 fun VerificationScreen(
     viewModel: LoginViewModel,
+    mainViewModel: MainViewModel,
     email: String?,
     password: String?,
     passwordConfirm: String?,
-    navToMain: () -> Unit
+    navToMain: () -> Unit,
 ) {
     val mContext = LocalContext.current
     var verificationCode by remember { mutableStateOf(TextFieldValue("")) }
     val isVerified by viewModel.isVerified.collectAsState(false)
+    val emails by remember{ mutableStateOf(email) }
+    val user by mainViewModel.userProfile.collectAsState(initial = null)
+
     Generate(viewModel = viewModel, email = email)
-    Column(
-        modifier = Modifier.fillMaxSize(),
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().safeDrawingPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val white = MaterialTheme.colors.primary
-        val orange = MaterialTheme.colors.secondary
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = buildAnnotatedString {
-                withStyle(
-                    style = SpanStyle(color = MaterialTheme.colors.secondaryVariant),
-                ) {
-                    append("KAWAN")
-                }
-                withStyle(
-                    style = SpanStyle(color = MaterialTheme.colors.secondary)
-                ) {
-                    append(" USAHA")
-                }
-            },
-            style = MaterialTheme.typography.h4
-        )
-        Spacer(modifier = Modifier.height(50.dp))
-
-        Box(
-            contentAlignment = Alignment.Center
-        ) {
-            Canvas(
-                modifier = Modifier
-                    .size(190.dp),
-            ) {
-                drawCircle(
-                    color = orange,
-                    style = Stroke(width = 4.dp.toPx()),
-                )
-                drawCircle(
-                    color = white
-                )
-            }
-            Image(
-                painter = painterResource(R.drawable.email_open),
-                contentDescription = "email_open",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .size(120.dp)
+        item {
+            val white = MaterialTheme.colors.primary
+            val orange = MaterialTheme.colors.secondary
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(
+                        style = SpanStyle(color = MaterialTheme.colors.secondaryVariant),
+                    ) {
+                        append("KAWAN")
+                    }
+                    withStyle(
+                        style = SpanStyle(color = MaterialTheme.colors.secondary)
+                    ) {
+                        append(" USAHA")
+                    }
+                },
+                style = MaterialTheme.typography.h4
             )
-        }
-        Spacer(modifier = Modifier.height(60.dp))
-        Box {
-            Canvas(
-                modifier = Modifier
-                    .fillMaxSize(),
+            Spacer(modifier = Modifier.height(50.dp))
+
+            Box(
+                contentAlignment = Alignment.Center
             ) {
-                drawRoundRect(
-                    color = Color.White,
-                    cornerRadius = CornerRadius(16f, 16f)
+                Canvas(
+                    modifier = Modifier
+                        .size(190.dp),
+                ) {
+                    drawCircle(
+                        color = orange,
+                        style = Stroke(width = 4.dp.toPx()),
+                    )
+                    drawCircle(
+                        color = white
+                    )
+                }
+                Image(
+                    painter = painterResource(R.drawable.email_open),
+                    contentDescription = stringResource(R.string.email_open),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(120.dp)
                 )
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = stringResource(R.string.title_verify),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 32.sp,
-                )
-                Text(
-                    text = stringResource(R.string.body_verify),
-                    style = MaterialTheme.typography.body1,
-                )
-                Spacer(modifier = Modifier.height(35.dp))
-                Text(
-                    text = stringResource(R.string.check_email),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(
-                    value = verificationCode,
-                    onValueChange = { verificationCode = it },
-                    label = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = stringResource(R.string.enter_code),
-                                style = MaterialTheme.typography.body1,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        capitalization = KeyboardCapitalization.Characters
-                    ),
-                    singleLine = true,
+            Spacer(modifier = Modifier.height(60.dp))
+        }
+        item{
+            Box {
+                Canvas(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .padding(start = 50.dp, end = 50.dp),
-                    textStyle = LocalTextStyle.current.copy(
-                        textAlign = TextAlign.Center,
-                        fontSize = 30.sp
-                    ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = MaterialTheme.colors.onPrimary,
-                        cursorColor = MaterialTheme.colors.onPrimary,
-                        errorBorderColor = Color.Red,
-                        focusedBorderColor = MaterialTheme.colors.secondary,
-                        unfocusedBorderColor = MaterialTheme.colors.surface,
-                        focusedLabelColor = MaterialTheme.colors.secondary,
-                        unfocusedLabelColor = MaterialTheme.colors.surface
+                        .fillMaxSize(),
+                ) {
+                    drawRoundRect(
+                        color = Color.White,
+                        cornerRadius = CornerRadius(16f, 16f)
                     )
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "Resend Code",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable {
-                        // re-generate code
-                        viewModel.generate(email)
-                    })
-                Spacer(modifier = Modifier.height(30.dp))
-                Button(
-                    // TODO else show pop up that verification failed
-                    onClick = {
-                        viewModel.verify(
-                            verificationCode.text,
-                            password,
-                            passwordConfirm
-                        )
-                    },
-                    modifier = Modifier.size(300.dp, 40.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Text(
-                        text = stringResource(R.string.verify),
-                        style = MaterialTheme.typography.body1
+                        text = stringResource(R.string.title_verify),
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 32.sp,
                     )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    text = "Verify email later",
-                    textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable {
-                        if (password != null || passwordConfirm != null) {
-                            navToMain()
-                        }
+                    Text(
+                        text = stringResource(R.string.body_verify, user?.data?.email ?: ""),
+                        style = MaterialTheme.typography.body1,
+                    )
+                    Spacer(modifier = Modifier.height(35.dp))
+                    Text(
+                        text = stringResource(R.string.check_email),
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    OutlinedTextField(
+                        value = verificationCode,
+                        onValueChange = { verificationCode = it },
+                        label = {
+                            Box(
+                                modifier = Modifier.fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.enter_code),
+                                    style = MaterialTheme.typography.body1,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            capitalization = KeyboardCapitalization.Characters
+                        ),
+                        singleLine = true,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .imePadding()
+                            .padding(start = 50.dp, end = 50.dp),
+                        textStyle = LocalTextStyle.current.copy(
+                            textAlign = TextAlign.Center,
+                            fontSize = 30.sp
+                        ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = MaterialTheme.colors.onPrimary,
+                            cursorColor = MaterialTheme.colors.onPrimary,
+                            errorBorderColor = Color.Red,
+                            focusedBorderColor = MaterialTheme.colors.secondary,
+                            unfocusedBorderColor = MaterialTheme.colors.surface,
+                            focusedLabelColor = MaterialTheme.colors.secondary,
+                            unfocusedLabelColor = MaterialTheme.colors.surface
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        text = stringResource(R.string.resend_code),
+                        style = MaterialTheme.typography.h3,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.clickable {
+                            // re-generate code
+                            viewModel.generate(email)
+                        })
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Button(
+                        // TODO else show pop up that verification failed
+                        onClick = {
+                            viewModel.verify(
+                                verificationCode.text,
+                                password,
+                                passwordConfirm
+                            )
+                        },
+                        modifier = Modifier.size(300.dp, 40.dp),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.verify),
+                            style = MaterialTheme.typography.body1
+                        )
                     }
-                )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Text(
+                        text = stringResource(R.string.verify_email_later),
+                        textDecoration = TextDecoration.Underline,
+                        modifier = Modifier.clickable {
+                                navToMain()
+                        }
+                    )
 
+                }
             }
         }
     }

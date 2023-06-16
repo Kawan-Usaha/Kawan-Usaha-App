@@ -3,4 +3,4 @@
 # verify
 
 [androidJvm]\
-suspend fun [verify](verify.md)(verificationRequest: [VerificationRequest](../-verification-request/index.md)): [VerificationResponse](../-verification-response/index.md)?
+suspend fun [verify](verify.md)(jwtToken: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), verificationRequest: [VerificationRequest](../-verification-request/index.md)): [GenerateVerificationResponse](../-generate-verification-response/index.md)?

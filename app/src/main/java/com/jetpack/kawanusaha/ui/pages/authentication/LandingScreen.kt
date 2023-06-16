@@ -5,6 +5,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +19,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.jetpack.kawanusaha.R
 import com.jetpack.kawanusaha.ui.pages.BackPressHandler
@@ -24,21 +29,71 @@ import com.jetpack.kawanusaha.ui.theme.*
 
 @Composable
 fun LandingScreen(navToLogin: () -> Unit, navToRegister: () -> Unit) {
+    val chocolateVariant = MaterialTheme.colors.secondaryVariant
+    val secondaryColor = MaterialTheme.colors.secondary
+    val boxSize = with(LocalDensity.current) { 300.dp.toPx() }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+            .background(
+                brush = Brush.linearGradient(
+                    0.0f to Gradient1,
+                    0.33f to PrimaryDay,
+                    0.66f to PrimaryVariantDay,
+                    1.00f to PrimaryNight,
+                    start = Offset((0.3f) * boxSize, boxSize * (1.3f)),
+                    end = Offset(boxSize, 0f),
+                    tileMode = TileMode.Clamp
+                )
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         Image(
             painterResource(id = R.drawable.logo),
             contentDescription = null,
             modifier = Modifier.padding(20.dp)
         )
         Text(
-            stringResource(id = R.string.app_name)
+            text = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(color = chocolateVariant),
+                ) {
+                    append("KAWAN")
+                }
+                withStyle(
+                    style = SpanStyle(color = secondaryColor)
+                ) {
+                    append(" USAHA")
+                }
+            },
+            style = MaterialTheme.typography.h4
         )
-
-        Gradient(navToLogin, navToRegister)
+        Button(
+            onClick = { navToLogin() },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(200.dp)
+                .padding(top = 50.dp),
+            colors = ButtonDefaults.buttonColors(
+                MaterialTheme.colors.secondary
+            )
+        ) {
+            Text(stringResource(R.string.login))
+        }
+        Button(
+            onClick = { navToRegister() },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(200.dp),
+            colors = ButtonDefaults.buttonColors(
+                MaterialTheme.colors.secondary
+            )
+        ) {
+            Text(stringResource(R.string.register))
+        }
     }
 
     val activity = (LocalContext.current as? Activity)
@@ -72,17 +127,23 @@ fun Gradient(navToLogin: () -> Unit, navToRegister: () -> Unit) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .width(200.dp)
-                    .padding(top = 150.dp)
+                    .padding(top = 150.dp),
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colors.secondary
+                )
             ) {
-                Text("LOGIN")
+                Text(stringResource(R.string.login))
             }
             Button(
                 onClick = { navToRegister() },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .width(200.dp)
+                    .width(200.dp),
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colors.secondary
+                )
             ) {
-                Text("REGISTER")
+                Text(stringResource(R.string.register))
             }
         }
     }

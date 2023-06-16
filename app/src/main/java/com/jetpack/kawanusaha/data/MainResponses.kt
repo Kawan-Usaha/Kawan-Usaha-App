@@ -1,5 +1,7 @@
 package com.jetpack.kawanusaha.data
 
+import com.google.gson.annotations.SerializedName
+
 data class DefaultResponse(
 	val success: Boolean,
 	val message: String
@@ -12,14 +14,15 @@ data class ProfileResponse(
 )
 
 data class ProfileData(
-	val createdAt: String,
-	val name: String,
-	val verified: Boolean,
-	val usaha: Any?,
-	val articles: Any?,
-	val userId: String,
-	val email: String,
-	val updatedAt: String
+    val createdAt: String,
+    var name: String,
+    val verified: Boolean,
+    val usaha: Any?,
+	val image: String?,
+    val articles: Any?,
+    val userId: String,
+    val email: String,
+    val updatedAt: String
 )
 
 data class UsahaResponse(
@@ -43,25 +46,6 @@ data class UsahaData (
 	val updatedAt: String?
 )
 
-data class CreateUsahaData(
-	val usahaName: String,
-	val updatedAt: String,
-	val userId: String,
-	val createdAt: String,
-	val id: Int,
-	val type: Int,
-	val tags: List<UsahaTagsItem>
-)
-
-data class UsahaTagsItem(
-	val updatedAt: String,
-	val name: String,
-	val createdAt: String,
-	val usaha: Any,
-	val id: Int,
-	val category: Any
-)
-
 data class ArticleResponse (
 	val data: ArticleData,
 	val success: Boolean,
@@ -77,11 +61,42 @@ data class ArticleData(
 
 data class ArticlesItem(
 	val updatedAt: String,
-	val isPublished: Boolean,
+	val is_published: Boolean,
 	val createdAt: String,
+	val image: String,
 	val id: Int,
-	val category: List<Category>,
+	val category: Category,
 	val title: String,
+)
+
+data class TagResponse(
+	val data: TagData,
+	val success: Boolean,
+	val message: String
+)
+
+data class TagData(
+	val totalTags: Int,
+	val page: Int,
+	val tag: List<TagItem>,
+	val pageSize: Int
+)
+
+data class TagItem(
+	val updatedAt: String,
+	val name: String,
+	val createdAt: String,
+	val id: Int
+)
+
+data class FavResponse(
+	val data: FavList,
+	val success: Boolean,
+	val message: String
+)
+
+data class FavList(
+	val articles: List<ArticlesItem>
 )
 
 data class ArticleDetailResponse(
@@ -92,40 +107,36 @@ data class ArticleDetailResponse(
 
 data class ArticleDetail(
 	val updatedAt: String,
-	val isPublished: Boolean,
+	val is_published: Boolean,
 	val createdAt: String,
+	val favorite: Boolean,
+	val image: String,
 	val id: Int,
-	val category: List<Category>,
+	val category: Category,
 	val title: String,
 	val content: String,
 	val user: String
 )
 
-
-data class Category(
-	val id: Int,
-	val title: String,
-	val image: String,
-	val tags: Any,
-	val articles: Any,
-	val createdAt: String,
-	val updatedAt: String
+data class CategoryResponse(
+	val data: List<Category>,
+	val success: Boolean,
+	val message: String
 )
 
+data class Category(
+	val image: String,
+	val updatedAt: String,
+	val createdAt: String,
+	val id: Int,
+	val title: String
+)
 
 data class LLMResponse(
 	val created: Int,
 	val usage: Usage,
-	val model: String,
 	val id: String,
-	val choices: List<ChoicesItem>,
-	val objects: String
-)
-
-data class ChoicesItem(
-	val finishReason: String,
-	val index: Int,
-	val message: Message
+	val choices: List<Choice>,
 )
 
 data class Message(
@@ -139,4 +150,17 @@ data class Usage(
 	val totalTokens: Int
 )
 
+data class Choice(
+	val index: Int,
+	val delta: Delta,
+	val message: Message,
+	val finish_reason: String?
+)
 
+data class Delta(
+	@field:SerializedName("role")
+	val role: String?,
+
+	@field:SerializedName("content")
+	val content: String?
+)

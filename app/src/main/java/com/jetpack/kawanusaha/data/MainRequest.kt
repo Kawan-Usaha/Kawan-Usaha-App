@@ -11,19 +11,39 @@ data class UsahaRequest(
     val tags: List<Tag>,
 )
 
+data class IdRequest (
+    val id: Int
+)
+
 data class Tag (
     val name: String
+)
+
+data class CreateArticleRequest(
+    val article : ArticleRequest,
+    val category: Int
 )
 
 data class ArticleRequest (
     val title: String,
     val content: String,
-    val image: String,
     val is_published: Boolean
 )
 
 data class LLMRequest(
     val stream: Boolean,
     val messages: List<Message>,
-    val model: String
+    val model: String,
+    val max_tokens: Int,
+    val temperature: Double,
+    val top_p : Double
+)
+
+data class LLMContinueChat (
+    val stream: Boolean,
+    val prompt: String,
+    val model: String,
+    val max_tokens: Int,
+    val temperature: Double,
+    val top_p : Double
 )

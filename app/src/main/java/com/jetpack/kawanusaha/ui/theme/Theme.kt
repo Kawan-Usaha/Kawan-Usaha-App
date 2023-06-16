@@ -42,11 +42,11 @@ fun KawanUsahaTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
     } else {
         LightColorPalette
     }
-
     MaterialTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,
         content = content
     )
+
 }

@@ -4,3 +4,5 @@
 
 [androidJvm]\
 suspend fun [login](login.md)(loginRequest: [LoginRequest](../-login-request/index.md)): [LoginResponse](../-login-response/index.md)?
+
+Authentication Section
